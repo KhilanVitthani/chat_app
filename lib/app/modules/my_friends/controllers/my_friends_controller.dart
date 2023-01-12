@@ -1,20 +1,20 @@
+import 'package:chat_app/app/constants/sizeConstant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../../../main.dart';
 import '../../../constants/app_constant.dart';
-import '../../../constants/sizeConstant.dart';
 import '../../../model/user_model.dart';
 import '../../../service/firebase_service.dart';
 
-class HomeController extends GetxController with WidgetsBindingObserver {
-  //TODO: Implement HomeController
+class MyFriendsController extends GetxController {
+  //TODO: Implement MyFriendsController
 
   final count = 0.obs;
   UserModel? userData;
   RxString userName = "".obs;
   RxBool hasData = false.obs;
-  RxInt selectedIndex = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -24,7 +24,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
             context: Get.context!, uid: box.read(ArgumentConstant.userUid));
         if (!isNullEmptyOrFalse(userData)) {
           userName.value = userData!.name.toString();
-          getIt<FirebaseService>().setStatusForChatScreen(status: true);
+          // getIt<FirebaseService>().setStatusForChatScreen(status: true);
         }
         print(userData);
       }
@@ -36,41 +36,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       // }
       hasData.value = true;
     });
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
-      case AppLifecycleState.paused:
-        getIt<FirebaseService>().setStatusForChatScreen(status: false);
-
-        break;
-      case AppLifecycleState.resumed:
-        getIt<FirebaseService>().setStatusForChatScreen(status: true);
-
-        break;
-      case AppLifecycleState.detached:
-        getIt<FirebaseService>().setStatusForChatScreen(status: false);
-
-        break;
-      case AppLifecycleState.inactive:
-        getIt<FirebaseService>().setStatusForChatScreen(status: false);
-        break;
-    }
-    super.didChangeAppLifecycleState(state);
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
   }
 
   @override
   void onClose() {
     super.onClose();
-    getIt<FirebaseService>().setStatusForChatScreen(status: false);
-    WidgetsBinding.instance.removeObserver(this);
   }
 
   void increment() => count.value++;

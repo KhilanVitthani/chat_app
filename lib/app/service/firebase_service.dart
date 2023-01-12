@@ -131,6 +131,7 @@ class FirebaseService {
 
   Future<void> logOut({required BuildContext context}) async {
     getIt<CustomDialogs>().showCircularDialog(context);
+    setStatusForChatScreen(status: false);
     return await firebaseAuth.signOut();
   }
 

@@ -11,6 +11,7 @@ abstract class Routes {
   static const CHAT_SCREEN = _Paths.CHAT_SCREEN;
   static const TEMP_CHAT = _Paths.TEMP_CHAT;
   static const TEMP_CHAT1 = _Paths.TEMP_CHAT1;
+  static const MY_FRIENDS = _Paths.MY_FRIENDS;
 }
 
 abstract class _Paths {
@@ -23,4 +24,5 @@ abstract class _Paths {
   static const CHAT_SCREEN = '/chat-screen';
   static const TEMP_CHAT = '/temp-chat';
   static const TEMP_CHAT1 = '/temp-chat1';
+  static const MY_FRIENDS = '/my-friends';
 }

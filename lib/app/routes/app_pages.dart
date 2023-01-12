@@ -13,6 +13,8 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/my_friends/bindings/my_friends_binding.dart';
+import '../modules/my_friends/views/my_friends_view.dart';
 import '../modules/sign_up/bindings/sign_up_binding.dart';
 import '../modules/sign_up/views/sign_up_view.dart';
 import '../modules/temp_chat/bindings/temp_chat_binding.dart';
@@ -70,6 +72,11 @@ class AppPages {
       name: _Paths.TEMP_CHAT1,
       page: () => const TempChat1View(),
       binding: TempChat1Binding(),
+    ),
+    GetPage(
+      name: _Paths.MY_FRIENDS,
+      page: () => const MyFriendsView(),
+      binding: MyFriendsBinding(),
     ),
   ];
 }

@@ -84,14 +84,13 @@ class SignUpController extends GetxController {
     if (pickedFile != null) {
       CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: pickedFile.path,
+        // cropStyle: CropStyle.circle,
         aspectRatioPresets: [
           CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          // CropAspectRatioPreset
-          //     .original,
-          CropAspectRatioPreset.ratio4x3,
-          // CropAspectRatioPreset
-          //     .ratio16x9
+          // CropAspectRatioPreset.ratio3x2,
+          // CropAspectRatioPreset.original,
+          // CropAspectRatioPreset.ratio4x3,
+          // CropAspectRatioPreset.ratio16x9
         ],
         uiSettings: [
           AndroidUiSettings(
@@ -99,9 +98,11 @@ class SignUpController extends GetxController {
               toolbarColor: appTheme.primaryTheme,
               toolbarWidgetColor: Colors.white,
               initAspectRatio: CropAspectRatioPreset.original,
-              lockAspectRatio: false),
+              lockAspectRatio: true),
           IOSUiSettings(
             title: 'Cropper',
+            aspectRatioLockEnabled: true,
+            resetAspectRatioEnabled: true,
           ),
           WebUiSettings(
             context: Get.context!,

@@ -1,5 +1,3 @@
-import 'package:chat_app/app/Widgets/button.dart';
-import 'package:chat_app/app/constants/color_constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -7,43 +5,33 @@ import 'package:get/get.dart';
 
 import '../../../../main.dart';
 import '../../../constants/app_constant.dart';
+import '../../../constants/color_constant.dart';
 import '../../../constants/sizeConstant.dart';
 import '../../../model/user_model.dart';
 import '../../../routes/app_pages.dart';
 import '../../../service/firebase_service.dart';
-import '../controllers/add_user_controller.dart';
+import '../controllers/my_friends_controller.dart';
 
-class AddUserView extends GetWidget<AddUserController> {
-  const AddUserView({Key? key}) : super(key: key);
+class MyFriendsView extends GetWidget<MyFriendsController> {
+  const MyFriendsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AddUserController>(
-        init: AddUserController(),
+    return GetBuilder<MyFriendsController>(
+        init: MyFriendsController(),
         builder: (controller) {
           return Obx(() {
             return Scaffold(
-              // appBar: AppBar(
-              //   title: const Text('Add Friends'),
-              //   centerTitle: true,
-              //   leading: IconButton(
-              //       icon: Icon(Icons.arrow_back),
-              //       onPressed: () {
-              //         Get.back();
-              //       }),
-              // ),
               body: (controller.hasData.isFalse)
-                  ? Container(
-                      height: double.infinity,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                  ? Center(
+                      child: CircularProgressIndicator(),
                     )
                   : Container(
                       child: Column(
                         children: [
                           StreamBuilder<QuerySnapshot>(
-                            stream: getIt<FirebaseService>().getAllUsersList(),
+                            stream:
+                                getIt<FirebaseService>().getAllFriendsOfUser(),
                             builder: (BuildContext context, snapshot) {
                               if (snapshot.hasError) {
                                 return Expanded(
@@ -75,13 +63,8 @@ class AddUserView extends GetWidget<AddUserController> {
                                                           .data()
                                                       as Map<String, dynamic>);
                                               return (userModel.uId !=
-                                                          box.read(
-                                                              ArgumentConstant
-                                                                  .userUid) &&
-                                                      (!controller.userData!
-                                                          .friendsList!
-                                                          .contains(
-                                                              userModel.uId)))
+                                                      box.read(ArgumentConstant
+                                                          .userUid))
                                                   ? Card(
                                                       shape: RoundedRectangleBorder(
                                                           borderRadius:
@@ -159,98 +142,25 @@ class AddUserView extends GetWidget<AddUserController> {
                                                                 ),
                                                               ),
                                                               Space.width(20),
-                                                              if (userModel
-                                                                          .uId !=
-                                                                      box.read(
-                                                                          ArgumentConstant
-                                                                              .userUid) &&
-                                                                  (!controller
-                                                                      .userData!
-                                                                      .friendsList!
-                                                                      .contains(
-                                                                          userModel
-                                                                              .uId))) ...[
-                                                                if (!controller
-                                                                    .userData!
-                                                                    .requestedFriendsList!
-                                                                    .contains(
-                                                                        userModel
-                                                                            .uId
-                                                                            .toString()))
-                                                                  button(
-                                                                    title:
-                                                                        "Add Friend",
-                                                                    onTap:
-                                                                        () async {
-                                                                      controller
-                                                                          .userData!
-                                                                          .requestedFriendsList!
-                                                                          .add(userModel
-                                                                              .uId
-                                                                              .toString());
-                                                                      await getIt<
-                                                                              FirebaseService>()
-                                                                          .addFriend(
-                                                                        context:
-                                                                            context,
-                                                                        friendsModel:
-                                                                            controller.userData!,
-                                                                        myFriendList: controller
-                                                                            .userData!
-                                                                            .requestedFriendsList!,
-                                                                        friendsUid:
-                                                                            userModel.uId!,
-                                                                      );
-                                                                    },
-                                                                    width: 80,
-                                                                    height: 30,
-                                                                  )
-                                                                else
-                                                                  button(
-                                                                    title:
-                                                                        "Requested",
-                                                                    onTap:
-                                                                        () {},
-                                                                    borderColor:
-                                                                        appTheme
-                                                                            .primaryTheme,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    textColor:
-                                                                        appTheme
-                                                                            .primaryTheme,
-                                                                    width: 80,
-                                                                    height: 30,
-                                                                  ),
-                                                              ],
-                                                              if (!(userModel
-                                                                          .uId !=
-                                                                      box.read(
-                                                                          ArgumentConstant
-                                                                              .userUid) &&
-                                                                  (!controller
-                                                                      .userData!
-                                                                      .friendsList!
-                                                                      .contains(
-                                                                          userModel
-                                                                              .uId)))) ...[
-                                                                InkWell(
-                                                                  child: Icon(
-                                                                    Icons.chat,
-                                                                    size: MySize
-                                                                        .getHeight(
-                                                                            20),
-                                                                    color: appTheme
-                                                                        .primaryTheme,
-                                                                  ),
-                                                                  onTap: () {
-                                                                    Get.toNamed(
-                                                                        Routes
-                                                                            .TEMP_CHAT1);
-                                                                  },
+                                                              InkWell(
+                                                                child: Icon(
+                                                                  Icons.chat,
+                                                                  color: appTheme
+                                                                      .primaryTheme,
+                                                                  size: MySize
+                                                                      .getHeight(
+                                                                          20),
                                                                 ),
-                                                              ]
+                                                                onTap: () {
+                                                                  Get.toNamed(
+                                                                      Routes
+                                                                          .TEMP_CHAT,
+                                                                      arguments: {
+                                                                        ArgumentConstant.userData:
+                                                                            userModel,
+                                                                      });
+                                                                },
+                                                              ),
                                                             ],
                                                           ),
                                                         ),
@@ -261,7 +171,7 @@ class AddUserView extends GetWidget<AddUserController> {
                                       )
                                     : Expanded(
                                         child: Center(
-                                          child: Text("No any user found"),
+                                          child: Text("No any friends."),
                                         ),
                                       );
                               }
