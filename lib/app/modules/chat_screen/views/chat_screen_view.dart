@@ -30,6 +30,9 @@ class ChatScreenView extends GetView<ChatScreenController> {
   Widget messageSpace(BuildContext showContext) {
     return Column(
       children: [
+        Expanded(
+          child: Container(),
+        ),
         // Expanded(
         //   child: Padding(
         //     padding: EdgeInsets.only(left: 10, right: 10),
@@ -337,6 +340,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
                       child: ContainerCorner(
                         color: Colors.white,
                         blurRadius: 20,
+                        colors: [appTheme.primaryTheme, appTheme.primaryTheme],
                         spreadRadius: 5,
                         borderRadius: 50,
                         marginBottom: 10,
@@ -382,6 +386,11 @@ class ChatScreenView extends GetView<ChatScreenController> {
                               ),
                               ContainerCorner(
                                 // color: kTransparentColor,
+                                // colors: [
+                                //   appTheme.primaryTheme,
+                                //   appTheme.primaryTheme
+                                // ],
+
                                 child: Row(
                                   children: [
                                     Icon(
@@ -422,7 +431,10 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                 blurRadius: 20,
                                 spreadRadius: 5,
                                 borderRadius: 50,
-                                colors: [appTheme.primaryTheme],
+                                colors: [
+                                  appTheme.primaryTheme,
+                                  appTheme.primaryTheme
+                                ],
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: SvgPicture.asset(
@@ -462,6 +474,11 @@ class ChatScreenView extends GetView<ChatScreenController> {
                               feedback: ContainerCorner(
                                 setShadowToBottom: true,
                                 // colors: [kPrimaryColor, kSecondaryColor],
+                                colors: [
+                                  appTheme.primaryTheme,
+                                  appTheme.primaryTheme
+                                ],
+
                                 blurRadius: 20,
                                 spreadRadius: 5,
                                 borderRadius: 50,

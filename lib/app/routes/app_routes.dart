@@ -9,6 +9,8 @@ abstract class Routes {
   static const ADD_USER = _Paths.ADD_USER;
   static const FRIEND_REQUEST = _Paths.FRIEND_REQUEST;
   static const CHAT_SCREEN = _Paths.CHAT_SCREEN;
+  static const TEMP_CHAT = _Paths.TEMP_CHAT;
+  static const TEMP_CHAT1 = _Paths.TEMP_CHAT1;
 }
 
 abstract class _Paths {
@@ -19,4 +21,6 @@ abstract class _Paths {
   static const ADD_USER = '/add-user';
   static const FRIEND_REQUEST = '/friend-request';
   static const CHAT_SCREEN = '/chat-screen';
+  static const TEMP_CHAT = '/temp-chat';
+  static const TEMP_CHAT1 = '/temp-chat1';
 }

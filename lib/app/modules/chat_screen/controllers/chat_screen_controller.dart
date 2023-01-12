@@ -45,6 +45,13 @@ class ChatScreenController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    myPlayer.value.openAudioSession().then((value) {
+      Initialized.fullyInitialized;
+    });
+
+    myRecorder.value.openAudioSession().then((value) {
+      Initialized.fullyInitialized;
+    });
   }
 
   @override
@@ -53,8 +60,26 @@ class ChatScreenController extends GetxController {
   }
 
   @override
+  void dispose() {
+    messageController.value.dispose();
+
+    stopWatchTimer.value.dispose();
+
+    //close audion session
+    myRecorder.value.closeAudioSession();
+    myPlayer.value.closeAudioSession();
+  }
+
+  @override
   void onClose() {
     super.onClose();
+    // messageController.value.dispose();
+    //
+    // stopWatchTimer.value.dispose();
+    //
+    // //close audion session
+    // myRecorder.value.closeAudioSession();
+    // myPlayer.value.closeAudioSession();
   }
 
   Future<void> stopRecording() async {
@@ -67,10 +92,14 @@ class ChatScreenController extends GetxController {
     var tempDir = await getTemporaryDirectory();
     myPath.value = '${tempDir.path}/flutter_sound.aac';
 
-    await myRecorder.value.startRecorder(
+    await myRecorder.value
+        .startRecorder(
       toFile: myPath.value,
       codec: Codec.aacADTS,
-    );
+    )
+        .catchError((e) {
+      print(e);
+    });
 
     showVoiceRecorderArea.value = true;
     showTextMessageInput.value = false;

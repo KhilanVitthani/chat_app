@@ -7,7 +7,7 @@ import '../../../constants/sizeConstant.dart';
 import '../../../model/user_model.dart';
 import '../../../service/firebase_service.dart';
 
-class HomeController extends GetxController {
+class HomeController extends GetxController with WidgetsBindingObserver {
   //TODO: Implement HomeController
 
   final count = 0.obs;
@@ -24,6 +24,7 @@ class HomeController extends GetxController {
             context: Get.context!, uid: box.read(ArgumentConstant.userUid));
         if (!isNullEmptyOrFalse(userData)) {
           userName.value = userData!.name.toString();
+          getIt<FirebaseService>().setStatusForChatScreen(status: true);
         }
         print(userData);
       }
@@ -35,6 +36,29 @@ class HomeController extends GetxController {
       // }
       hasData.value = true;
     });
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+        getIt<FirebaseService>().setStatusForChatScreen(status: false);
+
+        break;
+      case AppLifecycleState.resumed:
+        getIt<FirebaseService>().setStatusForChatScreen(status: true);
+
+        break;
+      case AppLifecycleState.detached:
+        getIt<FirebaseService>().setStatusForChatScreen(status: false);
+
+        break;
+      case AppLifecycleState.inactive:
+        getIt<FirebaseService>().setStatusForChatScreen(status: false);
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
   }
 
   @override
@@ -45,6 +69,8 @@ class HomeController extends GetxController {
   @override
   void onClose() {
     super.onClose();
+    getIt<FirebaseService>().setStatusForChatScreen(status: false);
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   void increment() => count.value++;

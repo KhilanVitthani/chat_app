@@ -143,8 +143,7 @@ class FriendRequestView extends GetWidget<FriendRequestController> {
                                                           ),
                                                         ),
                                                         Space.width(20),
-                                                        button(
-                                                          title: "Accept",
+                                                        InkWell(
                                                           onTap: () async {
                                                             userModel
                                                                 .requestedFriendsList!
@@ -166,6 +165,9 @@ class FriendRequestView extends GetWidget<FriendRequestController> {
                                                                     FirebaseService>()
                                                                 .acceptRequest(
                                                               context: context,
+                                                              userModel:
+                                                                  controller
+                                                                      .userData!,
                                                               myUpdatedFriendList:
                                                                   controller
                                                                           .userData
@@ -186,9 +188,132 @@ class FriendRequestView extends GetWidget<FriendRequestController> {
                                                                       .uId!,
                                                             );
                                                           },
-                                                          width: 60,
-                                                          height: 30,
-                                                        )
+                                                          child: Container(
+                                                              height: MySize
+                                                                  .getHeight(
+                                                                      40),
+                                                              width: MySize
+                                                                  .getHeight(
+                                                                      40),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              100),
+                                                                      border:
+                                                                          Border
+                                                                              .all(
+                                                                        color: appTheme
+                                                                            .primaryTheme,
+                                                                      )),
+                                                              child: Icon(
+                                                                Icons.check,
+                                                                size: 20,
+                                                                color: appTheme
+                                                                    .primaryTheme,
+                                                              )),
+                                                        ),
+                                                        Space.width(15),
+                                                        InkWell(
+                                                          onTap: () async {
+                                                            userModel
+                                                                .requestedFriendsList!
+                                                                .remove(controller
+                                                                    .userData!
+                                                                    .uId
+                                                                    .toString());
+
+                                                            await getIt<
+                                                                    FirebaseService>()
+                                                                .rejectFriendRequest(
+                                                              context: context,
+                                                              myFriendsRequestedList:
+                                                                  userModel
+                                                                          .requestedFriendsList ??
+                                                                      [],
+                                                              docId: snapshot
+                                                                  .data!
+                                                                  .docs[index]
+                                                                  .id,
+                                                              friendsModel:
+                                                                  userModel,
+                                                              friendsUid:
+                                                                  userModel
+                                                                      .uId!,
+                                                            );
+                                                          },
+                                                          child: Container(
+                                                              height: MySize
+                                                                  .getHeight(
+                                                                      40),
+                                                              width: MySize
+                                                                  .getHeight(
+                                                                      40),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            100),
+                                                                border:
+                                                                    Border.all(
+                                                                  color: Colors
+                                                                      .red,
+                                                                ),
+                                                              ),
+                                                              child: Icon(
+                                                                Icons.close,
+                                                                size: 20,
+                                                                color:
+                                                                    Colors.red,
+                                                              )),
+                                                        ),
+                                                        // button(
+                                                        //   title: "Accept",
+                                                        //   onTap: () async {
+                                                        //     userModel
+                                                        //         .requestedFriendsList!
+                                                        //         .remove(userModel
+                                                        //             .uId
+                                                        //             .toString());
+                                                        //     userModel
+                                                        //         .friendsList!
+                                                        //         .add(controller
+                                                        //             .userData!
+                                                        //             .uId
+                                                        //             .toString());
+                                                        //     controller.userData
+                                                        //         ?.friendsList!
+                                                        //         .add(userModel
+                                                        //             .uId
+                                                        //             .toString());
+                                                        //     await getIt<
+                                                        //             FirebaseService>()
+                                                        //         .acceptRequest(
+                                                        //       context: context,
+                                                        //       myUpdatedFriendList:
+                                                        //           controller
+                                                        //                   .userData
+                                                        //                   ?.friendsList ??
+                                                        //               [],
+                                                        //       docId: snapshot
+                                                        //           .data!
+                                                        //           .docs[index]
+                                                        //           .id,
+                                                        //       friendsModel:
+                                                        //           userModel,
+                                                        //       myFriendsRequestedList:
+                                                        //           controller
+                                                        //               .userData!
+                                                        //               .requestedFriendsList!,
+                                                        //       friendsUid:
+                                                        //           userModel
+                                                        //               .uId!,
+                                                        //     );
+                                                        //   },
+                                                        //   width: 60,
+                                                        //   height: 30,
+                                                        // )
                                                       ],
                                                     ),
                                                   ),

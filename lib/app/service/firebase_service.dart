@@ -153,11 +153,33 @@ class FirebaseService {
     getIt<CustomDialogs>().hideCircularDialog(context);
   }
 
+  Future<void> rejectFriendRequest(
+      {required BuildContext context,
+      required String friendsUid,
+      required String docId,
+      required UserModel friendsModel,
+      required List<dynamic> myFriendsRequestedList}) async {
+    getIt<CustomDialogs>().showCircularDialog(context);
+    await firebaseFireStore
+        .collection("pendingRequest")
+        .doc(box.read(ArgumentConstant.userUid))
+        .collection("request")
+        .doc(docId)
+        .delete();
+
+    await firebaseFireStore
+        .collection("user")
+        .doc(friendsUid.toString())
+        .update({"requestedFriendsList": myFriendsRequestedList});
+    getIt<CustomDialogs>().hideCircularDialog(context);
+  }
+
   Future<void> acceptRequest(
       {required BuildContext context,
       required String friendsUid,
       required String docId,
       required UserModel friendsModel,
+      required UserModel userModel,
       required List<dynamic> myFriendsRequestedList,
       required List<dynamic> myUpdatedFriendList}) async {
     getIt<CustomDialogs>().showCircularDialog(context);
@@ -166,6 +188,11 @@ class FirebaseService {
         .doc(box.read(ArgumentConstant.userUid))
         .collection("friends")
         .add(friendsModel.toJson());
+    await firebaseFireStore
+        .collection("myFriends")
+        .doc(friendsUid)
+        .collection("friends")
+        .add(userModel.toJson());
     await firebaseFireStore
         .collection("pendingRequest")
         .doc(box.read(ArgumentConstant.userUid))
@@ -186,6 +213,15 @@ class FirebaseService {
 
   Stream<QuerySnapshot> getAllUsersList() {
     return firebaseFireStore.collection("user").orderBy("name").snapshots();
+  }
+
+  Stream<QuerySnapshot> getAllFriendsOfUser() {
+    return firebaseFireStore
+        .collection("myFriends")
+        .doc(box.read(ArgumentConstant.userUid))
+        .collection("friends")
+        .orderBy("name")
+        .snapshots();
   }
 
   Stream<QuerySnapshot> getAllPendingRequestList() {
