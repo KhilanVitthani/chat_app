@@ -7,6 +7,7 @@ import '../../../../main.dart';
 import '../../../constants/app_constant.dart';
 import '../../../constants/color_constant.dart';
 import '../../../constants/sizeConstant.dart';
+import '../../../model/chat_data_model.dart';
 import '../../../model/user_model.dart';
 import '../../../routes/app_pages.dart';
 import '../../../service/firebase_service.dart';
@@ -142,6 +143,48 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
                                                                 ),
                                                               ),
                                                               Space.width(20),
+                                                              ///TODO://Uncomment this
+                                                              // StreamBuilder<QuerySnapshot>(
+                                                              //   stream: getIt<FirebaseService>()
+                                                              //       .getChatData(chatId: getIt<FirebaseService>().getChatId(friendUid: userModel.uId.toString())),
+                                                              //   builder: (context,
+                                                              //       AsyncSnapshot<QuerySnapshot>
+                                                              //       snapshot) {
+                                                              //     if (snapshot.hasData) {
+                                                              //       var docList =
+                                                              //           snapshot.data!.docs;
+                                                              //       int count = 0;
+                                                              //       if (docList.isNotEmpty) {
+                                                              //         var data = snapshot.data!.docs;
+                                                              //         List<ChatDataModel> chatList = [];
+                                                              //         if (!isNullEmptyOrFalse(data)) {
+                                                              //           chatList= snapshot.data!.docs
+                                                              //               .map((element) =>
+                                                              //           ((ChatDataModel.fromJson(element
+                                                              //               .data()
+                                                              //           as Map<
+                                                              //               String,
+                                                              //               dynamic>))))
+                                                              //               .toList()
+                                                              //               .where((element1) =>
+                                                              //           element1.senderId ==
+                                                              //               userModel
+                                                              //                   .uId ).toList();
+                                                              //
+                                                              //           chatList.forEach((element) {
+                                                              //             if(element.rRead==false){
+                                                              //               count++;
+                                                              //             }
+                                                              //           });
+                                                              //         }
+                                                              //         return (count>0)?Text(count.toString()):SizedBox();
+                                                              //       } else
+                                                              //         return SizedBox();
+                                                              //     }
+                                                              //     return SizedBox();
+                                                              //   },
+                                                              // ),
+                                                              // Space.width(20),
                                                               InkWell(
                                                                 child: Icon(
                                                                   Icons.chat,

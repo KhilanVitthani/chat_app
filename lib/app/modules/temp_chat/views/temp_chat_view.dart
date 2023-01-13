@@ -60,6 +60,22 @@ class TempChatView extends GetView<TempChatController> {
                         });
                       }
 
+                      ///TODO://Uncomment this code
+                      // FirebaseFirestore.instance
+                      //     .collection("chat")
+                      //     .doc(controller.getChatId())
+                      //     .collection("chats")
+                      //     .orderBy("dateTime", descending: false)
+                      //     .get()
+                      //     .then((value) {
+                      //   for (QueryDocumentSnapshot qs in value.docs) {
+                      //     if ((qs.data() as Map<String, dynamic>)["senderId"] ==
+                      //         controller.friendData!.uId) {
+                      //       qs.reference.update({"rRead": true});
+                      //     }
+                      //   }
+                      // });
+
                       return ListView.separated(
                         reverse: true,
                         itemCount: controller.chatDataList.length,
@@ -131,6 +147,8 @@ class TempChatView extends GetView<TempChatController> {
                                   "msg": controller.chatController.value.text,
                                   "dateTime":
                                       DateTime.now().millisecondsSinceEpoch,
+                                      "rRead": false,
+                                      "sRead": true,
                                 });
                             // if (controller.isUserOnline.isFalse) {
                             //   await controller.sendPushNotification(
@@ -178,6 +196,7 @@ class TempChatView extends GetView<TempChatController> {
                 Spacing.height(2),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       (data.chatStatus) ? "Online" : "Offline",
@@ -186,7 +205,7 @@ class TempChatView extends GetView<TempChatController> {
                           fontWeight: FontWeight.w300),
                     ),
                     Space.width(3),
-                    CircleAvatar(radius: MySize.getHeight(2),backgroundColor:(data.chatStatus) ?Colors.green: Colors.red,),
+                    CircleAvatar(radius: MySize.getHeight(4),backgroundColor:(data.chatStatus) ?Colors.green: Colors.red,),
                   ],
                 ),
 
@@ -198,7 +217,8 @@ class TempChatView extends GetView<TempChatController> {
               Text(controller.friendData!.name.toString()),
               Spacing.height(2),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,                  mainAxisSize: MainAxisSize.min,
+
                 children: [
                   Text(
                     "Offline",
@@ -207,7 +227,7 @@ class TempChatView extends GetView<TempChatController> {
                         fontWeight: FontWeight.w300),
                   ),
                   Space.width(3),
-                  CircleAvatar(radius: MySize.getHeight(2),backgroundColor: Colors.red,),
+                  CircleAvatar(radius: MySize.getHeight(4),backgroundColor: Colors.red,),
                 ],
               ),
             ],

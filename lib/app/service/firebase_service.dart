@@ -111,7 +111,14 @@ class FirebaseService {
         .doc(box.read(ArgumentConstant.userUid))
         .update({"FCM": fcmToken});
   }
-
+  String getChatId({required String friendUid}) {
+    List<String> uids = [
+      box.read(ArgumentConstant.userUid),
+      friendUid.toString()
+    ];
+    uids.sort((uid1, uid2) => uid1.compareTo(uid2));
+    return uids.join("_chat_");
+  }
   Future<UserModel?> getUserData(
       {required String uid, BuildContext? context, bool isLoad = true}) async {
     if (isLoad) {
