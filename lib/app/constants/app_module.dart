@@ -6,5 +6,5 @@ import '../utilities/progress_dialog_utils.dart';
 void setUp() {
   getIt.registerSingleton<CustomDialogs>(CustomDialogs());
   getIt.registerSingleton<FirebaseService>(FirebaseService());
-  // getIt.registerSingleton<NotificationService>(NotificationService());
+  getIt.registerSingleton<NotificationService>(NotificationService());
 }

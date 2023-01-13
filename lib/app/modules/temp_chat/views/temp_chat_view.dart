@@ -176,12 +176,20 @@ class TempChatView extends GetView<TempChatController> {
               children: [
                 Text(controller.friendData!.name.toString()),
                 Spacing.height(2),
-                Text(
-                  (data.chatStatus) ? "Online" : "Offline",
-                  style: TextStyle(
-                      fontSize: MySize.getHeight(10),
-                      fontWeight: FontWeight.w300),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      (data.chatStatus) ? "Online" : "Offline",
+                      style: TextStyle(
+                          fontSize: MySize.getHeight(10),
+                          fontWeight: FontWeight.w300),
+                    ),
+                    Space.width(3),
+                    CircleAvatar(radius: MySize.getHeight(2),backgroundColor:(data.chatStatus) ?Colors.green: Colors.red,),
+                  ],
                 ),
+
               ],
             );
           }
@@ -189,11 +197,18 @@ class TempChatView extends GetView<TempChatController> {
             children: [
               Text(controller.friendData!.name.toString()),
               Spacing.height(2),
-              Text(
-                "Offline",
-                style: TextStyle(
-                    fontSize: MySize.getHeight(10),
-                    fontWeight: FontWeight.w300),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Offline",
+                    style: TextStyle(
+                        fontSize: MySize.getHeight(10),
+                        fontWeight: FontWeight.w300),
+                  ),
+                  Space.width(3),
+                  CircleAvatar(radius: MySize.getHeight(2),backgroundColor: Colors.red,),
+                ],
               ),
             ],
           );

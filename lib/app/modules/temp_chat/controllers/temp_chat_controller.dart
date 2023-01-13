@@ -24,8 +24,9 @@ class TempChatController extends GetxController with WidgetsBindingObserver {
       friendData = Get.arguments[ArgumentConstant.userData];
       isFromNotification = !isNullEmptyOrFalse(
           Get.arguments[ArgumentConstant.isFromNotification]);
+      getIt<FirebaseService>().setStatusForNotificationChatScreen(status: true,chatId:  getChatId());
     }
-    // WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   String getChatId() {
@@ -41,10 +42,33 @@ class TempChatController extends GetxController with WidgetsBindingObserver {
   void onReady() {
     super.onReady();
   }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(status: false,chatId:  getChatId());
 
+        break;
+      case AppLifecycleState.resumed:
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(status: true,chatId:  getChatId());
+
+        break;
+      case AppLifecycleState.detached:
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(status: false,chatId:  getChatId());
+
+        break;
+      case AppLifecycleState.inactive:
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(status: false,chatId:  getChatId());
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
   @override
   void onClose() {
     super.onClose();
+    getIt<FirebaseService>().setStatusForNotificationChatScreen(status: false,chatId:  getChatId());
+
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   void increment() => count.value++;

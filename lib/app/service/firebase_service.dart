@@ -36,7 +36,7 @@ class FirebaseService {
     String filename = path.basename(imgFile!.path);
     Reference reference =
         await FirebaseStorage.instance.ref().child("$filename");
-    UploadTask uploadTask = reference.putFile(imgFile!);
+    UploadTask uploadTask = reference.putFile(imgFile);
 
     var downlord =
         await (await uploadTask.whenComplete(() => null)).ref.getDownloadURL();
@@ -194,6 +194,22 @@ class FirebaseService {
         .doc(friendsUid)
         .collection("friends")
         .add(userModel.toJson());
+    List<String> uids = [
+      box.read(ArgumentConstant.userUid),
+      friendsUid.toString()
+    ];
+    uids.sort((uid1, uid2) => uid1.compareTo(uid2));
+     uids.join("_chat_");
+    await firebaseFireStore
+        .collection("chat")
+        .doc(uids.join("_chat_"))
+        .collection("chatOnlineStatus")
+        .doc(box.read(ArgumentConstant.userUid)).set({"isOnline":false});
+    await firebaseFireStore
+        .collection("chat")
+        .doc(uids.join("_chat_"))
+        .collection("chatOnlineStatus")
+        .doc(friendsUid).set({"isOnline":false});
     await firebaseFireStore
         .collection("pendingRequest")
         .doc(box.read(ArgumentConstant.userUid))
@@ -239,6 +255,14 @@ class FirebaseService {
         .collection("user")
         .doc(box.read(ArgumentConstant.userUid))
         .update({"inChatScreen": status});
+  }
+
+  Future<void> setStatusForNotificationChatScreen({required bool status,required String chatId}) async {
+    await firebaseFireStore
+        .collection("chat")
+        .doc(chatId)
+        .collection("chatOnlineStatus")
+        .doc(box.read(ArgumentConstant.userUid)).set({"isOnline":status});
   }
 }
 

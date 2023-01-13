@@ -205,7 +205,7 @@ class FriendRequestView extends GetWidget<FriendRequestController> {
                                                                               .all(
                                                                         color: appTheme
                                                                             .primaryTheme,
-                                                                      )),
+                                                                      ),),
                                                               child: Icon(
                                                                 Icons.check,
                                                                 size: 20,
