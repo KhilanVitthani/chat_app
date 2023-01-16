@@ -35,7 +35,12 @@ class NotificationService {
         }
       });
       await initServices();
-      //await getFcmToken();
+      try{
+        await getFcmToken();
+
+      }catch(e){
+
+      }
     }
 
     isFlutterLocalNotificationInitialize = true;

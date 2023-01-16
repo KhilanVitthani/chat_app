@@ -131,76 +131,165 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
                                                                       CrossAxisAlignment
                                                                           .start,
                                                                   children: [
-                                                                    Text(userModel
-                                                                            .name
-                                                                            .toString() +
-                                                                        " " +
-                                                                        userModel
-                                                                            .lastName
-                                                                            .toString()),
-                                                                    // Spacing.height(10),
+                                                                    Row(
+                                                                      children: [
+                                                                        Expanded(
+                                                                          child: Text(userModel
+                                                                                  .name
+                                                                                  .toString() +
+                                                                              " " +
+                                                                              userModel
+                                                                                  .lastName
+                                                                                  .toString(),),
+                                                                        ),
+                                                                        Space.width(20),
+                                                                        StreamBuilder<
+                                                                            QuerySnapshot>(
+                                                                          stream: getIt<
+                                                                              FirebaseService>()
+                                                                              .getChatData(
+                                                                              chatId: getIt<FirebaseService>().getChatId(
+                                                                                  friendUid:
+                                                                                  userModel.uId.toString())),
+                                                                          builder: (context,
+                                                                              AsyncSnapshot<
+                                                                                  QuerySnapshot>
+                                                                              snapshot) {
+                                                                            if (snapshot
+                                                                                .hasData) {
+                                                                              var docList =
+                                                                                  snapshot
+                                                                                      .data!
+                                                                                      .docs;
+                                                                              int count =
+                                                                              0;
+                                                                              if (docList
+                                                                                  .isNotEmpty) {
+                                                                                var data = snapshot
+                                                                                    .data!
+                                                                                    .docs;
+                                                                                List<ChatDataModel>
+                                                                                chatList =
+                                                                                [];
+                                                                                if (!isNullEmptyOrFalse(
+                                                                                    data)) {
+                                                                                  chatList = snapshot
+                                                                                      .data!
+                                                                                      .docs
+                                                                                      .map((element) => ((ChatDataModel.fromJson(element.data() as Map<String,
+                                                                                      dynamic>))))
+                                                                                      .toList()
+                                                                                      .where((element1) =>
+                                                                                  element1.senderId ==
+                                                                                      userModel.uId)
+                                                                                      .toList();
+
+                                                                                  chatList
+                                                                                      .forEach((element) {
+                                                                                    if (element.rRead ==
+                                                                                        false) {
+                                                                                      count++;
+                                                                                    }
+                                                                                  });
+                                                                                }
+                                                                                return (count >
+                                                                                    0)
+                                                                                    ? CircleAvatar(
+                                                                                  backgroundColor: appTheme.primaryTheme,
+                                                                                  radius: MySize.getHeight(12),
+                                                                                  child: Text(
+                                                                                    count.toString(),
+                                                                                    style: TextStyle(color: Colors.white),
+                                                                                  ),
+                                                                                )
+                                                                                    : SizedBox();
+                                                                              } else
+                                                                                return SizedBox();
+                                                                            }
+                                                                            return SizedBox();
+                                                                          },
+                                                                        ),
+                                                                        Space.width(20),
+                                                                        Icon(
+                                                                          Icons.chat,
+                                                                          color: appTheme
+                                                                              .primaryTheme,
+                                                                          size: MySize
+                                                                              .getHeight(
+                                                                              20),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Spacing.height(10),
                                                                     // Text(userModel.uId.toString()),
-                                                                    Spacing
-                                                                        .height(
-                                                                            10),
-                                                                    Text(userModel
-                                                                        .email
-                                                                        .toString()),
+                                                                    StreamBuilder(
+                                                                      stream: getIt<
+                                                                          FirebaseService>()
+                                                                          .getChatData(
+                                                                          chatId: getIt<FirebaseService>().getChatId(
+                                                                              friendUid:
+                                                                              userModel.uId.toString())),
+                                                                      builder: (context,
+                                                                          AsyncSnapshot<
+                                                                              QuerySnapshot>
+                                                                          snapshot) {
+                                                                        if (snapshot.hasData) {
+                                                                          var docList =
+                                                                              snapshot.data!.docs;
+                                                                          if (docList.isNotEmpty) {
+                                                                            ChatDataModel
+                                                                            message =
+                                                                            ChatDataModel
+                                                                                .fromJson(docList
+                                                                                .first
+                                                                                .data()
+                                                                            as Map<
+                                                                                String,
+                                                                                dynamic>);
+                                                                            return Text(
+                                                                              (message.isImage ??
+                                                                                  false)
+                                                                                  ? "Image"
+                                                                                  : message.msg
+                                                                                  .toString(),
+                                                                              style: TextStyle(
+                                                                                overflow: TextOverflow.ellipsis,
+
+                                                                                fontSize:
+                                                                                MySize.getHeight(12),
+                                                                                fontWeight:
+                                                                                (message.rRead==false&&message.senderId==userModel.uId)?FontWeight.bold:FontWeight
+                                                                                    .normal,
+                                                                              ),
+                                                                            );
+                                                                          } else
+                                                                            return Text(
+                                                                              "No Message",
+                                                                              style: TextStyle(
+
+                                                                                fontSize:
+                                                                                MySize.getHeight(12),
+                                                                                fontWeight:
+                                                                                FontWeight
+                                                                                    .normal,
+                                                                              ),
+                                                                            );
+                                                                        }
+                                                                        return Text(
+                                                                          "Loading...",
+                                                                          style: TextStyle(
+                                                                            fontSize:
+                                                                            MySize.getHeight(12),
+                                                                            fontWeight:
+                                                                            FontWeight.normal,
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                    ),
                                                                   ],
                                                                 ),
                                                               ),
-                                                              Space.width(20),
-
-                                                              ///TODO://Uncomment this
-                                                              // StreamBuilder<QuerySnapshot>(
-                                                              //   stream: getIt<FirebaseService>()
-                                                              //       .getChatData(chatId: getIt<FirebaseService>().getChatId(friendUid: userModel.uId.toString())),
-                                                              //   builder: (context,
-                                                              //       AsyncSnapshot<QuerySnapshot>
-                                                              //       snapshot) {
-                                                              //     if (snapshot.hasData) {
-                                                              //       var docList =
-                                                              //           snapshot.data!.docs;
-                                                              //       int count = 0;
-                                                              //       if (docList.isNotEmpty) {
-                                                              //         var data = snapshot.data!.docs;
-                                                              //         List<ChatDataModel> chatList = [];
-                                                              //         if (!isNullEmptyOrFalse(data)) {
-                                                              //           chatList= snapshot.data!.docs
-                                                              //               .map((element) =>
-                                                              //           ((ChatDataModel.fromJson(element
-                                                              //               .data()
-                                                              //           as Map<
-                                                              //               String,
-                                                              //               dynamic>))))
-                                                              //               .toList()
-                                                              //               .where((element1) =>
-                                                              //           element1.senderId ==
-                                                              //               userModel
-                                                              //                   .uId ).toList();
-                                                              //
-                                                              //           chatList.forEach((element) {
-                                                              //             if(element.rRead==false){
-                                                              //               count++;
-                                                              //             }
-                                                              //           });
-                                                              //         }
-                                                              //         return (count>0)?Text(count.toString()):SizedBox();
-                                                              //       } else
-                                                              //         return SizedBox();
-                                                              //     }
-                                                              //     return SizedBox();
-                                                              //   },
-                                                              // ),
-                                                              // Space.width(20),
-                                                              Icon(
-                                                                Icons.chat,
-                                                                color: appTheme
-                                                                    .primaryTheme,
-                                                                size: MySize
-                                                                    .getHeight(
-                                                                        20),
-                                                              ),
+                                                              
                                                             ],
                                                           ),
                                                         ),

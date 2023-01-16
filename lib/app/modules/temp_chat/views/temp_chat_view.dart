@@ -62,21 +62,21 @@ class TempChatView extends GetView<TempChatController> {
                         });
                       }
 
-                      ///TODO://Uncomment this code
-                      // FirebaseFirestore.instance
-                      //     .collection("chat")
-                      //     .doc(controller.getChatId())
-                      //     .collection("chats")
-                      //     .orderBy("dateTime", descending: false)
-                      //     .get()
-                      //     .then((value) {
-                      //   for (QueryDocumentSnapshot qs in value.docs) {
-                      //     if ((qs.data() as Map<String, dynamic>)["senderId"] ==
-                      //         controller.friendData!.uId) {
-                      //       qs.reference.update({"rRead": true});
-                      //     }
-                      //   }
-                      // });
+
+                      FirebaseFirestore.instance
+                          .collection("chat")
+                          .doc(controller.getChatId())
+                          .collection("chats")
+                          .orderBy("dateTime", descending: false)
+                          .get()
+                          .then((value) {
+                        for (QueryDocumentSnapshot qs in value.docs) {
+                          if ((qs.data() as Map<String, dynamic>)["senderId"] ==
+                              controller.friendData!.uId) {
+                            qs.reference.update({"rRead": true});
+                          }
+                        }
+                      });
 
                       return ListView.separated(
                         reverse: true,
@@ -140,6 +140,13 @@ class TempChatView extends GetView<TempChatController> {
                                                   .toString(),
                                               style: TextStyle(fontSize: 15),
                                             ),
+                                            Spacing.height(8),
+                                            Text(
+                                              DateFormat("hh:mm a").format(
+                                                  controller.chatDataList[index].dateTime!),
+                                              style:
+                                              TextStyle(fontSize: MySize.getHeight(8)),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -180,25 +187,26 @@ class TempChatView extends GetView<TempChatController> {
                                         padding: EdgeInsets.all(16),
                                         child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.end,
                                           children: [
                                             Text(
                                               controller.chatDataList[index].msg
                                                   .toString(),
                                               style: TextStyle(fontSize: 15),
                                             ),
+                                            Spacing.height(8),
+                                            Text(
+                                              DateFormat("hh:mm a").format(
+                                                  controller.chatDataList[index].dateTime!),
+                                              style:
+                                              TextStyle(fontSize: MySize.getHeight(8)),
+                                            ),
                                           ],
                                         ),
                                       ),
                                     ),
                                   ),
-                                Spacing.height(2),
-                                Text(
-                                  DateFormat("hh:mm a").format(
-                                      controller.chatDataList[index].dateTime!),
-                                  style:
-                                      TextStyle(fontSize: MySize.getHeight(10)),
-                                ),
+
                               ],
                             ),
                           );
@@ -239,16 +247,18 @@ class TempChatView extends GetView<TempChatController> {
                                   "sRead": true,
                                 });
                             controller.gotoMaxScrooll();
-                            // if (controller.isUserOnline.isFalse) {
-                            //   await controller.sendPushNotification(
-                            //     nTitle: controller.friendData!.name!,
-                            //     nBody: controller.chatController.value.text,
-                            //     nType: "nType",
-                            //     nSenderId: box.read(ArgumentConstant.userUid),
-                            //     nUserDeviceToken:
-                            //         controller.friendData!.fcmToken.toString(),
-                            //   );
-                            // }
+                            Map<String,dynamic>? data = await getIt<FirebaseService>().getUserNotificationStatus(chatId: controller.getChatId(),
+                                context: Get.context!, uid: controller.friendData!.uId??"");
+                            if (data==null||data["isOnline"]!=true) {
+                              await controller.sendPushNotification(
+                                nTitle: controller.friendData!.name!,
+                                nBody: controller.chatController.value.text,
+                                nType: "nType",
+                                nSenderId: box.read(ArgumentConstant.userUid),
+                                nUserDeviceToken:
+                                    controller.friendData!.fcmToken.toString(),
+                              );
+                            }
                             controller.chatController.value.clear();
                           }
                         },

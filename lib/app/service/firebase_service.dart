@@ -131,6 +131,18 @@ class FirebaseService {
     return UserModel.fromJson(data.data()!);
   }
 
+  Future<Map<String,dynamic>?> getUserNotificationStatus(
+      {required String chatId,required String uid, BuildContext? context, bool isLoad = true}) async {
+    if (isLoad) {
+      getIt<CustomDialogs>().showCircularDialog(context!);
+    }
+    var data = await firebaseFireStore.collection("chat").doc(chatId).collection("chatOnlineStatus").doc(uid).get();
+    if (isLoad) {
+      getIt<CustomDialogs>().hideCircularDialog(context!);
+    }
+    return data.data()!;
+  }
+
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStreamData(
       {required String uid}) {
     return firebaseFireStore.collection("user").doc(uid).snapshots();
