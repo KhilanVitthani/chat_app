@@ -6,6 +6,7 @@ import '../../../constants/app_constant.dart';
 import '../../../constants/sizeConstant.dart';
 import '../../../model/user_model.dart';
 import '../../../service/firebase_service.dart';
+import '../../../service/notification_service.dart';
 
 class HomeController extends GetxController with WidgetsBindingObserver {
   //TODO: Implement HomeController
@@ -28,12 +29,12 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         }
         print(userData);
       }
-      // if (!isNullEmptyOrFalse(userData)) {
-      //   String fcmToken = await getIt<NotificationService>().getFcmToken();
-      //   if (!isNullEmptyOrFalse(fcmToken)) {
-      //     await getIt<FirebaseService>().updateFcmToken(fcmToken: fcmToken);
-      //   }
-      // }
+      if (!isNullEmptyOrFalse(userData)) {
+        String fcmToken = await getIt<NotificationService>().getFcmToken();
+        if (!isNullEmptyOrFalse(fcmToken)) {
+          await getIt<FirebaseService>().updateFcmToken(fcmToken: fcmToken);
+        }
+      }
       hasData.value = true;
     });
     WidgetsBinding.instance.addObserver(this);

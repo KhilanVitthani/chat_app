@@ -180,6 +180,7 @@ class AddUserView extends GetWidget<AddUserController> {
                                                                   button(
                                                                     title:
                                                                         "Add Friend",
+
                                                                     onTap:
                                                                         () async {
                                                                       controller
@@ -201,9 +202,11 @@ class AddUserView extends GetWidget<AddUserController> {
                                                                         friendsUid:
                                                                             userModel.uId!,
                                                                       );
+
                                                                     },
                                                                     width: 80,
                                                                     height: 30,
+                                                                    fontsize: 12,
                                                                   )
                                                                 else
                                                                   button(
@@ -211,6 +214,7 @@ class AddUserView extends GetWidget<AddUserController> {
                                                                         "Requested",
                                                                     onTap:
                                                                         () {},
+                                                                    fontsize: 12,
                                                                     borderColor:
                                                                         appTheme
                                                                             .primaryTheme,

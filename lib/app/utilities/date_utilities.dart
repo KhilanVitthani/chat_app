@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 String formatTime(int second) {
   var hour = (second / 3600).floor();
   var minutes = ((second - hour * 3600) / 60).floor();
@@ -12,4 +14,19 @@ String formatTime(int second) {
   } else {
     return "$minuteExtraZero$minutes:$secondExtraZero$seconds";
   }
+}
+
+int calculateDifference(DateTime date) {
+  DateTime now = DateTime.now();
+  return DateTime(date.year, date.month, date.day)
+      .difference(DateTime(now.year, now.month, now.day))
+      .inDays;
+}
+
+DateTime getDateFromStringFromUtc(String dateString, {String? formatter}) {
+  const String kMainSourceFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+  if (formatter == null) {
+    formatter = kMainSourceFormat;
+  }
+  return DateFormat(formatter).parse(dateString, true);
 }

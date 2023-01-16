@@ -63,9 +63,9 @@ class NotificationService {
       sound: true,
       badge: true,
     );
-    FirebaseMessaging.instance.getInitialMessage().then((value) {
+    FirebaseMessaging.instance.getInitialMessage().then((value) async{
       if (!isNullEmptyOrFalse(value)) {
-        showNotification(remoteMessage: value!);
+        await getNavigateToChatScreen(userId: value!.data["N_SENDER_ID"]);
       }
     });
     //when app is open
@@ -87,7 +87,7 @@ class NotificationService {
       "androidChannel01",
       "androidChannel",
       description: "Android Channel Description",
-      sound: RawResourceAndroidNotificationSound("notification"),
+      // sound: RawResourceAndroidNotificationSound("notification"),
     );
     if (!isNullEmptyOrFalse(remoteMessage.notification)) {
       print("+++++++++++>>>>>>>>>>>>>>>>>");

@@ -54,6 +54,29 @@ class FirebaseService {
         .snapshots();
   }
 
+  Future<Stream<QuerySnapshot<Object?>>> fetchFirstList(
+      {required String chatId}) async {
+    return (await FirebaseFirestore.instance
+        .collection("chat")
+        .doc(chatId)
+        .collection("chats")
+        .orderBy("dateTime", descending: true)
+        .limit(10)
+        .snapshots());
+  }
+
+  Future fetchNextList(
+      List<DocumentSnapshot> documentList, String chatId) async {
+    return (await FirebaseFirestore.instance
+        .collection("chat")
+        .doc(chatId)
+        .collection("chats")
+        .orderBy("dateTime", descending: true)
+        .startAfterDocument(documentList[documentList.length - 1])
+        .limit(10)
+        .snapshots());
+  }
+
   Future<User?> registerUserInFirebase(
       {required BuildContext context, required UserModel userModel}) async {
     getIt<CustomDialogs>().showCircularDialog(context);
@@ -111,6 +134,7 @@ class FirebaseService {
         .doc(box.read(ArgumentConstant.userUid))
         .update({"FCM": fcmToken});
   }
+
   String getChatId({required String friendUid}) {
     List<String> uids = [
       box.read(ArgumentConstant.userUid),
@@ -119,6 +143,7 @@ class FirebaseService {
     uids.sort((uid1, uid2) => uid1.compareTo(uid2));
     return uids.join("_chat_");
   }
+
   Future<UserModel?> getUserData(
       {required String uid, BuildContext? context, bool isLoad = true}) async {
     if (isLoad) {
@@ -131,16 +156,24 @@ class FirebaseService {
     return UserModel.fromJson(data.data()!);
   }
 
-  Future<Map<String,dynamic>?> getUserNotificationStatus(
-      {required String chatId,required String uid, BuildContext? context, bool isLoad = true}) async {
+  Future<Map<String, dynamic>?> getUserNotificationStatus(
+      {required String chatId,
+      required String uid,
+      BuildContext? context,
+      bool isLoad = true}) async {
     if (isLoad) {
       getIt<CustomDialogs>().showCircularDialog(context!);
     }
-    var data = await firebaseFireStore.collection("chat").doc(chatId).collection("chatOnlineStatus").doc(uid).get();
+    var data = await firebaseFireStore
+        .collection("chat")
+        .doc(chatId)
+        .collection("chatOnlineStatus")
+        .doc(uid)
+        .get();
     if (isLoad) {
       getIt<CustomDialogs>().hideCircularDialog(context!);
     }
-    return data.data()!;
+    return data.data() ?? {"isOnline": false};
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStreamData(
@@ -218,17 +251,19 @@ class FirebaseService {
       friendsUid.toString()
     ];
     uids.sort((uid1, uid2) => uid1.compareTo(uid2));
-     uids.join("_chat_");
+    uids.join("_chat_");
     await firebaseFireStore
         .collection("chat")
         .doc(uids.join("_chat_"))
         .collection("chatOnlineStatus")
-        .doc(box.read(ArgumentConstant.userUid)).set({"isOnline":false});
+        .doc(box.read(ArgumentConstant.userUid))
+        .set({"isOnline": false});
     await firebaseFireStore
         .collection("chat")
         .doc(uids.join("_chat_"))
         .collection("chatOnlineStatus")
-        .doc(friendsUid).set({"isOnline":false});
+        .doc(friendsUid)
+        .set({"isOnline": false});
     await firebaseFireStore
         .collection("pendingRequest")
         .doc(box.read(ArgumentConstant.userUid))
@@ -276,12 +311,14 @@ class FirebaseService {
         .update({"inChatScreen": status});
   }
 
-  Future<void> setStatusForNotificationChatScreen({required bool status,required String chatId}) async {
+  Future<void> setStatusForNotificationChatScreen(
+      {required bool status, required String chatId}) async {
     await firebaseFireStore
         .collection("chat")
         .doc(chatId)
         .collection("chatOnlineStatus")
-        .doc(box.read(ArgumentConstant.userUid)).set({"isOnline":status});
+        .doc(box.read(ArgumentConstant.userUid))
+        .set({"isOnline": status});
   }
 }
 
