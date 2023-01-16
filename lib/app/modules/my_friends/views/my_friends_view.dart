@@ -75,6 +75,13 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
                                                                           10))),
                                                       child: InkWell(
                                                         onTap: () async {
+                                                          Get.toNamed(
+                                                              Routes.TEMP_CHAT,
+                                                              arguments: {
+                                                                ArgumentConstant
+                                                                        .userData:
+                                                                    userModel,
+                                                              });
                                                           // userModel.friendsList!.add(
                                                           //     controller.userData!.uId.toString());
                                                           // controller.userData!.requestedFriendsList!
@@ -143,6 +150,7 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
                                                                 ),
                                                               ),
                                                               Space.width(20),
+
                                                               ///TODO://Uncomment this
                                                               // StreamBuilder<QuerySnapshot>(
                                                               //   stream: getIt<FirebaseService>()
@@ -185,24 +193,13 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
                                                               //   },
                                                               // ),
                                                               // Space.width(20),
-                                                              InkWell(
-                                                                child: Icon(
-                                                                  Icons.chat,
-                                                                  color: appTheme
-                                                                      .primaryTheme,
-                                                                  size: MySize
-                                                                      .getHeight(
-                                                                          20),
-                                                                ),
-                                                                onTap: () {
-                                                                  Get.toNamed(
-                                                                      Routes
-                                                                          .TEMP_CHAT,
-                                                                      arguments: {
-                                                                        ArgumentConstant.userData:
-                                                                            userModel,
-                                                                      });
-                                                                },
+                                                              Icon(
+                                                                Icons.chat,
+                                                                color: appTheme
+                                                                    .primaryTheme,
+                                                                size: MySize
+                                                                    .getHeight(
+                                                                        20),
                                                               ),
                                                             ],
                                                           ),

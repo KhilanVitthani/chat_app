@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -15,6 +17,7 @@ class TempChatController extends GetxController with WidgetsBindingObserver {
   RxList<ChatDataModel> chatDataList = RxList<ChatDataModel>([]);
   RxBool isUserOnline = false.obs;
   bool isFromNotification = false;
+  Rx<ScrollController> scrollController = ScrollController().obs;
 
   final count = 0.obs;
   @override
@@ -24,7 +27,8 @@ class TempChatController extends GetxController with WidgetsBindingObserver {
       friendData = Get.arguments[ArgumentConstant.userData];
       isFromNotification = !isNullEmptyOrFalse(
           Get.arguments[ArgumentConstant.isFromNotification]);
-      getIt<FirebaseService>().setStatusForNotificationChatScreen(status: true,chatId:  getChatId());
+      getIt<FirebaseService>().setStatusForNotificationChatScreen(
+          status: true, chatId: getChatId());
     }
     WidgetsBinding.instance.addObserver(this);
   }
@@ -42,31 +46,50 @@ class TempChatController extends GetxController with WidgetsBindingObserver {
   void onReady() {
     super.onReady();
   }
+
+  gotoMaxScrooll() {
+    Timer(
+      const Duration(
+        milliseconds: 200,
+      ),
+      () {
+        scrollController.value
+            .jumpTo(scrollController.value.position.minScrollExtent);
+      },
+    );
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.paused:
-        getIt<FirebaseService>().setStatusForNotificationChatScreen(status: false,chatId:  getChatId());
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(
+            status: false, chatId: getChatId());
 
         break;
       case AppLifecycleState.resumed:
-        getIt<FirebaseService>().setStatusForNotificationChatScreen(status: true,chatId:  getChatId());
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(
+            status: true, chatId: getChatId());
 
         break;
       case AppLifecycleState.detached:
-        getIt<FirebaseService>().setStatusForNotificationChatScreen(status: false,chatId:  getChatId());
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(
+            status: false, chatId: getChatId());
 
         break;
       case AppLifecycleState.inactive:
-        getIt<FirebaseService>().setStatusForNotificationChatScreen(status: false,chatId:  getChatId());
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(
+            status: false, chatId: getChatId());
         break;
     }
     super.didChangeAppLifecycleState(state);
   }
+
   @override
   void onClose() {
     super.onClose();
-    getIt<FirebaseService>().setStatusForNotificationChatScreen(status: false,chatId:  getChatId());
+    getIt<FirebaseService>()
+        .setStatusForNotificationChatScreen(status: false, chatId: getChatId());
 
     WidgetsBinding.instance.removeObserver(this);
   }

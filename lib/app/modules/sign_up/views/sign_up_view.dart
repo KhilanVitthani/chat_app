@@ -109,6 +109,7 @@ class SignUpView extends GetWidget<SignUpController> {
                         commonTextField(
                           fillColor: false,
                           tcPadding: 15,
+                          isNameCapital: true,
                           maxLines: 1,
                           controller: controller.firstNameController.value,
                           validation: (value) {
@@ -130,6 +131,7 @@ class SignUpView extends GetWidget<SignUpController> {
                         commonTextField(
                           fillColor: false,
                           tcPadding: 15,
+                          isNameCapital: true,
                           maxLines: 1,
                           controller: controller.secondNameController.value,
                           validation: (value) {

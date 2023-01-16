@@ -49,6 +49,7 @@ Widget commonTextField({
   bool? isMobileValidation = false,
   bool? isEmailValidation = false,
   bool? isNameCapital = false,
+  bool? isSentence = false,
   bool obscureText = false,
   Function(String?)? onChangedValue,
   TextInputAction? textInputAction,

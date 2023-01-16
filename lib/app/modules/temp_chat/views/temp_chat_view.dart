@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -79,6 +81,7 @@ class TempChatView extends GetView<TempChatController> {
                       return ListView.separated(
                         reverse: true,
                         itemCount: controller.chatDataList.length,
+                        controller: controller.scrollController.value,
                         padding: EdgeInsets.symmetric(
                             horizontal: MySize.getWidth(10),
                             vertical: MySize.getHeight(10)),
@@ -94,17 +97,101 @@ class TempChatView extends GetView<TempChatController> {
                                   ? CrossAxisAlignment.start
                                   : CrossAxisAlignment.end,
                               children: [
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: MySize.getHeight(5),
-                                      horizontal: MySize.getHeight(10)),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                          MySize.getHeight(5)),
-                                      border: Border.all(color: Colors.grey)),
-                                  child: Text(controller.chatDataList[index].msg
-                                      .toString()),
-                                ),
+                                if (!(controller
+                                    .chatDataList[index].isUsersMsg!.value))
+                                  Container(
+                                    margin: EdgeInsets.only(right: 30),
+                                    padding: EdgeInsets.only(
+                                        left: 0,
+                                        right: 14,
+                                        top: 10,
+                                        bottom: 10),
+                                    child: Align(
+                                      alignment: (!controller
+                                              .chatDataList[index]
+                                              .isUsersMsg!
+                                              .value)
+                                          ? Alignment.topLeft
+                                          : Alignment.topRight,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(
+                                                MySize.getHeight(20)),
+                                            topLeft: Radius.circular(
+                                                MySize.getHeight(20)),
+                                            bottomRight: Radius.circular(
+                                                MySize.getHeight(20)),
+                                          ),
+                                          color: (!controller
+                                                  .chatDataList[index]
+                                                  .isUsersMsg!
+                                                  .value)
+                                              ? Colors.grey.shade200
+                                              : Colors.blue[200],
+                                        ),
+                                        padding: EdgeInsets.all(16),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              controller.chatDataList[index].msg
+                                                  .toString(),
+                                              style: TextStyle(fontSize: 15),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                else
+                                  Container(
+                                    margin: EdgeInsets.only(left: 30),
+                                    padding: EdgeInsets.only(
+                                        left: 14,
+                                        right: 0,
+                                        top: 10,
+                                        bottom: 10),
+                                    child: Align(
+                                      alignment: (!controller
+                                              .chatDataList[index]
+                                              .isUsersMsg!
+                                              .value)
+                                          ? Alignment.topLeft
+                                          : Alignment.topRight,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(
+                                                MySize.getHeight(20)),
+                                            topLeft: Radius.circular(
+                                                MySize.getHeight(20)),
+                                            bottomLeft: Radius.circular(
+                                                MySize.getHeight(20)),
+                                          ),
+                                          color: (!controller
+                                                  .chatDataList[index]
+                                                  .isUsersMsg!
+                                                  .value)
+                                              ? Colors.grey.shade200
+                                              : Colors.blue[200],
+                                        ),
+                                        padding: EdgeInsets.all(16),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              controller.chatDataList[index].msg
+                                                  .toString(),
+                                              style: TextStyle(fontSize: 15),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 Spacing.height(2),
                                 Text(
                                   DateFormat("hh:mm a").format(
@@ -133,6 +220,7 @@ class TempChatView extends GetView<TempChatController> {
                   child: getTextField(
                     textEditingController: controller.chatController.value,
                     hintText: "Enter Text",
+                    textCapitalization: TextCapitalization.sentences,
                     suffixIcon: InkWell(
                         onTap: () async {
                           if (!isNullEmptyOrFalse(
@@ -147,9 +235,10 @@ class TempChatView extends GetView<TempChatController> {
                                   "msg": controller.chatController.value.text,
                                   "dateTime":
                                       DateTime.now().millisecondsSinceEpoch,
-                                      "rRead": false,
-                                      "sRead": true,
+                                  "rRead": false,
+                                  "sRead": true,
                                 });
+                            controller.gotoMaxScrooll();
                             // if (controller.isUserOnline.isFalse) {
                             //   await controller.sendPushNotification(
                             //     nTitle: controller.friendData!.name!,
@@ -192,44 +281,45 @@ class TempChatView extends GetView<TempChatController> {
             print(data);
             return Column(
               children: [
-                Text(controller.friendData!.name.toString()),
+                Text(controller.friendData!.name.toString() +
+                    " " +
+                    controller.friendData!.lastName.toString()),
                 Spacing.height(2),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      (data.chatStatus) ? "Online" : "Offline",
-                      style: TextStyle(
-                          fontSize: MySize.getHeight(10),
-                          fontWeight: FontWeight.w300),
-                    ),
-                    Space.width(3),
-                    CircleAvatar(radius: MySize.getHeight(4),backgroundColor:(data.chatStatus) ?Colors.green: Colors.red,),
-                  ],
-                ),
-
+                // Row(
+                //   crossAxisAlignment: CrossAxisAlignment.center,
+                //   mainAxisSize: MainAxisSize.min,
+                //   children: [
+                //     Text(
+                //       (data.chatStatus) ? "Online" : "Offline",
+                //       style: TextStyle(
+                //           fontSize: MySize.getHeight(10),
+                //           fontWeight: FontWeight.w300),
+                //     ),
+                //     Space.width(3),
+                //     CircleAvatar(radius: MySize.getHeight(4),backgroundColor:(data.chatStatus) ?Colors.green: Colors.red,),
+                //   ],
+                // ),
               ],
             );
           }
           return Column(
             children: [
               Text(controller.friendData!.name.toString()),
-              Spacing.height(2),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,                  mainAxisSize: MainAxisSize.min,
-
-                children: [
-                  Text(
-                    "Offline",
-                    style: TextStyle(
-                        fontSize: MySize.getHeight(10),
-                        fontWeight: FontWeight.w300),
-                  ),
-                  Space.width(3),
-                  CircleAvatar(radius: MySize.getHeight(4),backgroundColor: Colors.red,),
-                ],
-              ),
+              // Spacing.height(2),
+              // Row(
+              //   crossAxisAlignment: CrossAxisAlignment.center,                  mainAxisSize: MainAxisSize.min,
+              //
+              //   children: [
+              //     Text(
+              //       "Offline",
+              //       style: TextStyle(
+              //           fontSize: MySize.getHeight(10),
+              //           fontWeight: FontWeight.w300),
+              //     ),
+              //     Space.width(3),
+              //     CircleAvatar(radius: MySize.getHeight(4),backgroundColor: Colors.red,),
+              //   ],
+              // ),
             ],
           );
         });
