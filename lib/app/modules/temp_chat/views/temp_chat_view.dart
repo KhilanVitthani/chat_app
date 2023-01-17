@@ -41,29 +41,27 @@ class TempChatView extends GetView<TempChatController> {
             child: Column(
               children: [
                 Expanded(
-                    child: StreamBuilder<QuerySnapshot>(
-                  stream: getIt<FirebaseService>()
-                      .getChatData(chatId: controller.getChatId()),
+                    child: StreamBuilder(
+                  stream: controller.listenToChatsRealTime(),
                   builder: (context, snapShot) {
                     if (snapShot.hasError) {
                       return Center(
                         child: Text("Something went wrong......."),
                       );
-                    } else if (snapShot.connectionState ==
-                        ConnectionState.waiting) {
+                    }
+                    if (snapShot.connectionState == ConnectionState.waiting) {
                       return Center(
                         child: CircularProgressIndicator(),
                       );
                     } else if (snapShot.hasData) {
                       controller.chatDataList.clear();
-                      var data = snapShot.data!.docs;
-                      if (!isNullEmptyOrFalse(data)) {
-                        data.forEach((element) {
-                          controller.chatDataList.add(ChatDataModel.fromJson(
-                              element.data() as Map<String, dynamic>));
+
+                      if (!isNullEmptyOrFalse(snapShot.data)) {
+                        (snapShot.data as List<ChatDataModel>)
+                            .forEach((element) {
+                          controller.chatDataList.add(element);
                         });
                       }
-
 
                       FirebaseFirestore.instance
                           .collection("chat")
@@ -79,304 +77,166 @@ class TempChatView extends GetView<TempChatController> {
                           }
                         }
                       });
-                   return   GroupedListView<ChatDataModel, String>(
-                        elements: controller.chatDataList,
-                     controller: controller.scrollController.value,
-                     padding: EdgeInsets.symmetric(
-                         horizontal: MySize.getWidth(10),
-                         vertical: MySize.getHeight(10)),
-                       reverse: true,
-                        // useStickyGroupSeparators: true,
-                        groupBy: (element) => element.dateTime!
-                            .toIso8601String()
-                            .substring(0, 10),
-                        groupComparator: (value1, value2) => value1.compareTo(value2),
-                        itemComparator: (item1, item2) => (item1.dateTime!)
-                            .compareTo(item2.dateTime!),
+                      if (controller.chatDataList.length > 0) {
+                        return GroupedListView<ChatDataModel, String>(
+                          elements: controller.chatDataList,
+                          controller: controller.scrollController.value,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: MySize.getWidth(10),
+                              vertical: MySize.getHeight(10)),
+                          reverse: true,
+                          // useStickyGroupSeparators: true,
+                          groupBy: (element) => element.dateTime!
+                              .toIso8601String()
+                              .substring(0, 10),
+                          groupComparator: (value1, value2) =>
+                              value1.compareTo(value2),
+                          itemComparator: (item1, item2) =>
+                              (item1.dateTime!).compareTo(item2.dateTime!),
 
-                        groupSeparatorBuilder: (String value) => Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Expanded(child: Container(
-                              //   height: MySize.getHeight(1),
-                              //   color: Colors.black.withOpacity(0.5),
-                              // ),),
-                              // Space.width(6),
-                              Text(
-                                getTitleWithDay(value),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: MySize.getHeight(14), fontWeight: FontWeight.bold),
-                              ),
-                              // Space.width(6),
+                          groupSeparatorBuilder: (String value) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Expanded(child: Container(
+                                //   height: MySize.getHeight(1),
+                                //   color: Colors.black.withOpacity(0.5),
+                                // ),),
+                                // Space.width(6),
+                                Text(
+                                  getTitleWithDay(value),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: MySize.getHeight(14),
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                // Space.width(6),
 
-                              // Expanded(child: Container(
-                              //   height: MySize.getHeight(1),
-                              //   color: Colors.black.withOpacity(0.5),
-                              // ),),
-                            ],
+                                // Expanded(child: Container(
+                                //   height: MySize.getHeight(1),
+                                //   color: Colors.black.withOpacity(0.5),
+                                // ),),
+                              ],
+                            ),
                           ),
-                        ),
-                        itemBuilder: (c, element) {
-                          return Align(
-                            alignment: (element.isUsersMsg!.value)
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                            child: Column(
-                              crossAxisAlignment: (!element.isUsersMsg!.value)
-                                  ? CrossAxisAlignment.start
-                                  : CrossAxisAlignment.end,
-                              children: [
-                                if (!(element.isUsersMsg!.value))
-                                  Container(
-                                    margin: EdgeInsets.only(right: 30),
-                                    padding: EdgeInsets.only(
-                                        left: 0,
-                                        right: 14,
-                                        top: 10,
-                                        bottom: 10),
-                                    child: Align(
-                                      alignment: (!element
-                                          .isUsersMsg!
-                                          .value)
-                                          ? Alignment.topLeft
-                                          : Alignment.topRight,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(
-                                                MySize.getHeight(20)),
-                                            topLeft: Radius.circular(
-                                                MySize.getHeight(20)),
-                                            bottomRight: Radius.circular(
-                                                MySize.getHeight(20)),
+                          itemBuilder: (c, element) {
+                            return Align(
+                              alignment: (element.isUsersMsg!.value)
+                                  ? Alignment.centerRight
+                                  : Alignment.centerLeft,
+                              child: Column(
+                                crossAxisAlignment: (!element.isUsersMsg!.value)
+                                    ? CrossAxisAlignment.start
+                                    : CrossAxisAlignment.end,
+                                children: [
+                                  if (!(element.isUsersMsg!.value))
+                                    Container(
+                                      margin: EdgeInsets.only(right: 30),
+                                      padding: EdgeInsets.only(
+                                          left: 0,
+                                          right: 14,
+                                          top: 10,
+                                          bottom: 10),
+                                      child: Align(
+                                        alignment: (!element.isUsersMsg!.value)
+                                            ? Alignment.topLeft
+                                            : Alignment.topRight,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(
+                                                  MySize.getHeight(20)),
+                                              topLeft: Radius.circular(
+                                                  MySize.getHeight(20)),
+                                              bottomRight: Radius.circular(
+                                                  MySize.getHeight(20)),
+                                            ),
+                                            color: (!element.isUsersMsg!.value)
+                                                ? Colors.grey.shade200
+                                                : Colors.blue[200],
                                           ),
-                                          color: (!element
-                                              .isUsersMsg!
-                                              .value)
-                                              ? Colors.grey.shade200
-                                              : Colors.blue[200],
+                                          padding: EdgeInsets.all(16),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                element.msg.toString(),
+                                                style: TextStyle(fontSize: 15),
+                                              ),
+                                              Spacing.height(8),
+                                              Text(
+                                                DateFormat("hh:mm a")
+                                                    .format(element.dateTime!),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        MySize.getHeight(8)),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        padding: EdgeInsets.all(16),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              element.msg
-                                                  .toString(),
-                                              style: TextStyle(fontSize: 15),
+                                      ),
+                                    )
+                                  else
+                                    Container(
+                                      margin: EdgeInsets.only(left: 30),
+                                      padding: EdgeInsets.only(
+                                          left: 14,
+                                          right: 0,
+                                          top: 10,
+                                          bottom: 10),
+                                      child: Align(
+                                        alignment: (!element.isUsersMsg!.value)
+                                            ? Alignment.topLeft
+                                            : Alignment.topRight,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(
+                                                  MySize.getHeight(20)),
+                                              topLeft: Radius.circular(
+                                                  MySize.getHeight(20)),
+                                              bottomLeft: Radius.circular(
+                                                  MySize.getHeight(20)),
                                             ),
-                                            Spacing.height(8),
-                                            Text(
-                                              DateFormat("hh:mm a").format(
-                                                  element.dateTime!),
-                                              style:
-                                              TextStyle(fontSize: MySize.getHeight(8)),
-                                            ),
-                                          ],
+                                            color: (!element.isUsersMsg!.value)
+                                                ? Colors.grey.shade200
+                                                : Colors.blue[200],
+                                          ),
+                                          padding: EdgeInsets.all(16),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                element.msg.toString(),
+                                                style: TextStyle(fontSize: 15),
+                                              ),
+                                              Spacing.height(8),
+                                              Text(
+                                                DateFormat("hh:mm a")
+                                                    .format(element.dateTime!),
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        MySize.getHeight(8)),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  )
-                                else
-                                  Container(
-                                    margin: EdgeInsets.only(left: 30),
-                                    padding: EdgeInsets.only(
-                                        left: 14,
-                                        right: 0,
-                                        top: 10,
-                                        bottom: 10),
-                                    child: Align(
-                                      alignment: (!element
-                                          .isUsersMsg!
-                                          .value)
-                                          ? Alignment.topLeft
-                                          : Alignment.topRight,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(
-                                                MySize.getHeight(20)),
-                                            topLeft: Radius.circular(
-                                                MySize.getHeight(20)),
-                                            bottomLeft: Radius.circular(
-                                                MySize.getHeight(20)),
-                                          ),
-                                          color: (!element
-                                              .isUsersMsg!
-                                              .value)
-                                              ? Colors.grey.shade200
-                                              : Colors.blue[200],
-                                        ),
-                                        padding: EdgeInsets.all(16),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              element.msg
-                                                  .toString(),
-                                              style: TextStyle(fontSize: 15),
-                                            ),
-                                            Spacing.height(8),
-                                            Text(
-                                              DateFormat("hh:mm a").format(
-                                                  element.dateTime!),
-                                              style:
-                                              TextStyle(fontSize: MySize.getHeight(8)),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                              ],
-                            ),
-                          );
-                        },
-                        order: GroupedListOrder.DESC,
-                      );
-                      return ListView.separated(
-                        reverse: true,
-                        itemCount: controller.chatDataList.length,
-                        controller: controller.scrollController.value,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: MySize.getWidth(10),
-                            vertical: MySize.getHeight(10)),
-                        itemBuilder: (context, index) {
-                          return Align(
-                            alignment: (controller
-                                    .chatDataList[index].isUsersMsg!.value)
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                            child: Column(
-                              crossAxisAlignment: (!controller
-                                      .chatDataList[index].isUsersMsg!.value)
-                                  ? CrossAxisAlignment.start
-                                  : CrossAxisAlignment.end,
-                              children: [
-                                if (!(controller
-                                    .chatDataList[index].isUsersMsg!.value))
-                                  Container(
-                                    margin: EdgeInsets.only(right: 30),
-                                    padding: EdgeInsets.only(
-                                        left: 0,
-                                        right: 14,
-                                        top: 10,
-                                        bottom: 10),
-                                    child: Align(
-                                      alignment: (!controller
-                                              .chatDataList[index]
-                                              .isUsersMsg!
-                                              .value)
-                                          ? Alignment.topLeft
-                                          : Alignment.topRight,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(
-                                                MySize.getHeight(20)),
-                                            topLeft: Radius.circular(
-                                                MySize.getHeight(20)),
-                                            bottomRight: Radius.circular(
-                                                MySize.getHeight(20)),
-                                          ),
-                                          color: (!controller
-                                                  .chatDataList[index]
-                                                  .isUsersMsg!
-                                                  .value)
-                                              ? Colors.grey.shade200
-                                              : Colors.blue[200],
-                                        ),
-                                        padding: EdgeInsets.all(16),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              controller.chatDataList[index].msg
-                                                  .toString(),
-                                              style: TextStyle(fontSize: 15),
-                                            ),
-                                            Spacing.height(8),
-                                            Text(
-                                              DateFormat("hh:mm a").format(
-                                                  controller.chatDataList[index].dateTime!),
-                                              style:
-                                              TextStyle(fontSize: MySize.getHeight(8)),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                else
-                                  Container(
-                                    margin: EdgeInsets.only(left: 30),
-                                    padding: EdgeInsets.only(
-                                        left: 14,
-                                        right: 0,
-                                        top: 10,
-                                        bottom: 10),
-                                    child: Align(
-                                      alignment: (!controller
-                                              .chatDataList[index]
-                                              .isUsersMsg!
-                                              .value)
-                                          ? Alignment.topLeft
-                                          : Alignment.topRight,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(
-                                                MySize.getHeight(20)),
-                                            topLeft: Radius.circular(
-                                                MySize.getHeight(20)),
-                                            bottomLeft: Radius.circular(
-                                                MySize.getHeight(20)),
-                                          ),
-                                          color: (!controller
-                                                  .chatDataList[index]
-                                                  .isUsersMsg!
-                                                  .value)
-                                              ? Colors.grey.shade200
-                                              : Colors.blue[200],
-                                        ),
-                                        padding: EdgeInsets.all(16),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              controller.chatDataList[index].msg
-                                                  .toString(),
-                                              style: TextStyle(fontSize: 15),
-                                            ),
-                                            Spacing.height(8),
-                                            Text(
-                                              DateFormat("hh:mm a").format(
-                                                  controller.chatDataList[index].dateTime!),
-                                              style:
-                                              TextStyle(fontSize: MySize.getHeight(8)),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                              ],
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return Spacing.height(5);
-                        },
-                      );
+                                ],
+                              ),
+                            );
+                          },
+                          order: GroupedListOrder.DESC,
+                        );
+                      } else {
+                        return Center(
+                          child: Text("No any message found."),
+                        );
+                      }
                     } else {
                       return SizedBox();
                     }
@@ -395,7 +255,7 @@ class TempChatView extends GetView<TempChatController> {
                         onTap: () async {
                           if (!isNullEmptyOrFalse(
                               controller.chatController.value.text)) {
-                            String msg= controller.chatController.value.text;
+                            String msg = controller.chatController.value.text;
                             controller.chatController.value.clear();
                             await getIt<FirebaseService>()
                                 .addChatDataToFireStore(
@@ -411,19 +271,32 @@ class TempChatView extends GetView<TempChatController> {
                                   "sRead": true,
                                 });
                             controller.gotoMaxScrooll();
+                            await getIt<FirebaseService>().updateFriendsTime(
+                                friendId: controller.friendData!.uId ?? "",
+                                docId: controller.docId);
 
-                          UserModel?  userData = await getIt<FirebaseService>().getUserData(
-                                context: Get.context!, uid: controller.friendData!.uId??"",isLoad: true,);
-                            Map<String,dynamic>? data = await getIt<FirebaseService>().getUserNotificationStatus(chatId: controller.getChatId(),
-                                context: Get.context!, uid: controller.friendData!.uId??"");
-                            if (userData==null||data==null||data["isOnline"]!=true) {
+                            UserModel? userData =
+                                await getIt<FirebaseService>().getUserData(
+                              context: Get.context!,
+                              uid: controller.friendData!.uId ?? "",
+                              isLoad: false,
+                            );
+                            Map<String, dynamic>? data =
+                                await getIt<FirebaseService>()
+                                    .getUserNotificationStatus(
+                                        chatId: controller.getChatId(),
+                                        context: Get.context!,
+                                        isLoad: false,
+                                        uid: controller.friendData!.uId ?? "");
+                            if (userData == null ||
+                                data == null ||
+                                data["isOnline"] != true) {
                               await controller.sendPushNotification(
                                 nTitle: controller.friendData!.name!,
                                 nBody: msg,
                                 nType: "nType",
                                 nSenderId: box.read(ArgumentConstant.userUid),
-                                nUserDeviceToken:
-                                userData!.fcmToken.toString(),
+                                nUserDeviceToken: userData!.fcmToken.toString(),
                               );
                             }
                             controller.chatController.value.clear();
@@ -445,10 +318,11 @@ class TempChatView extends GetView<TempChatController> {
           return false;
         });
   }
+
   getTitleWithDay(String date) {
     DateTime now =
-    getDateFromStringFromUtc(date.toString(), formatter: "yyyy-MM-dd")
-        .toLocal();
+        getDateFromStringFromUtc(date.toString(), formatter: "yyyy-MM-dd")
+            .toLocal();
     int i = calculateDifference(now);
     if (i == 0) {
       return "Today";
@@ -459,6 +333,7 @@ class TempChatView extends GetView<TempChatController> {
           getDateFromStringFromUtc(date, formatter: "yyyy-MM-dd").toLocal());
     }
   }
+
   getTitle() {
     return StreamBuilder(
         stream: getIt<FirebaseService>()
@@ -515,3 +390,74 @@ class TempChatView extends GetView<TempChatController> {
         });
   }
 }
+//
+// class FireStoreRepository {
+//   String? chatId;
+//   FireStoreRepository({this.chatId});
+//   final CollectionReference _chatCollectionReference = FirebaseFirestore
+//       .instance
+//       .collection("chat")
+//       .doc(chatId!)
+//       .collection("chats");
+//
+//   final StreamController<List<ChatDataModel>> _chatController =
+//       StreamController<List<ChatDataModel>>.broadcast();
+//
+//   List<List<ChatDataModel>> _allPagedResults = <List<ChatDataModel>>[];
+//
+//   static const int chatLimit = 10;
+//   DocumentSnapshot? _lastDocument;
+//   bool _hasMoreData = true;
+//
+//   Stream listenToChatsRealTime() {
+//     _requestChats();
+//     return _chatController.stream;
+//   }
+//
+//   void _requestChats() {
+//     var pagechatQuery = _chatCollectionReference
+//         .orderBy("dateTime", descending: true)
+//         .limit(chatLimit);
+//
+//     if (_lastDocument != null) {
+//       pagechatQuery = pagechatQuery.startAfterDocument(_lastDocument!);
+//     }
+//
+//     if (!_hasMoreData) return;
+//
+//     var currentRequestIndex = _allPagedResults.length;
+//
+//     pagechatQuery.snapshots().listen(
+//       (QuerySnapshot snapshot) {
+//         if (snapshot.docs.isNotEmpty) {
+//           var generalChats = snapshot.docs
+//               .map((snapshot1) => ChatDataModel.fromJson(
+//                   snapshot1.data() as Map<String, dynamic>))
+//               .toList();
+//
+//           var pageExists = currentRequestIndex < _allPagedResults.length;
+//
+//           if (pageExists) {
+//             _allPagedResults[currentRequestIndex] = generalChats;
+//           } else {
+//             _allPagedResults.add(generalChats);
+//           }
+//
+//           var allChats = _allPagedResults.fold<List<ChatDataModel>>(
+//               <ChatDataModel>[],
+//               (initialValue, pageItems) => initialValue..addAll(pageItems));
+//
+//           _chatController.add(allChats);
+//
+//           if (currentRequestIndex == _allPagedResults.length - 1) {
+//             _lastDocument = snapshot.docs.last;
+//           }
+//
+//           _hasMoreData = generalChats.length == chatLimit;
+//         }
+//       },
+//     );
+//   }
+//
+//   void requestMoreData() => _requestChats();
+// }

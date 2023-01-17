@@ -32,6 +32,33 @@ class FirebaseService {
         .add(chatData);
   }
 
+  updateFriendsTime({
+    required String docId,
+    required String friendId,
+  }) async {
+    await firebaseFireStore
+        .collection("myFriends")
+        .doc(box.read(ArgumentConstant.userUid))
+        .collection("friends")
+        .doc(docId)
+        .update({"timeStamp": DateTime.now().millisecondsSinceEpoch});
+
+    var documentSnapshot = await firebaseFireStore
+        .collection("myFriends")
+        .doc(friendId)
+        .collection("friends")
+        .where("uId", isEqualTo: box.read(ArgumentConstant.userUid))
+        .limit(1)
+        .get();
+    print(documentSnapshot.docs.first.id);
+    await firebaseFireStore
+        .collection("myFriends")
+        .doc(friendId)
+        .collection("friends")
+        .doc(documentSnapshot.docs.first.id)
+        .update({"timeStamp": DateTime.now().millisecondsSinceEpoch});
+  }
+
   Future<String> uplordImage(File? imgFile) async {
     String filename = path.basename(imgFile!.path);
     Reference reference =
@@ -54,27 +81,29 @@ class FirebaseService {
         .snapshots();
   }
 
-  Future<Stream<QuerySnapshot<Object?>>> fetchFirstList(
+  Future<List<DocumentSnapshot>> fetchFirstList(
       {required String chatId}) async {
     return (await FirebaseFirestore.instance
-        .collection("chat")
-        .doc(chatId)
-        .collection("chats")
-        .orderBy("dateTime", descending: true)
-        .limit(10)
-        .snapshots());
+            .collection("chat")
+            .doc(chatId)
+            .collection("chats")
+            .orderBy("dateTime", descending: true)
+            .limit(10)
+            .get())
+        .docs;
   }
 
-  Future fetchNextList(
+  Future<List<DocumentSnapshot>> fetchNextList(
       List<DocumentSnapshot> documentList, String chatId) async {
     return (await FirebaseFirestore.instance
-        .collection("chat")
-        .doc(chatId)
-        .collection("chats")
-        .orderBy("dateTime", descending: true)
-        .startAfterDocument(documentList[documentList.length - 1])
-        .limit(10)
-        .snapshots());
+            .collection("chat")
+            .doc(chatId)
+            .collection("chats")
+            .orderBy("dateTime", descending: true)
+            .startAfterDocument(documentList[documentList.length - 1])
+            .limit(10)
+            .get())
+        .docs;
   }
 
   Future<User?> registerUserInFirebase(
@@ -291,7 +320,7 @@ class FirebaseService {
         .collection("myFriends")
         .doc(box.read(ArgumentConstant.userUid))
         .collection("friends")
-        .orderBy("name")
+        .orderBy("timeStamp", descending: true)
         .snapshots();
   }
 

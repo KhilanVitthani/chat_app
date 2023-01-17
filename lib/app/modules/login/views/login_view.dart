@@ -114,6 +114,8 @@ class LoginView extends GetWidget<LoginController> {
                                         lastName: "",
                                         name: "",
                                         imgUrl: '',
+                                        timeStamp: DateTime.now()
+                                            .millisecondsSinceEpoch,
                                         email: controller
                                             .emailController.value.text,
                                         password: controller

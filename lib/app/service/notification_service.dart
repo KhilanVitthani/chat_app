@@ -31,16 +31,14 @@ class NotificationService {
         print(response);
         if (!isNullEmptyOrFalse(response.payload)) {
           await getNavigateToChatScreen(
-              userId: jsonDecode(response.payload!)["N_SENDER_ID"]);
+              userId: jsonDecode(response.payload!)["N_SENDER_ID"],
+              docId: jsonDecode(response.payload!)["docId"]);
         }
       });
       await initServices();
-      try{
+      try {
         await getFcmToken();
-
-      }catch(e){
-
-      }
+      } catch (e) {}
     }
 
     isFlutterLocalNotificationInitialize = true;
@@ -63,9 +61,10 @@ class NotificationService {
       sound: true,
       badge: true,
     );
-    FirebaseMessaging.instance.getInitialMessage().then((value) async{
+    FirebaseMessaging.instance.getInitialMessage().then((value) async {
       if (!isNullEmptyOrFalse(value)) {
-        await getNavigateToChatScreen(userId: value!.data["N_SENDER_ID"]);
+        await getNavigateToChatScreen(
+            userId: value!.data["N_SENDER_ID"], docId: value.data["docId"]);
       }
     });
     //when app is open
@@ -77,7 +76,8 @@ class NotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen((value) async {
       if (!isNullEmptyOrFalse(value)) {
         print("OnTap := ${value.data["N_SENDER_ID"]}");
-        await getNavigateToChatScreen(userId: value.data["N_SENDER_ID"]);
+        await getNavigateToChatScreen(
+            userId: value.data["N_SENDER_ID"], docId: value.data["docId"]);
       }
     });
   }
@@ -111,7 +111,8 @@ class NotificationService {
     }
   }
 
-  getNavigateToChatScreen({required String userId}) async {
+  getNavigateToChatScreen(
+      {required String userId, required String docId}) async {
     UserModel? userModel = await getIt<FirebaseService>().getUserData(
       uid: userId,
       isLoad: false,
@@ -119,6 +120,7 @@ class NotificationService {
     if (!isNullEmptyOrFalse(userModel)) {
       Get.offAllNamed(Routes.TEMP_CHAT, arguments: {
         ArgumentConstant.userData: userModel,
+        ArgumentConstant.docId: docId,
         ArgumentConstant.isFromNotification: true,
       });
     }

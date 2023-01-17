@@ -9,6 +9,7 @@ class UserModel {
   String? email;
   String? password;
   String? fcmToken;
+  int? timeStamp;
   String? imgUrl;
   int? level;
   bool chatStatus = false;
@@ -25,7 +26,8 @@ class UserModel {
       required this.level,
       required this.requestedFriendsList,
       required this.imgUrl,
-      required this.chatStatus});
+      required this.chatStatus,
+      required this.timeStamp});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     uId = json['uId'];
@@ -37,6 +39,8 @@ class UserModel {
     level = json["level"];
     imgUrl = json["imgUrl"];
     fcmToken = json["FCM"];
+    timeStamp = json["timeStamp"];
+
     requestedFriendsList = json["requestedFriendsList"] ?? [];
     if (!isNullEmptyOrFalse(json["inChatScreen"])) {
       chatStatus = json["inChatScreen"];
@@ -52,6 +56,7 @@ class UserModel {
     data['lastName'] = this.lastName;
     data['email'] = this.email;
     data['level'] = this.level;
+    data['timeStamp'] = DateTime.now().millisecondsSinceEpoch;
     data['password'] = this.password;
     data['imgUrl'] = this.imgUrl;
     data['friendsList'] = this.friendsList;
