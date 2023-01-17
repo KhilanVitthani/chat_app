@@ -49,11 +49,11 @@ class LoginView extends GetWidget<LoginController> {
                       controller: controller.emailController.value,
                       validation: (value) {
                         if (value!.isEmpty) {
-                          return ("Please Enter Your Email");
+                          return ("Please enter your email");
                         }
                         if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
                             .hasMatch(value)) {
-                          return ("Please Enter a valid email");
+                          return ("Please enter a valid email");
                         }
                         return null;
                       },
@@ -75,7 +75,7 @@ class LoginView extends GetWidget<LoginController> {
                           return ("Password is required for login");
                         }
                         if (!regex.hasMatch(value)) {
-                          return ("Enter Valid Password(Min. 6 Character)");
+                          return ("Enter valid password(Min. 6 character)");
                         }
                       },
                       hintText: "Enter your password",
@@ -117,9 +117,11 @@ class LoginView extends GetWidget<LoginController> {
                                         timeStamp: DateTime.now()
                                             .millisecondsSinceEpoch,
                                         email: controller
-                                            .emailController.value.text,
+                                            .emailController.value.text
+                                            .trim(),
                                         password: controller
-                                            .passwordController.value.text,
+                                            .passwordController.value.text
+                                            .trim(),
                                         friendsList: [],
                                         chatStatus: false))
                                 .then((value) {

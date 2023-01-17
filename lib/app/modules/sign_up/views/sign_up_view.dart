@@ -70,9 +70,11 @@ class SignUpView extends GetWidget<SignUpController> {
                                 name: controller.firstNameController.value.text,
                                 lastName:
                                     controller.secondNameController.value.text,
-                                email: controller.emailController.value.text,
+                                email: controller.emailController.value.text
+                                    .trim(),
                                 password: controller
-                                    .confirmPasswordController.value.text,
+                                    .confirmPasswordController.value.text
+                                    .trim(),
                                 friendsList: [],
                                 chatStatus: false))
                         .then((value) {
@@ -117,10 +119,10 @@ class SignUpView extends GetWidget<SignUpController> {
                           validation: (value) {
                             RegExp regex = new RegExp(r'^.{3,}$');
                             if (value!.isEmpty) {
-                              return ("First Name cannot be Empty");
+                              return ("First name cannot be empty");
                             }
                             if (!regex.hasMatch(value)) {
-                              return ("Enter Valid name(Min. 3 Character)");
+                              return ("Enter valid name(Min. 3 character)");
                             }
                             return null;
                           },
@@ -138,7 +140,7 @@ class SignUpView extends GetWidget<SignUpController> {
                           controller: controller.secondNameController.value,
                           validation: (value) {
                             if (value!.isEmpty) {
-                              return ("Last Name cannot be Empty");
+                              return ("Last name cannot be empty");
                             }
                             return null;
                           },
@@ -178,12 +180,12 @@ class SignUpView extends GetWidget<SignUpController> {
                           controller: controller.emailController.value,
                           validation: (value) {
                             if (value!.isEmpty) {
-                              return ("Please Enter Your Email");
+                              return ("Please enter your email");
                             }
                             if (!RegExp(
                                     "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
                                 .hasMatch(value)) {
-                              return ("Please Enter a valid email");
+                              return ("Please enter a valid email");
                             }
                             return null;
                           },
@@ -205,7 +207,7 @@ class SignUpView extends GetWidget<SignUpController> {
                               return ("Password is required.");
                             }
                             if (!regex.hasMatch(value)) {
-                              return ("Enter Valid Password(Min. 6 Character)");
+                              return ("Enter valid password(min. 6 character)");
                             }
                           },
                           hintText: "Enter your password",
@@ -239,7 +241,7 @@ class SignUpView extends GetWidget<SignUpController> {
                             if (value!.isEmpty) {
                               return ("Password is required.");
                             } else if (!regex.hasMatch(value)) {
-                              return ("Enter Valid Password(Min. 6 Character)");
+                              return ("Enter valid password(min. 6 character)");
                             } else if (value !=
                                 controller.passwordController.value.text) {
                               return ('Both Password are not match');

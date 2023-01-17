@@ -292,7 +292,9 @@ class TempChatView extends GetView<TempChatController> {
                                 data == null ||
                                 data["isOnline"] != true) {
                               await controller.sendPushNotification(
-                                nTitle: controller.friendData!.name!,
+                                nTitle: controller.friendData!.name! +
+                                    " " +
+                                    controller.friendData!.lastName.toString(),
                                 nBody: msg,
                                 nType: "nType",
                                 nSenderId: box.read(ArgumentConstant.userUid),
