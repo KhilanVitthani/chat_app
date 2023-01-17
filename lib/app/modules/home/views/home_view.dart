@@ -16,18 +16,6 @@ import '../controllers/home_controller.dart';
 
 class HomeView extends GetWidget<HomeController> {
   const HomeView({Key? key}) : super(key: key);
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Messages List',
-      style: optionStyle,
-    ),
-    Text(
-      'Add Friends',
-      style: optionStyle,
-    ),
-  ];
 
   void _onItemTapped(int index) {
     controller.selectedIndex.value = index;
