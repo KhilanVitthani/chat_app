@@ -67,9 +67,11 @@ class SignUpView extends GetWidget<SignUpController> {
                                 imgUrl: imgUrl,
                                 level: controller.selectUserLevelType.value
                                     .dropDownValue!.value,
-                                name: controller.firstNameController.value.text,
-                                lastName:
-                                    controller.secondNameController.value.text,
+                                name: controller.firstNameController.value.text
+                                    .trim(),
+                                lastName: controller
+                                    .secondNameController.value.text
+                                    .trim(),
                                 email: controller.emailController.value.text
                                     .trim(),
                                 password: controller

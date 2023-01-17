@@ -348,9 +348,12 @@ class TempChatView extends GetView<TempChatController> {
             print(data);
             return Column(
               children: [
-                Text(controller.friendData!.name.toString() +
-                    " " +
-                    controller.friendData!.lastName.toString()),
+                Text(
+                  controller.friendData!.name.toString().trim() +
+                      " " +
+                      controller.friendData!.lastName.toString().trim(),
+                  style: TextStyle(wordSpacing: 0),
+                ),
                 Spacing.height(2),
                 // Row(
                 //   crossAxisAlignment: CrossAxisAlignment.center,
