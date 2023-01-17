@@ -65,18 +65,6 @@ class HomeView extends GetWidget<HomeController> {
                 icon: Icon(Icons.logout)),
           ],
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   heroTag: "tag001",
-        //   onPressed: () {
-        //     if (!isNullEmptyOrFalse(controller.userData)) {
-        //       Get.toNamed(Routes.ADD_USER, arguments: {
-        //         ArgumentConstant.userData: controller.userData,
-        //       });
-        //     }
-        //     //  Get.toNamed(Routes.CHAT_SCREEN);
-        //   },
-        //   child: Icon(Icons.add),
-        // ),
         body: [
           MyFriendsView(),
           AddUserView(),
