@@ -41,7 +41,7 @@ class FirebaseService {
         .doc(box.read(ArgumentConstant.userUid))
         .collection("friends")
         .doc(docId)
-        .update({"timeStamp": DateTime.now().millisecondsSinceEpoch});
+        .update({"timeStamp": DateTime.now().toUtc().millisecondsSinceEpoch});
 
     var documentSnapshot = await firebaseFireStore
         .collection("myFriends")
@@ -56,7 +56,7 @@ class FirebaseService {
         .doc(friendId)
         .collection("friends")
         .doc(documentSnapshot.docs.first.id)
-        .update({"timeStamp": DateTime.now().millisecondsSinceEpoch});
+        .update({"timeStamp": DateTime.now().toUtc().millisecondsSinceEpoch});
   }
 
   Future<String> uplordImage(File? imgFile) async {

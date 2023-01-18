@@ -56,7 +56,7 @@ class UserModel {
     data['lastName'] = this.lastName;
     data['email'] = this.email;
     data['level'] = this.level;
-    data['timeStamp'] = DateTime.now().millisecondsSinceEpoch;
+    data['timeStamp'] = DateTime.now().toUtc().millisecondsSinceEpoch;
     data['password'] = this.password;
     data['imgUrl'] = this.imgUrl;
     data['friendsList'] = this.friendsList;

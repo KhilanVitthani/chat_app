@@ -17,7 +17,7 @@ String formatTime(int second) {
 }
 
 int calculateDifference(DateTime date) {
-  DateTime now = DateTime.now();
+  DateTime now = DateTime.now().toUtc();
   return DateTime(date.year, date.month, date.day)
       .difference(DateTime(now.year, now.month, now.day))
       .inDays;

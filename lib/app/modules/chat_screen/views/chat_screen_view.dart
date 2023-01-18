@@ -212,8 +212,9 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                               ),
                                               Spacing.height(8),
                                               Text(
-                                                DateFormat("hh:mm a")
-                                                    .format(element.dateTime!),
+                                                DateFormat("hh:mm a").format(
+                                                    element.dateTime!
+                                                        .toLocal()),
                                                 style: TextStyle(
                                                     fontSize:
                                                         MySize.getHeight(8)),
@@ -262,8 +263,9 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                       box.read(ArgumentConstant.userUid),
                                   "receiverId": controller.friendData!.uId,
                                   "msg": msg,
-                                  "dateTime":
-                                      DateTime.now().millisecondsSinceEpoch,
+                                  "dateTime": DateTime.now()
+                                      .toUtc()
+                                      .millisecondsSinceEpoch,
                                   "rRead": false,
                                   "sRead": true,
                                 });

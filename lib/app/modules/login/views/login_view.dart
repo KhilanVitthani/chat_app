@@ -115,6 +115,7 @@ class LoginView extends GetWidget<LoginController> {
                                         name: "",
                                         imgUrl: '',
                                         timeStamp: DateTime.now()
+                                            .toUtc()
                                             .millisecondsSinceEpoch,
                                         email: controller
                                             .emailController.value.text

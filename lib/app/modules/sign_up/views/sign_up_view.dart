@@ -61,8 +61,9 @@ class SignUpView extends GetWidget<SignUpController> {
                             context: context,
                             userModel: UserModel(
                                 uId: "",
-                                timeStamp:
-                                    DateTime.now().millisecondsSinceEpoch,
+                                timeStamp: DateTime.now()
+                                    .toUtc()
+                                    .millisecondsSinceEpoch,
                                 requestedFriendsList: [],
                                 imgUrl: imgUrl,
                                 level: controller.selectUserLevelType.value
