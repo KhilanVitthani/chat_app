@@ -228,33 +228,33 @@ class AddUserView extends GetWidget<AddUserController> {
                                                                     height: 30,
                                                                   ),
                                                               ],
-                                                              if (!(userModel
-                                                                          .uId !=
-                                                                      box.read(
-                                                                          ArgumentConstant
-                                                                              .userUid) &&
-                                                                  (!controller
-                                                                      .userData!
-                                                                      .friendsList!
-                                                                      .contains(
-                                                                          userModel
-                                                                              .uId)))) ...[
-                                                                InkWell(
-                                                                  child: Icon(
-                                                                    Icons.chat,
-                                                                    size: MySize
-                                                                        .getHeight(
-                                                                            20),
-                                                                    color: appTheme
-                                                                        .primaryTheme,
-                                                                  ),
-                                                                  onTap: () {
-                                                                    Get.toNamed(
-                                                                        Routes
-                                                                            .TEMP_CHAT1);
-                                                                  },
-                                                                ),
-                                                              ]
+                                                              // if (!(userModel
+                                                              //             .uId !=
+                                                              //         box.read(
+                                                              //             ArgumentConstant
+                                                              //                 .userUid) &&
+                                                              //     (!controller
+                                                              //         .userData!
+                                                              //         .friendsList!
+                                                              //         .contains(
+                                                              //             userModel
+                                                              //                 .uId)))) ...[
+                                                              //   InkWell(
+                                                              //     child: Icon(
+                                                              //       Icons.chat,
+                                                              //       size: MySize
+                                                              //           .getHeight(
+                                                              //               20),
+                                                              //       color: appTheme
+                                                              //           .primaryTheme,
+                                                              //     ),
+                                                              //     onTap: () {
+                                                              //       Get.toNamed(
+                                                              //           Routes
+                                                              //               .TEMP_CHAT1);
+                                                              //     },
+                                                              //   ),
+                                                              // ]
                                                             ],
                                                           ),
                                                         ),
