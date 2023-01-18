@@ -84,7 +84,8 @@ class ChatScreenView extends GetView<ChatScreenController> {
                           reverse: true,
                           // useStickyGroupSeparators: true,
                           groupBy: (element) => element.dateTime!
-                              .toIso8601String()
+                              .toLocal()
+                              .toString()
                               .substring(0, 10),
                           groupComparator: (value1, value2) =>
                               value1.compareTo(value2),
@@ -322,18 +323,29 @@ class ChatScreenView extends GetView<ChatScreenController> {
 
   getTitleWithDay(String date) {
     DateTime now =
-        getDateFromStringFromUtc(date.toString(), formatter: "yyyy-MM-dd")
-            .toLocal();
+        getDateFromStringFromUtc(date.toString(), formatter: "yyyy-MM-dd");
     int i = calculateDifference(now);
     if (i == 0) {
       return "Today";
     } else if (i == -1) {
       return "Yesterday";
     } else {
-      return DateFormat("MMM dd, yyyy").format(
-          getDateFromStringFromUtc(date, formatter: "yyyy-MM-dd").toLocal());
+      return DateFormat("MMM dd, yyyy")
+          .format(getDateFromStringFromUtc(date, formatter: "yyyy-MM-dd"));
     }
   }
+
+  // getTitleWithDay(DateTime date) {
+  //   DateTime now = date.toUtc();
+  //   int i = calculateDifference(now);
+  //   if (i == 0) {
+  //     return DateFormat("hh:mm a").format(date.toLocal());
+  //   } else if (i == -1) {
+  //     return "Yesterday";
+  //   } else {
+  //     return DateFormat("dd/MM/yy").format(date.toLocal());
+  //   }
+  // }
 
   getTitle() {
     return StreamBuilder(
