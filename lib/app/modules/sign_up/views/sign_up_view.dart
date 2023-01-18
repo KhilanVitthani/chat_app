@@ -290,50 +290,6 @@ class SignUpView extends GetWidget<SignUpController> {
                   ),
                 ),
               ),
-              // Align(
-              //   alignment: Alignment.bottomCenter,
-              //   child: Padding(
-              //     padding: const EdgeInsets.only(
-              //             left: 23.0, right: 24, bottom: 10.0, top: 10)
-              //         .copyWith(
-              //       bottom: MediaQuery.of(context).viewInsets.bottom,
-              //     ),
-              //     child: button(
-              //         title: "Sign Up",
-              //         fontsize: 20,
-              //         onTap: () async {
-              //           if (controller.formKey.value.currentState!.validate()) {
-              //             FocusScope.of(context).unfocus();
-              //
-              //             String imgUrl = "";
-              //             if (controller.profile != null) {
-              //               getIt<CustomDialogs>().showCircularDialog(context);
-              //               imgUrl = await getIt<FirebaseService>()
-              //                   .uplordImage(controller.profile!.value);
-              //               getIt<CustomDialogs>().hideCircularDialog(context);
-              //             }
-              //             getIt<FirebaseService>()
-              //                 .logInUserInFirebase(
-              //                     context: context,
-              //                     userModel: UserModel(
-              //                         uId: "",
-              //                         imgUrl: imgUrl,
-              //                         name: "",
-              //                         email:
-              //                             controller.emailController.value.text,
-              //                         password: controller
-              //                             .passwordController.value.text,
-              //                         friendsList: [],
-              //                         chatStatus: false))
-              //                 .then((value) {
-              //               if (!isNullEmptyOrFalse(value)) {
-              //                 Get.offAllNamed(Routes.HOME);
-              //               }
-              //             });
-              //           }
-              //         }),
-              //   ),
-              // ),
             ],
           ),
         );

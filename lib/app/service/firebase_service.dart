@@ -81,31 +81,6 @@ class FirebaseService {
         .snapshots();
   }
 
-  Future<List<DocumentSnapshot>> fetchFirstList(
-      {required String chatId}) async {
-    return (await FirebaseFirestore.instance
-            .collection("chat")
-            .doc(chatId)
-            .collection("chats")
-            .orderBy("dateTime", descending: true)
-            .limit(10)
-            .get())
-        .docs;
-  }
-
-  Future<List<DocumentSnapshot>> fetchNextList(
-      List<DocumentSnapshot> documentList, String chatId) async {
-    return (await FirebaseFirestore.instance
-            .collection("chat")
-            .doc(chatId)
-            .collection("chats")
-            .orderBy("dateTime", descending: true)
-            .startAfterDocument(documentList[documentList.length - 1])
-            .limit(10)
-            .get())
-        .docs;
-  }
-
   Future<User?> registerUserInFirebase(
       {required BuildContext context, required UserModel userModel}) async {
     getIt<CustomDialogs>().showCircularDialog(context);
