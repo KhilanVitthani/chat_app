@@ -80,7 +80,8 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
                                                       child: InkWell(
                                                         onTap: () async {
                                                           Get.toNamed(
-                                                              Routes.TEMP_CHAT,
+                                                              Routes
+                                                                  .CHAT_SCREEN,
                                                               arguments: {
                                                                 ArgumentConstant
                                                                         .userData:

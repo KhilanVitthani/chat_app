@@ -118,7 +118,7 @@ class NotificationService {
       isLoad: false,
     );
     if (!isNullEmptyOrFalse(userModel)) {
-      Get.offAllNamed(Routes.TEMP_CHAT, arguments: {
+      Get.offAllNamed(Routes.CHAT_SCREEN, arguments: {
         ArgumentConstant.userData: userModel,
         ArgumentConstant.docId: docId,
         ArgumentConstant.isFromNotification: true,

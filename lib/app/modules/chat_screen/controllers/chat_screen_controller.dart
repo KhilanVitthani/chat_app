@@ -1,154 +1,247 @@
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter_sound/flutter_sound.dart';
-// import 'package:flutter_sound/public/flutter_sound_player.dart';
-// import 'package:flutter_sound/public/flutter_sound_recorder.dart';
-// import 'package:flutter_sound/public/tau.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-// import 'package:path_provider/path_provider.dart';
-// import 'package:permission_handler/permission_handler.dart';
-// import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:http/http.dart' as http;
+import '../../../../main.dart';
+import '../../../constants/app_constant.dart';
+import '../../../constants/sizeConstant.dart';
+import '../../../model/chat_data_model.dart';
+import '../../../model/user_model.dart';
+import '../../../service/firebase_service.dart';
+import 'package:get/get.dart';
 
 import '../../../../main.dart';
 import '../../../utilities/progress_dialog_utils.dart';
 
-class ChatScreenController extends GetxController {
-  // //TODO: Implement ChatScreenController
-  //
-  // final count = 0.obs;
-  // RxBool showVoiceRecorderArea = false.obs;
-  // String callDuration = "00:00";
-  //
-  // final Rx<StopWatchTimer> stopWatchTimer = StopWatchTimer().obs;
-  //
-  // GlobalKey one = GlobalKey();
-  //
-  // /*     =========Audio stuff==========     */
-  //
-  // Rx<FlutterSoundPlayer> myPlayer = FlutterSoundPlayer().obs;
-  // Rx<FlutterSoundRecorder> myRecorder = FlutterSoundRecorder().obs;
-  // Rx<FlutterSound> flutterSound = FlutterSound().obs;
-  //
-  // RxString myPath = "".obs;
-  // Rx<TextEditingController> messageController = TextEditingController().obs;
-  //
-  // String? globalVoiceUrl;
-  // String? globalVoiceDuration;
-  //
-  // RxBool showTextMessageInput = true.obs;
-  // RxBool showGifMessageInput = false.obs;
-  // RxBool disableMessageWays = false.obs;
-  // RxBool showMicrophoneButton = true.obs;
-  //
-  // RxBool showReportAndRemoveScreen = true.obs;
-  // RxBool showUnblockUserScreen = false.obs;
-  // RxBool disableCalls = false.obs;
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   myPlayer.value.openAudioSession().then((value) {
-  //     Initialized.fullyInitialized;
-  //   });
-  //
-  //   myRecorder.value.openAudioSession().then((value) {
-  //     Initialized.fullyInitialized;
-  //   });
-  // }
-  //
-  // @override
-  // void onReady() {
-  //   super.onReady();
-  // }
-  //
-  // @override
-  // void dispose() {
-  //   messageController.value.dispose();
-  //
-  //   stopWatchTimer.value.dispose();
-  //
-  //   //close audion session
-  //   myRecorder.value.closeAudioSession();
-  //   myPlayer.value.closeAudioSession();
-  // }
-  //
-  // @override
-  // void onClose() {
-  //   super.onClose();
-  //   // messageController.value.dispose();
-  //   //
-  //   // stopWatchTimer.value.dispose();
-  //   //
-  //   // //close audion session
-  //   // myRecorder.value.closeAudioSession();
-  //   // myPlayer.value.closeAudioSession();
-  // }
-  //
-  // Future<void> stopRecording() async {
-  //   await myRecorder.value.stopRecorder();
-  // }
-  //
-  // Future<void> startRecording() async {
-  //   Initialized.fullyInitialized;
-  //
-  //   var tempDir = await getTemporaryDirectory();
-  //   myPath.value = '${tempDir.path}/flutter_sound.aac';
-  //
-  //   await myRecorder.value
-  //       .startRecorder(
-  //     toFile: myPath.value,
-  //     codec: Codec.aacADTS,
-  //   )
-  //       .catchError((e) {
-  //     print(e);
-  //   });
-  //
-  //   showVoiceRecorderArea.value = true;
-  //   showTextMessageInput.value = false;
-  //   showGifMessageInput.value = false;
-  //
-  //   stopWatchTimer.value.onExecute.add(StopWatchExecute.start);
-  // }
-  //
-  // checkMicPermission() async {
-  //   var status = await Permission.microphone.status;
-  //   if (status.isGranted) {
-  //     startRecording();
-  //   } else {
-  //     getIt<CustomDialogs>().showDialogPermission(
-  //         context: Get.context!,
-  //         title: "Microphone Access",
-  //         message:
-  //             "To record voice message from your device, {app_name} needs to access your microphone. Please tap “Allow” in the next step",
-  //         confirmButtonText: "Okay",
-  //         onPressed: () async {
-  //           Get.back();
-  //           requestMicrophonePermission();
-  //         });
-  //   }
-  // }
-  //
-  // Future<void> requestMicrophonePermission() async {
-  //   var asked = await Permission.microphone.request();
-  //
-  //   if (asked.isGranted) {
-  //     startRecording();
-  //   } else if (asked.isDenied) {
-  //     // QuickHelp.showAppNotification(
-  //     //     context: context,
-  //     //     title: "permissions.microphone_access_denied".tr(),
-  //     //     isError: true);
-  //   } else if (asked.isPermanentlyDenied) {
-  //     getIt<CustomDialogs>().showDialogPermission(
-  //         context: Get.context!,
-  //         title: "Microphone Access Denied",
-  //         message:
-  //             "To record voice message from your device, {app_name} needs to access your microphone. Please change in your settings",
-  //         confirmButtonText: "Settings",
-  //         onPressed: () async {
-  //           Get.back();
-  //           openAppSettings();
-  //         });
-  //   }
-  // }
-  //
-  // void increment() => count.value++;
+class ChatScreenController extends GetxController with WidgetsBindingObserver {
+  //TODO: Implement TempChatController
+  UserModel? friendData;
+  Rx<TextEditingController> chatController = TextEditingController().obs;
+  RxList<ChatDataModel> chatDataList = RxList<ChatDataModel>([]);
+  RxBool isUserOnline = false.obs;
+  bool isFromNotification = false;
+  Rx<ScrollController> scrollController = ScrollController().obs;
+  RxBool showIndicator = false.obs;
+  List<DocumentSnapshot>? documentList;
+  //FireStoreRepository? fireStoreRepository;
+
+  RxList<DocumentSnapshot> movieController = RxList();
+
+  RxBool? showIndicatorController;
+  String docId = "";
+  final count = 0.obs;
+  @override
+  void onInit() {
+    super.onInit();
+    if (!isNullEmptyOrFalse(Get.arguments)) {
+      friendData = Get.arguments[ArgumentConstant.userData];
+      docId = Get.arguments[ArgumentConstant.docId] ?? "";
+      isFromNotification = !isNullEmptyOrFalse(
+          Get.arguments[ArgumentConstant.isFromNotification]);
+      // fireStoreRepository = FireStoreRepository();
+
+      getIt<FirebaseService>().setStatusForNotificationChatScreen(
+          status: true, chatId: getChatId());
+    }
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      scrollController.value.addListener(_scrollListener);
+    });
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  void _scrollListener() {
+    if (scrollController.value.offset >=
+            scrollController.value.position.maxScrollExtent &&
+        !scrollController.value.position.outOfRange) {
+      print("at the end of list");
+      requestMoreData();
+    }
+  }
+
+  String getChatId() {
+    List<String> uids = [
+      box.read(ArgumentConstant.userUid),
+      friendData!.uId.toString()
+    ];
+    uids.sort((uid1, uid2) => uid1.compareTo(uid2));
+    return uids.join("_chat_");
+  }
+
+  final StreamController<List<ChatDataModel>> _chatController =
+      StreamController<List<ChatDataModel>>.broadcast();
+
+  List<List<ChatDataModel>> _allPagedResults = <List<ChatDataModel>>[];
+
+  static const int chatLimit = 10;
+  DocumentSnapshot? _lastDocument;
+  bool _hasMoreData = true;
+
+  Stream listenToChatsRealTime() {
+    _requestChats();
+    return _chatController.stream;
+  }
+
+  void _requestChats() {
+    var pagechatQuery = FirebaseFirestore.instance
+        .collection("chat")
+        .doc(getChatId())
+        .collection("chats")
+        .orderBy("dateTime", descending: true)
+        .limit(chatLimit);
+
+    if (_lastDocument != null) {
+      pagechatQuery = pagechatQuery.startAfterDocument(_lastDocument!);
+    }
+
+    if (!_hasMoreData) return;
+
+    var currentRequestIndex = _allPagedResults.length;
+
+    pagechatQuery.snapshots().listen(
+      (QuerySnapshot snapshot) {
+        if (snapshot.docs.isNotEmpty) {
+          var generalChats = snapshot.docs
+              .map((snapshot1) => ChatDataModel.fromJson(
+                  snapshot1.data() as Map<String, dynamic>))
+              .toList();
+
+          var pageExists = currentRequestIndex < _allPagedResults.length;
+
+          if (pageExists) {
+            _allPagedResults[currentRequestIndex] = generalChats;
+          } else {
+            _allPagedResults.add(generalChats);
+          }
+
+          var allChats = _allPagedResults.fold<List<ChatDataModel>>(
+              <ChatDataModel>[],
+              (initialValue, pageItems) => initialValue..addAll(pageItems));
+
+          _chatController.add(allChats);
+
+          if (currentRequestIndex == _allPagedResults.length - 1) {
+            _lastDocument = snapshot.docs.last;
+          }
+
+          _hasMoreData = generalChats.length == chatLimit;
+        } else {
+          _chatController.add([]);
+        }
+      },
+    );
+  }
+
+  void requestMoreData() => _requestChats();
+
+  @override
+  void onReady() {
+    super.onReady();
+  }
+
+  gotoMaxScrooll() {
+    Timer(
+      const Duration(
+        milliseconds: 200,
+      ),
+      () {
+        scrollController.value
+            .jumpTo(scrollController.value.position.minScrollExtent);
+      },
+    );
+  }
+
+  Future<void> sendPushNotification({
+    required String nTitle,
+    required String nBody,
+    required String nType,
+    required String nSenderId,
+    required String nUserDeviceToken,
+    // Call Info Map Data
+    Map<String, dynamic>? nCallInfo,
+  }) async {
+    // Variables
+    final Uri url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+
+    await http
+        .post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization':
+            'key=AAAAoICxc_o:APA91bHEIwawAazThtHUn0iv-9xgKBe0CMet-sA6WE2VE0qvujFg9qSKqrpsSeytHei-jtdMI0_h2aVURTyG_CwTH0CdW9LT04Xv8smdsXQhWFPMEWVHC2CMCUyxvZcSxILkzwcrBwZa',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': <String, dynamic>{
+            'title': nTitle,
+            'body': nBody,
+            'color': '#F1F7B5',
+            'priority': 'high',
+            'sound': "default"
+          },
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            "N_TYPE": nType,
+            "N_SENDER_ID": nSenderId,
+            "chatId": getChatId(),
+            'call_info': nCallInfo, // Call Info Data
+            'status': 'done',
+            'docId': docId,
+          },
+          'to': nUserDeviceToken,
+        },
+      ),
+    )
+        .then((http.Response response) {
+      if (response.statusCode == 200) {
+        print('sendPushNotification() -> success');
+      }
+    }).catchError((error) {
+      print('sendPushNotification() -> error: $error');
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(
+            status: false, chatId: getChatId());
+
+        break;
+      case AppLifecycleState.resumed:
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(
+            status: true, chatId: getChatId());
+
+        break;
+      case AppLifecycleState.detached:
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(
+            status: false, chatId: getChatId());
+
+        break;
+      case AppLifecycleState.inactive:
+        getIt<FirebaseService>().setStatusForNotificationChatScreen(
+            status: false, chatId: getChatId());
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    getIt<FirebaseService>()
+        .setStatusForNotificationChatScreen(status: false, chatId: getChatId());
+
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  void increment() => count.value++;
 }

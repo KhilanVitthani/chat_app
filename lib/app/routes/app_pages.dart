@@ -17,10 +17,6 @@ import '../modules/my_friends/bindings/my_friends_binding.dart';
 import '../modules/my_friends/views/my_friends_view.dart';
 import '../modules/sign_up/bindings/sign_up_binding.dart';
 import '../modules/sign_up/views/sign_up_view.dart';
-import '../modules/temp_chat/bindings/temp_chat_binding.dart';
-import '../modules/temp_chat/views/temp_chat_view.dart';
-import '../modules/temp_chat1/bindings/temp_chat1_binding.dart';
-import '../modules/temp_chat1/views/temp_chat1_view.dart';
 
 part 'app_routes.dart';
 
@@ -62,16 +58,6 @@ class AppPages {
       name: _Paths.CHAT_SCREEN,
       page: () => const ChatScreenView(),
       binding: ChatScreenBinding(),
-    ),
-    GetPage(
-      name: _Paths.TEMP_CHAT,
-      page: () => const TempChatView(),
-      binding: TempChatBinding(),
-    ),
-    GetPage(
-      name: _Paths.TEMP_CHAT1,
-      page: () => const TempChat1View(),
-      binding: TempChat1Binding(),
     ),
     GetPage(
       name: _Paths.MY_FRIENDS,
