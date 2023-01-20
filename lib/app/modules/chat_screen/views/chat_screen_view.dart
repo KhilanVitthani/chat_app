@@ -83,6 +83,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
                               vertical: MySize.getHeight(10)),
                           reverse: true,
                           // useStickyGroupSeparators: true,
+
                           groupBy: (element) => element.dateTime!
                               .toLocal()
                               .toString()
@@ -324,7 +325,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
   getTitleWithDay(String date) {
     DateTime now =
         getDateFromStringFromUtc(date.toString(), formatter: "yyyy-MM-dd");
-    int i = calculateDifference(now);
+    int i = WithoutUTC(now);
     if (i == 0) {
       return "Today";
     } else if (i == -1) {

@@ -23,6 +23,13 @@ int calculateDifference(DateTime date) {
       .inDays;
 }
 
+int WithoutUTC(DateTime date) {
+  DateTime now = DateTime.now();
+  return DateTime(date.year, date.month, date.day)
+      .difference(DateTime(now.year, now.month, now.day))
+      .inDays;
+}
+
 DateTime getDateFromStringFromUtc(String dateString, {String? formatter}) {
   const String kMainSourceFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
   if (formatter == null) {
