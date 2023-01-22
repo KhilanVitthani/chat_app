@@ -307,7 +307,20 @@ class FirebaseService {
         // .orderBy("name")
         .snapshots();
   }
+  Future<void> batchDelete(String fId) {
+    WriteBatch batch = FirebaseFirestore.instance.batch();
 
+    return  firebaseFireStore
+        .collection("pendingRequest").doc(fId.toString())
+        .collection("request").where('uId', isEqualTo: box.read(ArgumentConstant.userUid).toString()).get().then((querySnapshot) {
+
+      querySnapshot.docs.forEach((document) {
+        batch.delete(document.reference);
+      });
+
+      return batch.commit();
+    });
+  }
   Future<void> setStatusForChatScreen({required bool status}) async {
     return await firebaseFireStore
         .collection("user")
