@@ -279,10 +279,15 @@ class FirebaseService {
       "requestedFriendsList": myFriendsRequestedList,
       "friendsList": friendsModel.friendsList
     });
+    await batchDelete(friendsUid);
+    userModel.requestedFriendsList!.remove(friendsUid);
     await firebaseFireStore
         .collection("user")
         .doc(box.read(ArgumentConstant.userUid))
-        .update({"friendsList": myUpdatedFriendList});
+        .update({
+      "friendsList": myUpdatedFriendList,
+      "requestedFriendsList": userModel.requestedFriendsList ?? [],
+    });
     getIt<CustomDialogs>().hideCircularDialog(context);
   }
 
@@ -307,13 +312,17 @@ class FirebaseService {
         // .orderBy("name")
         .snapshots();
   }
+
   Future<void> batchDelete(String fId) {
     WriteBatch batch = FirebaseFirestore.instance.batch();
 
-    return  firebaseFireStore
-        .collection("pendingRequest").doc(fId.toString())
-        .collection("request").where('uId', isEqualTo: box.read(ArgumentConstant.userUid).toString()).get().then((querySnapshot) {
-
+    return firebaseFireStore
+        .collection("pendingRequest")
+        .doc(fId.toString())
+        .collection("request")
+        .where('uId', isEqualTo: box.read(ArgumentConstant.userUid).toString())
+        .get()
+        .then((querySnapshot) {
       querySnapshot.docs.forEach((document) {
         batch.delete(document.reference);
       });
@@ -321,6 +330,7 @@ class FirebaseService {
       return batch.commit();
     });
   }
+
   Future<void> setStatusForChatScreen({required bool status}) async {
     return await firebaseFireStore
         .collection("user")

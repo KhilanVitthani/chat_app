@@ -56,36 +56,10 @@ class SignUpView extends GetWidget<SignUpController> {
                     if (value != null) {
                       imgUrl = value;
                     }
-                    getIt<FirebaseService>()
-                        .registerUserInFirebase(
-                            context: context,
-                            userModel: UserModel(
-                                uId: "",
-                                timeStamp: DateTime.now()
-                                    .toUtc()
-                                    .millisecondsSinceEpoch,
-                                requestedFriendsList: [],
-                                imgUrl: imgUrl,
-                                level: controller.selectUserLevelType.value
-                                    .dropDownValue!.value,
-                                name: controller.firstNameController.value.text
-                                    .trim(),
-                                lastName: controller
-                                    .secondNameController.value.text
-                                    .trim(),
-                                email: controller.emailController.value.text
-                                    .trim(),
-                                password: controller
-                                    .confirmPasswordController.value.text
-                                    .trim(),
-                                friendsList: [],
-                                chatStatus: false))
-                        .then((value) {
-                      if (!isNullEmptyOrFalse(value)) {
-                        Get.offAllNamed(Routes.HOME);
-                      }
-                    });
+                    registerUser(imgUrl: imgUrl);
                   });
+                } else {
+                  registerUser();
                 }
               }
             }),
@@ -296,6 +270,31 @@ class SignUpView extends GetWidget<SignUpController> {
         );
       }),
     );
+  }
+
+  registerUser({String? imgUrl}) {
+    getIt<FirebaseService>()
+        .registerUserInFirebase(
+            context: Get.context!,
+            userModel: UserModel(
+                uId: "",
+                timeStamp: DateTime.now().toUtc().millisecondsSinceEpoch,
+                requestedFriendsList: [],
+                imgUrl: imgUrl,
+                level:
+                    controller.selectUserLevelType.value.dropDownValue!.value,
+                name: controller.firstNameController.value.text.trim(),
+                lastName: controller.secondNameController.value.text.trim(),
+                email: controller.emailController.value.text.trim(),
+                password:
+                    controller.confirmPasswordController.value.text.trim(),
+                friendsList: [],
+                chatStatus: false))
+        .then((value) {
+      if (!isNullEmptyOrFalse(value)) {
+        Get.offAllNamed(Routes.HOME);
+      }
+    });
   }
 
   Widget getImageView() {
