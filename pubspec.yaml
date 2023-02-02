@@ -3,14 +3,14 @@ version: 1.0.0+1
 publish_to: none
 description: A new Flutter project.
 environment: 
-  sdk: '>=2.18.6 <3.0.0'
+  sdk: '>=2.17.6 <3.0.0'
 
 dependencies: 
   cupertino_icons: ^1.0.2
   firebase_core: ^2.4.1
   firebase_auth: ^4.2.5
   get_storage: ^2.0.3
-  cached_network_image: ^3.2.3
+  cached_network_image:
   image_cropper: ^3.0.1
   image_picker: ^0.8.5+3
   cloud_firestore: ^4.3.1
@@ -26,6 +26,13 @@ dependencies:
   get: 4.6.5
   firebase_messaging: ^14.2.1
   flutter_local_notifications: ^13.0.0
+  crypto: ^3.0.1
+  sign_in_with_apple: ^4.2.0
+  google_sign_in:
+  geolocator: ^9.0.2
+  google_maps_place_picker_mb: ^2.0.0-mb.21
+  google_maps_flutter: ^2.2.1
+  latlong2: ^0.8.1
   flutter: 
     sdk: flutter
 

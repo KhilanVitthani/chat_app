@@ -23,6 +23,11 @@ class FirebaseService {
         .set(userModel.toJson());
   }
 
+  Future<void> addTempUserDataToFireStore(
+      {required Map<String, dynamic> data, required String uUid}) async {
+    return await firebaseFireStore.collection("user").doc(uUid).set(data);
+  }
+
   Future<DocumentReference<Map<String, dynamic>>> addChatDataToFireStore(
       {required String chatId, required Map<String, dynamic> chatData}) async {
     return await firebaseFireStore
@@ -81,20 +86,19 @@ class FirebaseService {
         .snapshots();
   }
 
-  Future<User?> registerUserInFirebase(
+  Future<bool> registerUserInFirebase(
       {required BuildContext context, required UserModel userModel}) async {
     getIt<CustomDialogs>().showCircularDialog(context);
-    User? user;
+    // User? user;
     try {
-      UserCredential userCredential =
-          await firebaseAuth.createUserWithEmailAndPassword(
-              email: userModel.email.toString(),
-              password: userModel.password.toString());
-      user = userCredential.user;
-      if (!isNullEmptyOrFalse(user)) {
-        if (!isNullEmptyOrFalse(user!.uid)) {
-          userModel.uId = user.uid;
-          box.write(ArgumentConstant.userUid, user.uid);
+      // UserCredential userCredential =
+      //     await firebaseAuth.createUserWithEmailAndPassword(
+      //         email: userModel.email.toString(), password: "12345678");
+      // user = userCredential.user;
+      if (!isNullEmptyOrFalse(userModel)) {
+        if (!isNullEmptyOrFalse(userModel.uId)) {
+          // userModel.uId = userModel.uid;
+          box.write(ArgumentConstant.userUid, userModel.uId);
           await addUserDataToFireStore(userModel: userModel).then((value) {});
         }
       }
@@ -102,9 +106,10 @@ class FirebaseService {
       dynamic status = AuthExceptionHandler.handleAuthException(e);
       String msg = AuthExceptionHandler.generateErrorMessage(status);
       getSnackBar(context: context, text: msg.toString());
+      return false;
     }
     getIt<CustomDialogs>().hideCircularDialog(context);
-    return user;
+    return true;
   }
 
   Future<User?> logInUserInFirebase(
@@ -114,8 +119,7 @@ class FirebaseService {
     try {
       UserCredential userCredential =
           await firebaseAuth.signInWithEmailAndPassword(
-              email: userModel.email.toString(),
-              password: userModel.password.toString());
+              email: userModel.email.toString(), password: "12345678");
       user = userCredential.user;
       if (!isNullEmptyOrFalse(user)) {
         if (!isNullEmptyOrFalse(user!.uid)) {
@@ -157,7 +161,7 @@ class FirebaseService {
     if (isLoad) {
       getIt<CustomDialogs>().hideCircularDialog(context!);
     }
-    return UserModel.fromJson(data.data()!);
+    return UserModel.fromJson(data.data() ?? {});
   }
 
   Future<Map<String, dynamic>?> getUserNotificationStatus(

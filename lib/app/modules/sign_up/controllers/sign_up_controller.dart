@@ -1,14 +1,20 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:path/path.dart' as p;
 import 'package:image_picker/image_picker.dart';
 
+import '../../../constants/app_constant.dart';
 import '../../../constants/color_constant.dart';
 import '../../../constants/sizeConstant.dart';
+import '../../../service/location.dart';
 
 class SignUpController extends GetxController {
   //TODO: Implement SignUpController
@@ -23,21 +29,55 @@ class SignUpController extends GetxController {
 
   Rx<File?>? profile;
 
+  Rx<PageController> pageController = PageController().obs;
+  RxInt n = 1.obs;
+
   Rx<TextEditingController> firstNameController = TextEditingController().obs;
   Rx<TextEditingController> secondNameController = TextEditingController().obs;
   Rx<TextEditingController> emailController = TextEditingController().obs;
   Rx<TextEditingController> passwordController = TextEditingController().obs;
   Rx<TextEditingController> confirmPasswordController =
       TextEditingController().obs;
-  Rx<GlobalKey<FormState>> formKey = GlobalKey<FormState>().obs;
+  Rx<GlobalKey<FormState>> formKey1 = GlobalKey<FormState>().obs;
+  Rx<GlobalKey<FormState>> formKey2 = GlobalKey<FormState>().obs;
+  Rx<GlobalKey<FormState>> formKey3 = GlobalKey<FormState>().obs;
   RxBool isHidden = true.obs;
   RxBool isHiddenConfirm = true.obs;
+  User? user;
+  SignInType signInType = SignInType.google;
+
   @override
   void onInit() {
     super.onInit();
     selectUserLevelType = SingleValueDropDownController().obs;
+    if (Get.arguments != null) {
+      if (Get.arguments[ArgumentConstant.userData] != null) {
+        user = Get.arguments[ArgumentConstant.userData];
+        if (user!.displayName != null) {
+          firstNameController.value.text = user!.displayName.toString();
+        }
+        if (user!.email != null) {
+          emailController.value.text = user!.email.toString();
+        }
+      }
+      if (Get.arguments[ArgumentConstant.signInType] != null) {
+        signInType = Get.arguments[ArgumentConstant.signInType];
+      }
+    }
   }
 
+  double distance = 50;
+  bool isCreating = false;
+  bool _isObscure = true;
+  var _emailController = TextEditingController();
+  var _passwordController = TextEditingController();
+  var _nameController = TextEditingController();
+  Rx<TextEditingController> addressController = TextEditingController().obs;
+  final _formKey = GlobalKey<FormState>();
+  GeoPoint latLng = GeoPoint(0, 0);
+  String level = '1';
+  String city = '';
+  String state = '';
   @override
   void onReady() {
     super.onReady();
@@ -46,6 +86,40 @@ class SignUpController extends GetxController {
   @override
   void onClose() {
     super.onClose();
+  }
+
+  setLocation() async {
+    List coordinates = await getUserCurrentCoordinates();
+
+    Navigator.push(
+      Get.context!,
+      MaterialPageRoute(
+        builder: (context) => PlacePicker(
+          apiKey: googleApiKey,
+          onPlacePicked: (result) {
+            // setState(() {
+            city = result
+                .addressComponents![result.addressComponents!.length - 4]
+                .longName;
+            state = result
+                .addressComponents![result.addressComponents!.length - 5]
+                .longName;
+            addressController.value.text =
+                '${result.addressComponents![result.addressComponents!.length - 4].longName}, ${result.addressComponents![result.addressComponents!.length - 3].shortName}';
+            result.addressComponents!.forEach((element) {
+              print('address ${element.longName}');
+            });
+            latLng = GeoPoint(
+                result.geometry!.location.lat, result.geometry!.location.lng);
+            // });
+
+            Navigator.of(context).pop();
+          },
+          initialPosition: LatLng(coordinates[0], coordinates[1]),
+          useCurrentLocation: true,
+        ),
+      ),
+    );
   }
 
   Future<File?> openCamera() async {

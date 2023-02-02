@@ -59,7 +59,7 @@ class HomeView extends GetWidget<HomeController> {
                       .logOut(context: context)
                       .then((value) {
                     box.erase();
-                    Get.offAllNamed(Routes.LOGIN);
+                    Get.offAllNamed(Routes.REGISTER);
                   });
                 },
                 icon: Icon(Icons.logout)),

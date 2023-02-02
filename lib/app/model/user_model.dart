@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 import '../constants/sizeConstant.dart';
@@ -7,11 +8,13 @@ class UserModel {
   String? name;
   String? lastName;
   String? email;
-  String? password;
+  // String? password;
   String? fcmToken;
   int? timeStamp;
   String? imgUrl;
   int? level;
+  GeoPoint? latLng;
+  bool? isVerified = false;
   bool chatStatus = false;
   List<dynamic>? friendsList = [];
   List<dynamic>? requestedFriendsList = [];
@@ -21,9 +24,11 @@ class UserModel {
       required this.name,
       required this.lastName,
       required this.email,
-      required this.password,
+      // required this.password,
       required this.friendsList,
       required this.level,
+      this.isVerified,
+      required this.latLng,
       required this.requestedFriendsList,
       required this.imgUrl,
       required this.chatStatus,
@@ -34,9 +39,11 @@ class UserModel {
     name = json['name'];
     lastName = json['lastName'];
     email = json['email'];
-    password = json['password'];
+    // password = json['password'];
     friendsList = json["friendsList"] ?? [];
     level = json["level"];
+    latLng = json['latLng'] ?? GeoPoint(0, 0);
+    isVerified = json["isVerified"] ?? false;
     imgUrl = json["imgUrl"];
     fcmToken = json["FCM"];
     timeStamp = json["timeStamp"];
@@ -57,8 +64,10 @@ class UserModel {
     data['email'] = this.email;
     data['level'] = this.level;
     data['timeStamp'] = DateTime.now().toUtc().millisecondsSinceEpoch;
-    data['password'] = this.password;
+    // data['password'] = this.password;
     data['imgUrl'] = this.imgUrl;
+    data['latLng'] = this.latLng;
+    data['isVerified'] = this.isVerified ?? false;
     data['friendsList'] = this.friendsList;
     data['inChatScreen'] = this.chatStatus;
     data['requestedFriendsList'] = this.requestedFriendsList;

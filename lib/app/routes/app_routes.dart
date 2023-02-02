@@ -12,6 +12,7 @@ abstract class Routes {
   static const TEMP_CHAT = _Paths.TEMP_CHAT;
   static const TEMP_CHAT1 = _Paths.TEMP_CHAT1;
   static const MY_FRIENDS = _Paths.MY_FRIENDS;
+  static const REGISTER = _Paths.REGISTER;
 }
 
 abstract class _Paths {
@@ -25,4 +26,5 @@ abstract class _Paths {
   static const TEMP_CHAT = '/temp-chat';
   static const TEMP_CHAT1 = '/temp-chat1';
   static const MY_FRIENDS = '/my-friends';
+  static const REGISTER = '/register';
 }

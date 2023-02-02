@@ -104,32 +104,32 @@ class LoginView extends GetWidget<LoginController> {
                           if (controller.formKey.value.currentState!
                               .validate()) {
                             FocusScope.of(context).unfocus();
-                            getIt<FirebaseService>()
-                                .logInUserInFirebase(
-                                    context: context,
-                                    userModel: UserModel(
-                                        requestedFriendsList: [],
-                                        uId: "",
-                                        level: 1,
-                                        lastName: "",
-                                        name: "",
-                                        imgUrl: '',
-                                        timeStamp: DateTime.now()
-                                            .toUtc()
-                                            .millisecondsSinceEpoch,
-                                        email: controller
-                                            .emailController.value.text
-                                            .trim(),
-                                        password: controller
-                                            .passwordController.value.text
-                                            .trim(),
-                                        friendsList: [],
-                                        chatStatus: false))
-                                .then((value) {
-                              if (!isNullEmptyOrFalse(value)) {
-                                Get.offAllNamed(Routes.HOME);
-                              }
-                            });
+                            // getIt<FirebaseService>()
+                            //     .logInUserInFirebase(
+                            //         context: context,
+                            //         userModel: UserModel(
+                            //             requestedFriendsList: [],
+                            //             uId: "",
+                            //             level: 1,
+                            //             lastName: "",
+                            //             name: "",
+                            //             imgUrl: '',
+                            //             timeStamp: DateTime.now()
+                            //                 .toUtc()
+                            //                 .millisecondsSinceEpoch,
+                            //             email: controller
+                            //                 .emailController.value.text
+                            //                 .trim(),
+                            //             password: controller
+                            //                 .passwordController.value.text
+                            //                 .trim(),
+                            //             friendsList: [],
+                            //             chatStatus: false))
+                            //     .then((value) {
+                            //   if (!isNullEmptyOrFalse(value)) {
+                            //     Get.offAllNamed(Routes.HOME);
+                            //   }
+                            // });
                           }
                         }),
                     Space.height(20),
