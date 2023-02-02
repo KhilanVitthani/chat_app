@@ -30,12 +30,12 @@ class HomeView extends GetWidget<HomeController> {
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.chat),
-              label: 'Messages List',
-            ),
-            BottomNavigationBarItem(
               icon: Icon(Icons.person_add),
               label: 'Add Friends',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat),
+              label: 'Messages List',
             ),
           ],
           currentIndex: controller.selectedIndex.value,
@@ -66,14 +66,17 @@ class HomeView extends GetWidget<HomeController> {
           ],
         ),
         body: [
-          MyFriendsView(),
           AddUserView(),
+          MyFriendsView(),
         ].elementAt(controller.selectedIndex.value),
       );
     });
   }
 
   String getTitleString() {
-    return ["Friends", "Add Friends"].elementAt(controller.selectedIndex.value);
+    return [
+      "Add Friends",
+      "Friends",
+    ].elementAt(controller.selectedIndex.value);
   }
 }

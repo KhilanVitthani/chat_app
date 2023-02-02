@@ -11,6 +11,7 @@ import '../../../Widgets/button.dart';
 import '../../../constants/app_constant.dart';
 import '../../../constants/sizeConstant.dart';
 import '../../../service/firebase_service.dart';
+import '../../../utilities/progress_dialog_utils.dart';
 import '../controllers/register_controller.dart';
 
 class RegisterView extends GetView<RegisterController> {
@@ -42,12 +43,14 @@ class RegisterView extends GetView<RegisterController> {
             button(
                 title: "Sign in with Google",
                 onTap: () async {
+                  getIt<CustomDialogs>().showCircularDialog(context);
                   controller
                       .signInWithGoogle(context: context)
                       .then((value) async {
                     if (value != null) {
                       UserModel? userData = await getIt<FirebaseService>()
                           .getUserData(context: Get.context!, uid: value.uid);
+
                       if (!isNullEmptyOrFalse(userData)) {
                         if (userData != null && userData.isVerified == true) {
                           Get.offAllNamed(Routes.HOME);
@@ -65,6 +68,7 @@ class RegisterView extends GetView<RegisterController> {
                         }
                       }
                     }
+                    getIt<CustomDialogs>().hideCircularDialog(context);
                   });
                 }),
             Space.height(30),
@@ -72,6 +76,8 @@ class RegisterView extends GetView<RegisterController> {
               button(
                   title: "Sign in with Apple",
                   onTap: () async {
+                    getIt<CustomDialogs>().showCircularDialog(context);
+
                     controller.signInWithApple().then((value) async {
                       if (value != null) {
                         UserModel? userData = await getIt<FirebaseService>()
@@ -94,6 +100,7 @@ class RegisterView extends GetView<RegisterController> {
                           }
                         }
                       }
+                      getIt<CustomDialogs>().hideCircularDialog(context);
                     });
                   }),
             Spacer(),
