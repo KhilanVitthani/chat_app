@@ -49,7 +49,10 @@ class RegisterView extends GetView<RegisterController> {
                       .then((value) async {
                     if (value != null) {
                       UserModel? userData = await getIt<FirebaseService>()
-                          .getUserData(context: Get.context!, uid: value.uid);
+                          .getUserData(
+                              context: Get.context!,
+                              uid: value.uid,
+                              isLoad: false);
 
                       if (!isNullEmptyOrFalse(userData)) {
                         if (userData != null && userData.isVerified == true) {

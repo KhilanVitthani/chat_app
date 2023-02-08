@@ -65,10 +65,14 @@ class HomeView extends GetWidget<HomeController> {
                 icon: Icon(Icons.logout)),
           ],
         ),
-        body: [
-          AddUserView(),
-          MyFriendsView(),
-        ].elementAt(controller.selectedIndex.value),
+        body: (controller.hasData.value)
+            ? [
+                AddUserView(),
+                MyFriendsView(),
+              ].elementAt(controller.selectedIndex.value)
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
       );
     });
   }

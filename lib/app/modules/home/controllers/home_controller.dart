@@ -22,7 +22,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (!isNullEmptyOrFalse(box.read(ArgumentConstant.userUid))) {
         userData = await getIt<FirebaseService>().getUserData(
-            context: Get.context!, uid: box.read(ArgumentConstant.userUid));
+            context: Get.context!,
+            uid: box.read(ArgumentConstant.userUid),
+            isLoad: false);
         if (!isNullEmptyOrFalse(userData)) {
           userName.value = userData!.name.toString();
           getIt<FirebaseService>().setStatusForChatScreen(status: true);
