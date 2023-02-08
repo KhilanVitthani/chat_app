@@ -43,17 +43,26 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
                                   .getAllFriendsOfUser(),
                               builder: (BuildContext context, snapshot) {
                                 if (snapshot.hasError) {
-                                  return Expanded(
-                                    child: Center(
-                                      child: Text("Something went wrong..."),
-                                    ),
+                                  return Column(
+                                    children: [
+                                      Expanded(
+                                        child: Center(
+                                          child:
+                                              Text("Something went wrong..."),
+                                        ),
+                                      ),
+                                    ],
                                   );
                                 } else if (snapshot.connectionState ==
                                     ConnectionState.waiting) {
-                                  return Expanded(
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
+                                  return Column(
+                                    children: [
+                                      Expanded(
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
+                                    ],
                                   );
                                 } else {
                                   return (snapshot.data!.docs.length > 0)
@@ -202,10 +211,14 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
                                             ),
                                           ],
                                         )
-                                      : Expanded(
-                                          child: Center(
-                                            child: Text("No any friends."),
-                                          ),
+                                      : Column(
+                                          children: [
+                                            Expanded(
+                                              child: Center(
+                                                child: Text("No any friends."),
+                                              ),
+                                            ),
+                                          ],
                                         );
                                 }
                               },

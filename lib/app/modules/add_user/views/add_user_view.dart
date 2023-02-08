@@ -200,10 +200,14 @@ class AddUserView extends GetWidget<AddUserController> {
                                           ],
                                         ),
                                       )
-                                    : Expanded(
-                                        child: Center(
-                                          child: Text("No any user found"),
-                                        ),
+                                    : Column(
+                                        children: [
+                                          Expanded(
+                                            child: Center(
+                                              child: Text("No any user found"),
+                                            ),
+                                          ),
+                                        ],
                                       );
                               }
                             },
