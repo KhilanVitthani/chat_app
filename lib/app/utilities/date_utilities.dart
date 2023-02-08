@@ -47,8 +47,8 @@ Future<int> calculateDifference(DateTime date) async {
       .inDays;
 }
 
-int WithoutUTC(DateTime date) {
-  DateTime now = DateTime.now();
+Future<int> WithoutUTC(DateTime date) async {
+  DateTime now = await getNtpTime();
   return DateTime(date.year, date.month, date.day)
       .difference(DateTime(now.year, now.month, now.day))
       .inDays;

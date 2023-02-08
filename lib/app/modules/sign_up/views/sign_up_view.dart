@@ -18,6 +18,7 @@ import '../../../constants/sizeConstant.dart';
 import '../../../model/user_model.dart';
 import '../../../routes/app_pages.dart';
 import '../../../service/firebase_service.dart';
+import '../../../utilities/date_utilities.dart';
 import '../../../utilities/progress_dialog_utils.dart';
 import '../controllers/sign_up_controller.dart';
 
@@ -495,15 +496,16 @@ class SignUpView extends GetWidget<SignUpController> {
     );
   }
 
-  registerUser({String? imgUrl}) {
+  registerUser({String? imgUrl}) async {
+    DateTime now = await getNtpTime();
     getIt<FirebaseService>()
         .registerUserInFirebase(
             context: Get.context!,
             userModel: UserModel(
                 uId: controller.user!.uid,
-                lastUpdatedAt: DateTime.now().toUtc().millisecondsSinceEpoch,
+                lastUpdatedAt: now.toUtc().millisecondsSinceEpoch,
                 latLng: controller.latLng,
-                timeStamp: DateTime.now().toUtc().millisecondsSinceEpoch,
+                timeStamp: now.toUtc().millisecondsSinceEpoch,
                 requestedFriendsList: [],
                 address: controller.addressController.value.text,
                 imgUrl: imgUrl,

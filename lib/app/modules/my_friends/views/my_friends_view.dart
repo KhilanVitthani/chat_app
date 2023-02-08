@@ -436,16 +436,4 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
       ),
     );
   }
-
-  getTitleWithDay(DateTime date) {
-    DateTime now = date.toUtc();
-    int i = calculateDifference(now);
-    if (i == 0) {
-      return DateFormat("hh:mm a").format(date.toLocal());
-    } else if (i == -1) {
-      return "Yesterday";
-    } else {
-      return DateFormat("dd/MM/yy").format(date.toLocal());
-    }
-  }
 }

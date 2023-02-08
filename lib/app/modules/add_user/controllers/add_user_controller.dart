@@ -10,6 +10,7 @@ import '../../../model/user_model.dart';
 import '../../../provider/UserDataProvider.dart';
 import '../../../provider/card_provider.dart';
 import '../../../service/firebase_service.dart';
+import '../../../utilities/date_utilities.dart';
 
 class AddUserController extends GetxController {
   //TODO: Implement AddUserController
@@ -38,7 +39,8 @@ class AddUserController extends GetxController {
 
       lastUpdated.value = provider.userData!.lastUpdatedAt ?? 0;
       if (lastUpdated == 0) {
-        lastUpdated.value = DateTime.now().millisecondsSinceEpoch;
+        DateTime now = await getNtpTime();
+        lastUpdated.value = now.toUtc().millisecondsSinceEpoch;
       }
 
       cardProvider.reset();

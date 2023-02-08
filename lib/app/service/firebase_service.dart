@@ -11,6 +11,7 @@ import '../../main.dart';
 import '../constants/app_constant.dart';
 import '../constants/sizeConstant.dart';
 import '../model/user_model.dart';
+import '../utilities/date_utilities.dart';
 import '../utilities/progress_dialog_utils.dart';
 import 'location.dart';
 
@@ -43,12 +44,13 @@ class FirebaseService {
     required String docId,
     required String friendId,
   }) async {
+    DateTime now = await getNtpTime();
     await firebaseFireStore
         .collection("myFriends")
         .doc(box.read(ArgumentConstant.userUid))
         .collection("friends")
         .doc(docId)
-        .update({"timeStamp": DateTime.now().toUtc().millisecondsSinceEpoch});
+        .update({"timeStamp": now.toUtc().millisecondsSinceEpoch});
 
     var documentSnapshot = await firebaseFireStore
         .collection("myFriends")
@@ -63,7 +65,7 @@ class FirebaseService {
         .doc(friendId)
         .collection("friends")
         .doc(documentSnapshot.docs.first.id)
-        .update({"timeStamp": DateTime.now().toUtc().millisecondsSinceEpoch});
+        .update({"timeStamp": now.toUtc().millisecondsSinceEpoch});
   }
 
   Future<String> uplordImage(File? imgFile) async {

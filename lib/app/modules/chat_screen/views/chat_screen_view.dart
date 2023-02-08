@@ -103,13 +103,28 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                 //   color: Colors.black.withOpacity(0.5),
                                 // ),),
                                 // Space.width(6),
-                                Text(
-                                  getTitleWithDay(value),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: MySize.getHeight(14),
-                                      fontWeight: FontWeight.bold),
+                                FutureBuilder(
+                                  builder: (context, snap) {
+                                    if (snap.hasData) {
+                                      return Text(
+                                        snap.data.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: MySize.getHeight(14),
+                                            fontWeight: FontWeight.bold),
+                                      );
+                                    }
+                                    return SizedBox();
+                                  },
+                                  future: getTitleWithDay(value),
                                 ),
+                                // Text(
+                                //   getTitleWithDay(value),
+                                //   textAlign: TextAlign.center,
+                                //   style: TextStyle(
+                                //       fontSize: MySize.getHeight(14),
+                                //       fontWeight: FontWeight.bold),
+                                // ),
                                 // Space.width(6),
 
                                 // Expanded(child: Container(
@@ -253,6 +268,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
                     textCapitalization: TextCapitalization.sentences,
                     suffixIcon: InkWell(
                         onTap: () async {
+                          DateTime now = await getNtpTime();
                           if (!isNullEmptyOrFalse(
                               controller.chatController.value.text)) {
                             String msg = controller.chatController.value.text;
@@ -265,9 +281,8 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                       box.read(ArgumentConstant.userUid),
                                   "receiverId": controller.friendData!.uId,
                                   "msg": msg,
-                                  "dateTime": DateTime.now()
-                                      .toUtc()
-                                      .millisecondsSinceEpoch,
+                                  "dateTime":
+                                      now.toUtc().millisecondsSinceEpoch,
                                   "rRead": false,
                                   "sRead": true,
                                 });
@@ -322,10 +337,10 @@ class ChatScreenView extends GetView<ChatScreenController> {
         });
   }
 
-  getTitleWithDay(String date) {
+  getTitleWithDay(String date) async {
     DateTime now =
         getDateFromStringFromUtc(date.toString(), formatter: "yyyy-MM-dd");
-    int i = WithoutUTC(now);
+    int i = await WithoutUTC(now);
     if (i == 0) {
       return "Today";
     } else if (i == -1) {
