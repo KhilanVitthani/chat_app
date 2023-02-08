@@ -12,6 +12,7 @@ import '../../../constants/app_constant.dart';
 import '../../../constants/sizeConstant.dart';
 import '../../../model/chat_data_model.dart';
 import '../../../model/user_model.dart';
+import '../../../service/database_helper.dart';
 import '../../../service/firebase_service.dart';
 import 'package:get/get.dart';
 
@@ -23,17 +24,17 @@ class ChatScreenController extends GetxController with WidgetsBindingObserver {
   UserModel? friendData;
   Rx<TextEditingController> chatController = TextEditingController().obs;
   RxList<ChatDataModel> chatDataList = RxList<ChatDataModel>([]);
+  RxList<ChatDataModel> mainChatDataList = RxList<ChatDataModel>([]);
   RxBool isUserOnline = false.obs;
   bool isFromNotification = false;
   Rx<ScrollController> scrollController = ScrollController().obs;
   RxBool showIndicator = false.obs;
-  List<DocumentSnapshot>? documentList;
-  //FireStoreRepository? fireStoreRepository;
-
-  RxList<DocumentSnapshot> movieController = RxList();
-
+  MyDatabase myDatabase = MyDatabase.instance;
+  RxBool hasEmpty = true.obs;
+  RxBool hasData = false.obs;
   RxBool? showIndicatorController;
   String docId = "";
+  int timestamp = 0;
   final count = 0.obs;
   @override
   void onInit() {
@@ -43,13 +44,17 @@ class ChatScreenController extends GetxController with WidgetsBindingObserver {
       docId = Get.arguments[ArgumentConstant.docId] ?? "";
       isFromNotification = !isNullEmptyOrFalse(
           Get.arguments[ArgumentConstant.isFromNotification]);
+
       // fireStoreRepository = FireStoreRepository();
 
       getIt<FirebaseService>().setStatusForNotificationChatScreen(
           status: true, chatId: getChatId());
     }
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       scrollController.value.addListener(_scrollListener);
+      // await MyDatabase.database
+      //     .rawDelete('DELETE FROM chat WHERE id = ?', [getChatId()]);
+      getDataFromLocalDataBase();
     });
 
     WidgetsBinding.instance.addObserver(this);
@@ -85,6 +90,31 @@ class ChatScreenController extends GetxController with WidgetsBindingObserver {
   Stream listenToChatsRealTime() {
     _requestChats();
     return _chatController.stream;
+  }
+
+  getDataFromLocalDataBase() async {
+    await myDatabase.getChatData(id: getChatId()).then((value) {
+      if (!isNullEmptyOrFalse(value)) {
+        hasEmpty.value = false;
+        List<Map<String, dynamic>> list = List<Map<String, dynamic>>.generate(
+            value.length, (index) => Map<String, dynamic>.from(value[index]),
+            growable: true);
+        List<ChatDataModel> messageList =
+            (jsonDecode(list.first["title"]) as List<dynamic>)
+                .map((e) => ChatDataModel.fromJson(e))
+                .toList();
+        timestamp = messageList.first.dateTime!.millisecondsSinceEpoch;
+        messageList.forEach((element) {
+          mainChatDataList.add(element);
+          print(element.dateTime!.millisecondsSinceEpoch);
+        });
+      } else {
+        hasEmpty.value = true;
+      }
+      hasData.value = true;
+    }).catchError((e) {
+      hasData.value = true;
+    });
   }
 
   void _requestChats() {

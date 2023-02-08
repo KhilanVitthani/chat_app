@@ -30,11 +30,11 @@ Future<DateTime> getNtpTime() async {
 
   _ntpTime = _myTime.add(Duration(milliseconds: offset));
 
-  print('My time: $_myTime');
-  print('NTP time: $_ntpTime');
-  print('Difference: ${_myTime.difference(_ntpTime).inMilliseconds}ms');
-  print('utc: ${_myTime.toUtc()}');
-  print('utc: ${_ntpTime.toUtc()}');
+  // print('My time: $_myTime');
+  // print('NTP time: $_ntpTime');
+  // print('Difference: ${_myTime.difference(_ntpTime).inMilliseconds}ms');
+  // print('utc: ${_myTime.toUtc()}');
+  // print('utc: ${_ntpTime.toUtc()}');
 
   return _ntpTime;
 }

@@ -90,6 +90,17 @@ class FirebaseService {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> getChatDataWithTimeStamp(
+      {required String chatId, required int time}) {
+    return firebaseFireStore
+        .collection("chat")
+        .doc(chatId)
+        .collection("chats")
+        .where("dateTime", isGreaterThan: time)
+        .orderBy("dateTime", descending: true)
+        .snapshots();
+  }
+
   Future<bool> registerUserInFirebase(
       {required BuildContext context, required UserModel userModel}) async {
     getIt<CustomDialogs>().showCircularDialog(context);

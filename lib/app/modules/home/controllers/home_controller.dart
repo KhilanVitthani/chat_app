@@ -7,6 +7,7 @@ import '../../../constants/app_constant.dart';
 import '../../../constants/sizeConstant.dart';
 import '../../../model/user_model.dart';
 import '../../../provider/UserDataProvider.dart';
+import '../../../service/database_helper.dart';
 import '../../../service/firebase_service.dart';
 import '../../../service/notification_service.dart';
 
@@ -17,11 +18,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   UserModel? userData;
   RxString userName = "".obs;
   RxBool hasData = false.obs;
+
   RxInt selectedIndex = 0.obs;
   @override
   void onInit() {
     super.onInit();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await MyDatabase.dbCreate();
       if (!isNullEmptyOrFalse(box.read(ArgumentConstant.userUid))) {
         userData = await getIt<FirebaseService>().getUserData(
             context: Get.context!,

@@ -25,7 +25,6 @@ class ChatDataModel {
     this.sRead,
     this.chatId,
     this.rRead,
-
   });
   ChatDataModel.fromJson(Map<String, dynamic> json) {
     msg = json["msg"];
@@ -38,5 +37,19 @@ class ChatDataModel {
     sRead = json['sRead'];
     chatId = json['chatId'];
     rRead = json['rRead'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['msg'] = this.msg;
+    data['senderId'] = this.senderId;
+    data['receiverId'] = this.receiverId;
+    data['dateTime'] = this.dateTime?.millisecondsSinceEpoch;
+    data['imageUrl'] = this.imageUrl;
+    data['sRead'] = this.sRead;
+    data['chatId'] = this.chatId;
+    data['rRead'] = this.rRead;
+    return data;
   }
 }
