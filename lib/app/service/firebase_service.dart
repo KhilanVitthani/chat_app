@@ -5,12 +5,14 @@ import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:path/path.dart' as path;
 import '../../main.dart';
 import '../constants/app_constant.dart';
 import '../constants/sizeConstant.dart';
 import '../model/user_model.dart';
 import '../utilities/progress_dialog_utils.dart';
+import 'location.dart';
 
 class FirebaseService {
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -150,6 +152,23 @@ class FirebaseService {
     ];
     uids.sort((uid1, uid2) => uid1.compareTo(uid2));
     return uids.join("_chat_");
+  }
+
+  static Future<List<UserModel>> getNearbyUsers(
+      List<UserModel> users, UserModel user) async {
+    List<UserModel> temp = [];
+    List<double> coordinates = await getUserCurrentCoordinates();
+    users.forEach((element) {
+      final Distance dist = new Distance();
+      double distance = dist.as(
+          LengthUnit.Kilometer,
+          new LatLng(coordinates[0], coordinates[1]),
+          new LatLng(element.latLng!.latitude, element.latLng!.longitude));
+      print('lat ${coordinates[0]} lang ${coordinates[1]}');
+      print('km ${element.name} $distance');
+      temp.add(element);
+    });
+    return temp;
   }
 
   Future<UserModel?> getUserData(
@@ -302,6 +321,7 @@ class FirebaseService {
   Stream<QuerySnapshot> getAllFriendsOfUser() {
     return firebaseFireStore
         .collection("myFriends")
+        //        .doc("3zayMoqPMtbSONMq2KKwkCGGbxE2")
         .doc(box.read(ArgumentConstant.userUid))
         .collection("friends")
         .orderBy("timeStamp", descending: true)

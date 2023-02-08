@@ -11,7 +11,9 @@ class UserModel {
   // String? password;
   String? fcmToken;
   int? timeStamp;
+  int? lastUpdatedAt;
   String? imgUrl;
+  String? address;
   int? level;
   GeoPoint? latLng;
   bool? isVerified = false;
@@ -26,8 +28,10 @@ class UserModel {
       required this.email,
       // required this.password,
       required this.friendsList,
+      required this.address,
       required this.level,
       this.isVerified,
+      required this.lastUpdatedAt,
       required this.latLng,
       required this.requestedFriendsList,
       required this.imgUrl,
@@ -39,6 +43,8 @@ class UserModel {
     name = json['name'];
     lastName = json['lastName'];
     email = json['email'];
+    address = json['address'] ?? "";
+    lastUpdatedAt = json['lastUpdatedAt'] ?? 0;
     // password = json['password'];
     friendsList = json["friendsList"] ?? [];
     level = json["level"];
@@ -61,9 +67,11 @@ class UserModel {
     data['uId'] = this.uId;
     data['name'] = this.name;
     data['lastName'] = this.lastName;
+    data['address'] = this.address ?? "";
     data['email'] = this.email;
     data['level'] = this.level;
-    data['timeStamp'] = DateTime.now().toUtc().millisecondsSinceEpoch;
+    data['lastUpdatedAt'] = this.lastUpdatedAt;
+    data['timeStamp'] = this.timeStamp;
     // data['password'] = this.password;
     data['imgUrl'] = this.imgUrl;
     data['latLng'] = this.latLng;

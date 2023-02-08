@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../main.dart';
 import '../../../constants/app_constant.dart';
 import '../../../constants/sizeConstant.dart';
 import '../../../model/user_model.dart';
+import '../../../provider/UserDataProvider.dart';
 import '../../../service/firebase_service.dart';
 import '../../../service/notification_service.dart';
 
@@ -32,6 +34,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         print(userData);
       }
       if (!isNullEmptyOrFalse(userData)) {
+        final provider =
+            Provider.of<UserDataProvider>(Get.context!, listen: false);
+        provider.setUserData(userData!);
         String fcmToken = await getIt<NotificationService>().getFcmToken();
         if (!isNullEmptyOrFalse(fcmToken)) {
           await getIt<FirebaseService>().updateFcmToken(fcmToken: fcmToken);

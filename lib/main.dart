@@ -9,9 +9,13 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ntp/ntp.dart';
+import 'package:provider/provider.dart';
 
 import 'app/constants/app_module.dart';
 import 'app/constants/sizeConstant.dart';
+import 'app/provider/UserDataProvider.dart';
+import 'app/provider/card_provider.dart';
 import 'app/routes/app_pages.dart';
 import 'app/service/notification_service.dart';
 import 'firebase_options.dart';
@@ -37,6 +41,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   if (Platform.isAndroid) {
     AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
   }
@@ -52,11 +57,21 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
 
   runApp(
-    GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Application",
-      initialRoute: AppPages.INITIAL,
-      getPages: AppPages.routes,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserDataProvider>(
+          create: (_) => UserDataProvider(),
+        ),
+        ChangeNotifierProvider<CardProvider>(
+          create: (_) => CardProvider(),
+        ),
+      ],
+      child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: "Application",
+        initialRoute: AppPages.INITIAL,
+        getPages: AppPages.routes,
+      ),
     ),
   );
 }

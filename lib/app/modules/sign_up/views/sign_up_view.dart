@@ -501,9 +501,11 @@ class SignUpView extends GetWidget<SignUpController> {
             context: Get.context!,
             userModel: UserModel(
                 uId: controller.user!.uid,
+                lastUpdatedAt: DateTime.now().toUtc().millisecondsSinceEpoch,
                 latLng: controller.latLng,
                 timeStamp: DateTime.now().toUtc().millisecondsSinceEpoch,
                 requestedFriendsList: [],
+                address: controller.addressController.value.text,
                 imgUrl: imgUrl,
                 level:
                     controller.selectUserLevelType.value.dropDownValue!.value,

@@ -5,11 +5,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../main.dart';
 import '../../../constants/app_constant.dart';
 import '../../../constants/color_constant.dart';
 import '../../../model/user_model.dart';
+import '../../../provider/card_provider.dart';
 import '../../../routes/app_pages.dart';
 import '../../../service/firebase_service.dart';
 import '../controllers/home_controller.dart';
@@ -18,7 +20,9 @@ class HomeView extends GetWidget<HomeController> {
   const HomeView({Key? key}) : super(key: key);
 
   void _onItemTapped(int index) {
+    final cardProvider = Provider.of<CardProvider>(Get.context!, listen: false);
     controller.selectedIndex.value = index;
+    cardProvider.reset();
   }
 
   @override
