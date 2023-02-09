@@ -7,10 +7,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:path/path.dart' as path;
+import 'package:provider/provider.dart';
 import '../../main.dart';
 import '../constants/app_constant.dart';
 import '../constants/sizeConstant.dart';
 import '../model/user_model.dart';
+import '../provider/UserDataProvider.dart';
 import '../utilities/date_utilities.dart';
 import '../utilities/progress_dialog_utils.dart';
 import 'location.dart';
@@ -29,6 +31,18 @@ class FirebaseService {
   Future<void> addTempUserDataToFireStore(
       {required Map<String, dynamic> data, required String uUid}) async {
     return await firebaseFireStore.collection("user").doc(uUid).set(data);
+  }
+
+  static Future changeLastUpdated(BuildContext context) async {
+    final provider = Provider.of<UserDataProvider>(context, listen: false);
+    int lastUpdated = DateTime.now().millisecondsSinceEpoch;
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .update({
+      'lastUpdatedAt': lastUpdated,
+    });
+    provider.updateLastRefreshedAt(lastUpdated);
   }
 
   Future<DocumentReference<Map<String, dynamic>>> addChatDataToFireStore(

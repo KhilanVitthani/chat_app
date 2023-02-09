@@ -1,3 +1,4 @@
+import 'package:chat_app/app/utilities/date_utilities.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -18,10 +19,13 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   RxString userName = "".obs;
   RxBool hasData = false.obs;
   RxInt selectedIndex = 0.obs;
+  RxInt lastUpdated = 0.obs;
   @override
   void onInit() {
     super.onInit();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      DateTime now = await getNtpTime();
+
       if (!isNullEmptyOrFalse(box.read(ArgumentConstant.userUid))) {
         userData = await getIt<FirebaseService>().getUserData(
             context: Get.context!,
@@ -37,6 +41,10 @@ class HomeController extends GetxController with WidgetsBindingObserver {
         final provider =
             Provider.of<UserDataProvider>(Get.context!, listen: false);
         provider.setUserData(userData!);
+        lastUpdated.value = provider.userData!.lastUpdatedAt ?? 0;
+        if (lastUpdated == 0) {
+          lastUpdated.value = now.millisecondsSinceEpoch;
+        }
         String fcmToken = await getIt<NotificationService>().getFcmToken();
         if (!isNullEmptyOrFalse(fcmToken)) {
           await getIt<FirebaseService>().updateFcmToken(fcmToken: fcmToken);

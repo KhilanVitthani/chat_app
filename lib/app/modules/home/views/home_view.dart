@@ -3,8 +3,10 @@ import 'package:chat_app/app/modules/add_user/views/add_user_view.dart';
 import 'package:chat_app/app/modules/my_friends/views/my_friends_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../main.dart';
@@ -57,6 +59,30 @@ class HomeView extends GetWidget<HomeController> {
                   Get.toNamed(Routes.FRIEND_REQUEST);
                 },
                 icon: Icon(Icons.people)),
+            const Center(
+                child: Text(
+              'Resets In : ',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            )),
+            if (controller.lastUpdated.value > 0)
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: CountdownTimer(
+                    endWidget: Container(),
+                    onEnd: () {
+                      WidgetsBinding.instance.addPostFrameCallback((_) async {
+                        await FirebaseService.changeLastUpdated(context);
+
+                        Get.toNamed(Routes.HOME);
+                      });
+                    },
+                    textStyle: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w500),
+                    endTime: 10000,
+                  ),
+                ),
+              ),
             IconButton(
                 onPressed: () async {
                   await getIt<FirebaseService>()
