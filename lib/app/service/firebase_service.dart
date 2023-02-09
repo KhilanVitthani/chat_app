@@ -317,7 +317,12 @@ class FirebaseService {
   }
 
   Stream<QuerySnapshot> getAllUsersList() {
-    return firebaseFireStore.collection("user").orderBy("name").snapshots();
+    return firebaseFireStore
+        .collection("user")
+        .where("uId",
+            isNotEqualTo: box.read(ArgumentConstant.userUid).toString())
+        // .orderBy("name")
+        .snapshots();
   }
 
   Stream<QuerySnapshot> getAllFriendsOfUser() {

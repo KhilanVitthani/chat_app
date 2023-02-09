@@ -259,16 +259,18 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
                       fontSize: 22,
                       fontWeight: FontWeight.bold)),
             ),
-            if (!isNullEmptyOrFalse(user.address))
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(user.address.toString(),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400)),
-              ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                  !isNullEmptyOrFalse(user.address)
+                      ? user.address.toString()
+                      : "Remote",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400)),
+            ),
             const SizedBox(
               height: 10,
             ),

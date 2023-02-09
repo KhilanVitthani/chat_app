@@ -56,22 +56,106 @@ class AddUserView extends GetWidget<AddUserController> {
                                   ),
                                 );
                               } else {
-                                return (snapshot.data!.docs.length > 0)
-                                    ? Expanded(
-                                        child: Column(
-                                          children: [
-                                            Consumer<CardProvider>(
-                                              builder: (context, card, _) {
-                                                print('card ${card.pageIndex}');
-                                                if (cardProvider.pageIndex >
-                                                    0) {
-                                                  return Center(
-                                                      child: InkWell(
+                                if (snapshot.data!.docs.length > 0) {
+                                  snapshot.data!.docs.shuffle();
+                                  List<UserModel> list = snapshot.data!.docs
+                                      .map((e) => UserModel.fromJson(
+                                          e.data() as Map<String, dynamic>))
+                                      .toList();
+                                  list.shuffle();
+                                  return Expanded(
+                                    child: Column(
+                                      children: [
+                                        Consumer<CardProvider>(
+                                          builder: (context, card, _) {
+                                            print('card ${card.pageIndex}');
+                                            if (cardProvider.pageIndex > 0) {
+                                              return Center(
+                                                  child: InkWell(
+                                                onTap: () {
+                                                  controller
+                                                      .carouselController.value
+                                                      .previousPage(
+                                                          duration:
+                                                              const Duration(
+                                                                  seconds: 1),
+                                                          curve:
+                                                              Curves.easeInOut);
+                                                },
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                    top: 8,
+                                                  ),
+                                                  child: CircleAvatar(
+                                                    backgroundColor:
+                                                        appTheme.primaryTheme,
+                                                    child: Icon(
+                                                      Icons.arrow_upward,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ));
+                                            } else {
+                                              return const CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                child: Icon(
+                                                  Icons.arrow_upward,
+                                                  color: Colors.transparent,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                        Expanded(
+                                          child: CarouselSlider.builder(
+                                              itemCount: snapshot.data!.docs
+                                                  .sublist(0, 5)
+                                                  .length,
+                                              carouselController: controller
+                                                  .carouselController.value,
+                                              options: CarouselOptions(
+                                                autoPlay: false,
+                                                enlargeCenterPage: true,
+                                                viewportFraction: 0.8,
+                                                scrollDirection: Axis.vertical,
+                                                onPageChanged:
+                                                    (int page, reason) {
+                                                  cardProvider.setIndex(page);
+                                                },
+                                                enableInfiniteScroll: false,
+                                                aspectRatio: 2.0,
+                                                initialPage: 0,
+                                              ),
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int itemIndex,
+                                                      int pageViewIndex) {
+                                                return userCard(list[itemIndex],
+                                                    controller);
+                                              }),
+                                        ),
+                                        Consumer<CardProvider>(
+                                          builder: (context, card, _) {
+                                            print(
+                                                'bottom ${card.pageIndex} ${snapshot.data!.docs.length - 1}');
+                                            if (cardProvider.pageIndex <
+                                                snapshot.data!.docs
+                                                        .sublist(0, 5)
+                                                        .length -
+                                                    1) {
+                                              return Center(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 20),
+                                                  child: InkWell(
                                                     onTap: () {
                                                       controller
                                                           .carouselController
                                                           .value
-                                                          .previousPage(
+                                                          .nextPage(
                                                               duration:
                                                                   const Duration(
                                                                       seconds:
@@ -79,136 +163,47 @@ class AddUserView extends GetWidget<AddUserController> {
                                                               curve: Curves
                                                                   .easeInOut);
                                                     },
-                                                    child: Padding(
-                                                      padding: EdgeInsets.only(
-                                                        top: 8,
-                                                      ),
-                                                      child: CircleAvatar(
-                                                        backgroundColor:
-                                                            appTheme
-                                                                .primaryTheme,
-                                                        child: Icon(
-                                                          Icons.arrow_upward,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ));
-                                                } else {
-                                                  return const CircleAvatar(
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                    child: Icon(
-                                                      Icons.arrow_upward,
-                                                      color: Colors.transparent,
-                                                    ),
-                                                  );
-                                                }
-                                              },
-                                            ),
-                                            Expanded(
-                                              child: CarouselSlider.builder(
-                                                  itemCount: snapshot
-                                                      .data!.docs.length,
-                                                  carouselController: controller
-                                                      .carouselController.value,
-                                                  options: CarouselOptions(
-                                                    autoPlay: false,
-                                                    enlargeCenterPage: true,
-                                                    viewportFraction: 0.8,
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    onPageChanged:
-                                                        (int page, reason) {
-                                                      cardProvider
-                                                          .setIndex(page);
-                                                    },
-                                                    enableInfiniteScroll: false,
-                                                    aspectRatio: 2.0,
-                                                    initialPage: 0,
-                                                  ),
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int itemIndex,
-                                                          int pageViewIndex) {
-                                                    return userCard(
-                                                        UserModel.fromJson(snapshot
-                                                                .data!
-                                                                .docs[itemIndex]
-                                                                .data()
-                                                            as Map<String,
-                                                                dynamic>),
-                                                        controller);
-                                                  }),
-                                            ),
-                                            Consumer<CardProvider>(
-                                              builder: (context, card, _) {
-                                                print(
-                                                    'bottom ${card.pageIndex} ${snapshot.data!.docs.length - 1}');
-                                                if (cardProvider.pageIndex <
-                                                    snapshot.data!.docs.length -
-                                                        1) {
-                                                  return Center(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 20),
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          controller
-                                                              .carouselController
-                                                              .value
-                                                              .nextPage(
-                                                                  duration:
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              1),
-                                                                  curve: Curves
-                                                                      .easeInOut);
-                                                        },
-                                                        child: CircleAvatar(
-                                                          backgroundColor:
-                                                              appTheme
-                                                                  .primaryTheme,
-                                                          child: Icon(
-                                                              Icons
-                                                                  .arrow_downward_outlined,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                } else {
-                                                  return const Padding(
-                                                    padding: EdgeInsets.only(
-                                                        bottom: 20),
                                                     child: CircleAvatar(
                                                       backgroundColor:
-                                                          Colors.transparent,
+                                                          appTheme.primaryTheme,
                                                       child: Icon(
-                                                        Icons
-                                                            .arrow_downward_outlined,
-                                                        color:
-                                                            Colors.transparent,
-                                                      ),
+                                                          Icons
+                                                              .arrow_downward_outlined,
+                                                          color: Colors.white),
                                                     ),
-                                                  );
-                                                }
-                                              },
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    : Column(
-                                        children: [
-                                          Expanded(
-                                            child: Center(
-                                              child: Text("No any user found"),
-                                            ),
-                                          ),
-                                        ],
-                                      );
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              return const Padding(
+                                                padding:
+                                                    EdgeInsets.only(bottom: 20),
+                                                child: CircleAvatar(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  child: Icon(
+                                                    Icons
+                                                        .arrow_downward_outlined,
+                                                    color: Colors.transparent,
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }
+                                return Column(
+                                  children: [
+                                    Expanded(
+                                      child: Center(
+                                        child: Text("No any user found"),
+                                      ),
+                                    ),
+                                  ],
+                                );
                               }
                             },
                           ),
@@ -246,19 +241,19 @@ class AddUserView extends GetWidget<AddUserController> {
                       fontSize: 22,
                       fontWeight: FontWeight.bold)),
             ),
-            if (!isNullEmptyOrFalse(user.address))
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(user.address.toString(),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400)),
-              ),
-            const SizedBox(
-              height: 10,
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text(
+                  !isNullEmptyOrFalse(user.address)
+                      ? user.address.toString()
+                      : "Remote",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400)),
             ),
+
             Padding(
               padding: const EdgeInsets.all(10),
               child: Text('Level ${user.level}',
