@@ -3,6 +3,7 @@ import 'package:chat_app/app/Widgets/button.dart';
 import 'package:chat_app/app/constants/color_constant.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ import '../../../provider/UserDataProvider.dart';
 import '../../../provider/card_provider.dart';
 import '../../../routes/app_pages.dart';
 import '../../../service/firebase_service.dart';
+import '../../../utilities/date_utilities.dart';
 import '../controllers/add_user_controller.dart';
 
 class AddUserView extends GetWidget<AddUserController> {
@@ -39,6 +41,47 @@ class AddUserView extends GetWidget<AddUserController> {
                   : Container(
                       child: Column(
                         children: [
+                          Space.height(15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Center(
+                                  child: Text(
+                                'Resets In : ',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              )),
+                              if (controller.lastUpdated.value > 0)
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: CountdownTimer(
+                                      endWidget: Container(),
+                                      onEnd: () {
+                                        WidgetsBinding.instance
+                                            .addPostFrameCallback((_) async {
+                                          DateTime now = await getNtpTime();
+
+                                          controller.lastUpdated.value = now
+                                              .toUtc()
+                                              .millisecondsSinceEpoch;
+                                          await FirebaseService
+                                              .changeLastUpdated(context);
+
+                                          controller.update();
+                                        });
+                                      },
+                                      textStyle: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                      endTime:
+                                          controller.lastUpdated.value + 600000,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
                           StreamBuilder<QuerySnapshot>(
                             stream: getIt<FirebaseService>().getAllUsersList(),
                             builder: (BuildContext context, snapshot) {

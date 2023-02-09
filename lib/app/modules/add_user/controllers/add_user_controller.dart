@@ -20,7 +20,6 @@ class AddUserController extends GetxController {
   RxBool hasData = false.obs;
   RxInt lastUpdated = 0.obs;
   Rx<CarouselController> carouselController = CarouselController().obs;
-
   @override
   void onInit() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {

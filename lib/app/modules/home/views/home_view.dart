@@ -64,25 +64,6 @@ class HomeView extends GetWidget<HomeController> {
               'Resets In : ',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             )),
-            if (controller.lastUpdated.value > 0)
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: CountdownTimer(
-                    endWidget: Container(),
-                    onEnd: () {
-                      WidgetsBinding.instance.addPostFrameCallback((_) async {
-                        await FirebaseService.changeLastUpdated(context);
-
-                        Get.toNamed(Routes.HOME);
-                      });
-                    },
-                    textStyle: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w500),
-                    endTime: 10000,
-                  ),
-                ),
-              ),
             IconButton(
                 onPressed: () async {
                   await getIt<FirebaseService>()
