@@ -49,36 +49,62 @@ class HomeView extends GetWidget<HomeController> {
           onTap: _onItemTapped,
         ),
         appBar: AppBar(
+          leading: IconButton(
+              onPressed: () async {
+                await getIt<FirebaseService>()
+                    .logOut(context: context)
+                    .then((value) {
+                  box.erase();
+                  Get.offAllNamed(Routes.REGISTER);
+                });
+              },
+              icon: Icon(Icons.logout)),
           title: Text(
             getTitleString(),
           ),
           centerTitle: true,
           actions: [
-            IconButton(
-                onPressed: () async {
-                  Get.toNamed(Routes.FRIEND_REQUEST);
-                },
-                icon: Icon(Icons.people)),
-            const Center(
-                child: Text(
-              'Resets In : ',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            )),
-            IconButton(
-                onPressed: () async {
-                  await getIt<FirebaseService>()
-                      .logOut(context: context)
-                      .then((value) {
-                    box.erase();
-                    Get.offAllNamed(Routes.REGISTER);
-                  });
-                },
-                icon: Icon(Icons.logout)),
+            (controller.selectedIndex.value == 1)
+                ? (3 < 4)
+                    ? IconButton(
+                        onPressed: () {
+                          Get.toNamed(Routes.FRIEND_REQUEST);
+                        },
+                        icon: Icon(Icons.people))
+                    : IconButton(
+                        onPressed: () async {
+                          Get.toNamed(Routes.FRIEND_REQUEST);
+                        },
+                        icon: Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            Container(
+                                // color: Colors.white,
+                                height: 30,
+                                width: 30,
+                                child: Icon(Icons.people)),
+                            Positioned(
+                                child: CircleAvatar(
+                              backgroundColor: Colors.red,
+                              radius: 3,
+                            ))
+                          ],
+                        ))
+                : SizedBox(),
+            // const Center(
+            //     child: Text(
+            //   'Resets In : ',
+            //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            // )),
           ],
         ),
         body: (controller.hasData.value)
             ? [
-                AddUserView(),
+                Column(
+                  children: [
+                    Expanded(child: AddUserView()),
+                  ],
+                ),
                 MyFriendsView(),
               ].elementAt(controller.selectedIndex.value)
             : Center(

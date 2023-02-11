@@ -61,13 +61,11 @@ class AddUserView extends GetWidget<AddUserController> {
                                         WidgetsBinding.instance
                                             .addPostFrameCallback((_) async {
                                           DateTime now = await getNtpTime();
-
                                           controller.lastUpdated.value = now
                                               .toUtc()
                                               .millisecondsSinceEpoch;
                                           await FirebaseService
                                               .changeLastUpdated(context);
-
                                           controller.update();
                                         });
                                       },
