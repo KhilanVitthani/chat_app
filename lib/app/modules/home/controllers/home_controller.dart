@@ -18,8 +18,11 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   UserModel? userData;
   RxString userName = "".obs;
   RxBool hasData = false.obs;
+  RxBool hasUserData = false.obs;
   RxInt selectedIndex = 0.obs;
   RxInt lastUpdated = 0.obs;
+
+  RxList<UserModel> userList = RxList([]);
   @override
   void onInit() {
     super.onInit();
@@ -36,6 +39,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
           getIt<FirebaseService>().setStatusForChatScreen(status: true);
         }
         print(userData);
+        getRandomUserList();
       }
       if (!isNullEmptyOrFalse(userData)) {
         final provider =
@@ -80,6 +84,20 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   @override
   void onReady() {
     super.onReady();
+  }
+
+  getRandomUserList() async {
+    hasUserData.value = false;
+    RxList<UserModel> user =
+        (await getIt<FirebaseService>().getAllUsersFutureList()).obs;
+    user.shuffle();
+    userList = user.sublist(0, 5).obs;
+    userList.forEach((element) {
+      print(element.name.toString());
+    });
+    userList.refresh();
+    update();
+    hasUserData.value = true;
   }
 
   @override

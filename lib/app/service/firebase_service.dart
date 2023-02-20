@@ -339,6 +339,23 @@ class FirebaseService {
         .snapshots();
   }
 
+  Future<List<UserModel>> getAllUsersFutureList() async {
+    List<UserModel> users = [];
+    await firebaseFireStore
+        .collection("user")
+        .where("uId",
+            isNotEqualTo: box.read(ArgumentConstant.userUid).toString())
+        // .orderBy("name")
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        Map<String, dynamic> data = doc.data()! as Map<String, dynamic>;
+        users.add(UserModel.fromJson(data));
+      });
+    });
+    return users;
+  }
+
   Stream<QuerySnapshot> getAllFriendsOfUser() {
     return firebaseFireStore
         .collection("myFriends")

@@ -16,6 +16,7 @@ import '../../../model/user_model.dart';
 import '../../../provider/card_provider.dart';
 import '../../../routes/app_pages.dart';
 import '../../../service/firebase_service.dart';
+import '../../../utilities/date_utilities.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetWidget<HomeController> {
@@ -65,31 +66,40 @@ class HomeView extends GetWidget<HomeController> {
           centerTitle: true,
           actions: [
             (controller.selectedIndex.value == 1)
-                ? (3 < 4)
-                    ? IconButton(
-                        onPressed: () {
-                          Get.toNamed(Routes.FRIEND_REQUEST);
-                        },
-                        icon: Icon(Icons.people))
-                    : IconButton(
-                        onPressed: () async {
-                          Get.toNamed(Routes.FRIEND_REQUEST);
-                        },
-                        icon: Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Container(
-                                // color: Colors.white,
-                                height: 30,
-                                width: 30,
-                                child: Icon(Icons.people)),
-                            Positioned(
-                                child: CircleAvatar(
-                              backgroundColor: Colors.red,
-                              radius: 3,
-                            ))
-                          ],
-                        ))
+                ? IconButton(
+                    onPressed: () async {
+                      Get.toNamed(Routes.FRIEND_REQUEST);
+                    },
+                    icon: Stack(
+                      alignment: Alignment.topRight,
+                      children: [
+                        Container(
+                            // color: Colors.white,
+                            height: 30,
+                            width: 30,
+                            child: Icon(Icons.people)),
+                        StreamBuilder<QuerySnapshot>(
+                          stream: getIt<FirebaseService>()
+                              .getAllPendingRequestList(),
+                          builder: (BuildContext context, snapshot) {
+                            if (snapshot.hasError) {
+                              return SizedBox();
+                            } else if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return SizedBox();
+                            } else {
+                              return (snapshot.data!.docs.length > 0)
+                                  ? Positioned(
+                                      child: CircleAvatar(
+                                      backgroundColor: Colors.red,
+                                      radius: 3,
+                                    ))
+                                  : SizedBox();
+                            }
+                          },
+                        ),
+                      ],
+                    ))
                 : SizedBox(),
             // const Center(
             //     child: Text(
@@ -102,6 +112,44 @@ class HomeView extends GetWidget<HomeController> {
             ? [
                 Column(
                   children: [
+                    Space.height(15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Center(
+                            child: Text(
+                          'Resets In : ',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
+                        )),
+                        if (controller.lastUpdated.value > 0)
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: CountdownTimer(
+                                endWidget: Container(),
+                                onEnd: () {
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) async {
+                                    DateTime now = await getNtpTime();
+                                    controller.lastUpdated.value =
+                                        now.toUtc().millisecondsSinceEpoch;
+                                    await FirebaseService.changeLastUpdated(
+                                        context);
+                                    controller.getRandomUserList();
+                                    controller.update();
+                                  });
+                                },
+                                textStyle: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                                endTime: controller.lastUpdated.value + 600000,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                     Expanded(child: AddUserView()),
                   ],
                 ),

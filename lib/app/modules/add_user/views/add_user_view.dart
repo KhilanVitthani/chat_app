@@ -41,213 +41,307 @@ class AddUserView extends GetWidget<AddUserController> {
                   : Container(
                       child: Column(
                         children: [
-                          Space.height(15),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Center(
-                                  child: Text(
-                                'Resets In : ',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              )),
-                              if (controller.lastUpdated.value > 0)
-                                Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: CountdownTimer(
-                                      endWidget: Container(),
-                                      onEnd: () {
-                                        WidgetsBinding.instance
-                                            .addPostFrameCallback((_) async {
-                                          DateTime now = await getNtpTime();
-                                          controller.lastUpdated.value = now
-                                              .toUtc()
-                                              .millisecondsSinceEpoch;
-                                          await FirebaseService
-                                              .changeLastUpdated(context);
-                                          controller.update();
-                                        });
-                                      },
-                                      textStyle: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500),
-                                      endTime:
-                                          controller.lastUpdated.value + 600000,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                          StreamBuilder<QuerySnapshot>(
-                            stream: getIt<FirebaseService>().getAllUsersList(),
-                            builder: (BuildContext context, snapshot) {
-                              if (snapshot.hasError) {
-                                return Expanded(
-                                  child: Center(
-                                    child: Text("Something went wrong..."),
-                                  ),
-                                );
-                              } else if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Expanded(
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              } else {
-                                if (snapshot.data!.docs.length > 0) {
-                                  snapshot.data!.docs.shuffle();
-                                  List<UserModel> list = snapshot.data!.docs
-                                      .map((e) => UserModel.fromJson(
-                                          e.data() as Map<String, dynamic>))
-                                      .toList();
-                                  list.shuffle();
-                                  return Expanded(
-                                    child: Column(
-                                      children: [
-                                        Consumer<CardProvider>(
-                                          builder: (context, card, _) {
-                                            print('card ${card.pageIndex}');
-                                            if (cardProvider.pageIndex > 0) {
-                                              return Center(
-                                                  child: InkWell(
-                                                onTap: () {
-                                                  controller
-                                                      .carouselController.value
-                                                      .previousPage(
-                                                          duration:
-                                                              const Duration(
-                                                                  seconds: 1),
-                                                          curve:
-                                                              Curves.easeInOut);
-                                                },
-                                                child: Padding(
-                                                  padding: EdgeInsets.only(
-                                                    top: 8,
+                          // StreamBuilder<QuerySnapshot>(
+                          //   stream: getIt<FirebaseService>().getAllUsersList(),
+                          //   builder: (BuildContext context, snapshot) {
+                          //     if (snapshot.hasError) {
+                          //       return Expanded(
+                          //         child: Center(
+                          //           child: Text("Something went wrong..."),
+                          //         ),
+                          //       );
+                          //     } else if (snapshot.connectionState ==
+                          //         ConnectionState.waiting) {
+                          //       return Expanded(
+                          //         child: Center(
+                          //           child: CircularProgressIndicator(),
+                          //         ),
+                          //       );
+                          //     } else {
+                          //       if (snapshot.data!.docs.length > 0) {
+                          //         snapshot.data!.docs.shuffle();
+                          //         List<UserModel> list = snapshot.data!.docs
+                          //             .map((e) => UserModel.fromJson(
+                          //                 e.data() as Map<String, dynamic>))
+                          //             .toList();
+                          //         list.shuffle();
+                          //         return Expanded(
+                          //           child: Column(
+                          //             children: [
+                          //               Consumer<CardProvider>(
+                          //                 builder: (context, card, _) {
+                          //                   print('card ${card.pageIndex}');
+                          //                   if (cardProvider.pageIndex > 0) {
+                          //                     return Center(
+                          //                         child: InkWell(
+                          //                       onTap: () {
+                          //                         controller
+                          //                             .carouselController.value
+                          //                             .previousPage(
+                          //                                 duration:
+                          //                                     const Duration(
+                          //                                         seconds: 1),
+                          //                                 curve:
+                          //                                     Curves.easeInOut);
+                          //                       },
+                          //                       child: Padding(
+                          //                         padding: EdgeInsets.only(
+                          //                           top: 8,
+                          //                         ),
+                          //                         child: CircleAvatar(
+                          //                           backgroundColor:
+                          //                               appTheme.primaryTheme,
+                          //                           child: Icon(
+                          //                             Icons.arrow_upward,
+                          //                             color: Colors.white,
+                          //                           ),
+                          //                         ),
+                          //                       ),
+                          //                     ));
+                          //                   } else {
+                          //                     return const CircleAvatar(
+                          //                       backgroundColor:
+                          //                           Colors.transparent,
+                          //                       child: Icon(
+                          //                         Icons.arrow_upward,
+                          //                         color: Colors.transparent,
+                          //                       ),
+                          //                     );
+                          //                   }
+                          //                 },
+                          //               ),
+                          //               Expanded(
+                          //                 child: CarouselSlider.builder(
+                          //                     itemCount: snapshot.data!.docs
+                          //                         .sublist(0, 5)
+                          //                         .length,
+                          //                     carouselController: controller
+                          //                         .carouselController.value,
+                          //                     options: CarouselOptions(
+                          //                       autoPlay: false,
+                          //                       enlargeCenterPage: true,
+                          //                       viewportFraction: 0.8,
+                          //                       scrollDirection: Axis.vertical,
+                          //                       onPageChanged:
+                          //                           (int page, reason) {
+                          //                         cardProvider.setIndex(page);
+                          //                       },
+                          //                       enableInfiniteScroll: false,
+                          //                       aspectRatio: 2.0,
+                          //                       initialPage: 0,
+                          //                     ),
+                          //                     itemBuilder:
+                          //                         (BuildContext context,
+                          //                             int itemIndex,
+                          //                             int pageViewIndex) {
+                          //                       return userCard(list[itemIndex],
+                          //                           controller);
+                          //                     }),
+                          //               ),
+                          //               Consumer<CardProvider>(
+                          //                 builder: (context, card, _) {
+                          //                   print(
+                          //                       'bottom ${card.pageIndex} ${snapshot.data!.docs.length - 1}');
+                          //                   if (cardProvider.pageIndex <
+                          //                       snapshot.data!.docs
+                          //                               .sublist(0, 5)
+                          //                               .length -
+                          //                           1) {
+                          //                     return Center(
+                          //                       child: Padding(
+                          //                         padding:
+                          //                             const EdgeInsets.only(
+                          //                                 bottom: 20),
+                          //                         child: InkWell(
+                          //                           onTap: () {
+                          //                             controller
+                          //                                 .carouselController
+                          //                                 .value
+                          //                                 .nextPage(
+                          //                                     duration:
+                          //                                         const Duration(
+                          //                                             seconds:
+                          //                                                 1),
+                          //                                     curve: Curves
+                          //                                         .easeInOut);
+                          //                           },
+                          //                           child: CircleAvatar(
+                          //                             backgroundColor:
+                          //                                 appTheme.primaryTheme,
+                          //                             child: Icon(
+                          //                                 Icons
+                          //                                     .arrow_downward_outlined,
+                          //                                 color: Colors.white),
+                          //                           ),
+                          //                         ),
+                          //                       ),
+                          //                     );
+                          //                   } else {
+                          //                     return const Padding(
+                          //                       padding:
+                          //                           EdgeInsets.only(bottom: 20),
+                          //                       child: CircleAvatar(
+                          //                         backgroundColor:
+                          //                             Colors.transparent,
+                          //                         child: Icon(
+                          //                           Icons
+                          //                               .arrow_downward_outlined,
+                          //                           color: Colors.transparent,
+                          //                         ),
+                          //                       ),
+                          //                     );
+                          //                   }
+                          //                 },
+                          //               )
+                          //             ],
+                          //           ),
+                          //         );
+                          //       }
+                          //       return Column(
+                          //         children: [
+                          //           Expanded(
+                          //             child: Center(
+                          //               child: Text("No any user found"),
+                          //             ),
+                          //           ),
+                          //         ],
+                          //       );
+                          //     }
+                          //   },
+                          // ),
+                          (controller.homeController.hasUserData.isTrue)
+                              ? Expanded(
+                                  child: Column(
+                                    children: [
+                                      Consumer<CardProvider>(
+                                        builder: (context, card, _) {
+                                          print('card ${card.pageIndex}');
+                                          if (cardProvider.pageIndex > 0) {
+                                            return Center(
+                                                child: InkWell(
+                                              onTap: () {
+                                                controller
+                                                    .carouselController.value
+                                                    .previousPage(
+                                                        duration:
+                                                            const Duration(
+                                                                seconds: 1),
+                                                        curve:
+                                                            Curves.easeInOut);
+                                              },
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                  top: 8,
+                                                ),
+                                                child: CircleAvatar(
+                                                  backgroundColor:
+                                                      appTheme.primaryTheme,
+                                                  child: Icon(
+                                                    Icons.arrow_upward,
+                                                    color: Colors.white,
                                                   ),
+                                                ),
+                                              ),
+                                            ));
+                                          } else {
+                                            return const CircleAvatar(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              child: Icon(
+                                                Icons.arrow_upward,
+                                                color: Colors.transparent,
+                                              ),
+                                            );
+                                          }
+                                        },
+                                      ),
+                                      Expanded(
+                                        child: CarouselSlider.builder(
+                                            itemCount: controller
+                                                .homeController.userList.length,
+                                            carouselController: controller
+                                                .carouselController.value,
+                                            options: CarouselOptions(
+                                              autoPlay: false,
+                                              enlargeCenterPage: true,
+                                              viewportFraction: 0.8,
+                                              scrollDirection: Axis.vertical,
+                                              onPageChanged:
+                                                  (int page, reason) {
+                                                cardProvider.setIndex(page);
+                                              },
+                                              enableInfiniteScroll: false,
+                                              aspectRatio: 2.0,
+                                              initialPage: 0,
+                                            ),
+                                            itemBuilder: (BuildContext context,
+                                                int itemIndex,
+                                                int pageViewIndex) {
+                                              return userCard(
+                                                  controller.homeController
+                                                      .userList[itemIndex],
+                                                  controller);
+                                            }),
+                                      ),
+                                      Consumer<CardProvider>(
+                                        builder: (context, card, _) {
+                                          // print(
+                                          //     'bottom ${card.pageIndex} ${snapshot.data!.docs.length - 1}');
+                                          if (cardProvider.pageIndex <
+                                              controller.homeController.userList
+                                                      .length -
+                                                  1) {
+                                            return Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 20),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    controller
+                                                        .carouselController
+                                                        .value
+                                                        .nextPage(
+                                                            duration:
+                                                                const Duration(
+                                                                    seconds: 1),
+                                                            curve: Curves
+                                                                .easeInOut);
+                                                  },
                                                   child: CircleAvatar(
                                                     backgroundColor:
                                                         appTheme.primaryTheme,
                                                     child: Icon(
-                                                      Icons.arrow_upward,
-                                                      color: Colors.white,
-                                                    ),
+                                                        Icons
+                                                            .arrow_downward_outlined,
+                                                        color: Colors.white),
                                                   ),
                                                 ),
-                                              ));
-                                            } else {
-                                              return const CircleAvatar(
+                                              ),
+                                            );
+                                          } else {
+                                            return const Padding(
+                                              padding:
+                                                  EdgeInsets.only(bottom: 20),
+                                              child: CircleAvatar(
                                                 backgroundColor:
                                                     Colors.transparent,
                                                 child: Icon(
-                                                  Icons.arrow_upward,
+                                                  Icons.arrow_downward_outlined,
                                                   color: Colors.transparent,
                                                 ),
-                                              );
-                                            }
-                                          },
-                                        ),
-                                        Expanded(
-                                          child: CarouselSlider.builder(
-                                              itemCount: snapshot.data!.docs
-                                                  .sublist(0, 5)
-                                                  .length,
-                                              carouselController: controller
-                                                  .carouselController.value,
-                                              options: CarouselOptions(
-                                                autoPlay: false,
-                                                enlargeCenterPage: true,
-                                                viewportFraction: 0.8,
-                                                scrollDirection: Axis.vertical,
-                                                onPageChanged:
-                                                    (int page, reason) {
-                                                  cardProvider.setIndex(page);
-                                                },
-                                                enableInfiniteScroll: false,
-                                                aspectRatio: 2.0,
-                                                initialPage: 0,
                                               ),
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int itemIndex,
-                                                      int pageViewIndex) {
-                                                return userCard(list[itemIndex],
-                                                    controller);
-                                              }),
-                                        ),
-                                        Consumer<CardProvider>(
-                                          builder: (context, card, _) {
-                                            print(
-                                                'bottom ${card.pageIndex} ${snapshot.data!.docs.length - 1}');
-                                            if (cardProvider.pageIndex <
-                                                snapshot.data!.docs
-                                                        .sublist(0, 5)
-                                                        .length -
-                                                    1) {
-                                              return Center(
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 20),
-                                                  child: InkWell(
-                                                    onTap: () {
-                                                      controller
-                                                          .carouselController
-                                                          .value
-                                                          .nextPage(
-                                                              duration:
-                                                                  const Duration(
-                                                                      seconds:
-                                                                          1),
-                                                              curve: Curves
-                                                                  .easeInOut);
-                                                    },
-                                                    child: CircleAvatar(
-                                                      backgroundColor:
-                                                          appTheme.primaryTheme,
-                                                      child: Icon(
-                                                          Icons
-                                                              .arrow_downward_outlined,
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            } else {
-                                              return const Padding(
-                                                padding:
-                                                    EdgeInsets.only(bottom: 20),
-                                                child: CircleAvatar(
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  child: Icon(
-                                                    Icons
-                                                        .arrow_downward_outlined,
-                                                    color: Colors.transparent,
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }
-                                return Column(
-                                  children: [
-                                    Expanded(
-                                      child: Center(
-                                        child: Text("No any user found"),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }
-                            },
-                          ),
+                                            );
+                                          }
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                )
+                              : Expanded(
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
                         ],
                       ),
                     ),
@@ -257,121 +351,128 @@ class AddUserView extends GetWidget<AddUserController> {
   }
 
   Widget userCard(UserModel user, AddUserController controller) {
-    return Container(
-      //height: MediaQuery.of(context).size.height*0.3,
-      margin: const EdgeInsets.fromLTRB(30, 0, 30, 10),
-      child: Card(
-        elevation: 10,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(200),
-              child:
-                  getImageByLink(url: user.imgUrl ?? "", height: 80, width: 80),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text(user.name.toString() + " " + user.lastName.toString(),
-                  style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text(
-                  !isNullEmptyOrFalse(user.address)
-                      ? user.address.toString()
-                      : "Remote",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400)),
-            ),
+    return StatefulBuilder(builder: (context, setter) {
+      return Container(
+        //height: MediaQuery.of(context).size.height*0.3,
+        margin: const EdgeInsets.fromLTRB(30, 0, 30, 10),
+        child: Card(
+          elevation: 10,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(200),
+                child: getImageByLink(
+                    url: user.imgUrl ?? "", height: 80, width: 80),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                    user.name.toString() + " " + user.lastName.toString(),
+                    style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold)),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                    !isNullEmptyOrFalse(user.address)
+                        ? user.address.toString()
+                        : "Remote",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400)),
+              ),
 
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text('Level ${user.level}',
-                  style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w300)),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            if (user.uId != box.read(ArgumentConstant.userUid) &&
-                (!controller.userData!.friendsList!.contains(user.uId))) ...[
-              if (!controller.userData!.requestedFriendsList!
-                  .contains(user.uId.toString()))
-                button(
-                  title: "Add Friend",
-                  onTap: () async {
-                    controller.userData!.requestedFriendsList!
-                        .add(user.uId.toString());
-                    await getIt<FirebaseService>().addFriend(
-                      context: Get.context!,
-                      friendsModel: controller.userData!,
-                      myFriendList: controller.userData!.requestedFriendsList!,
-                      friendsUid: user.uId!,
-                    );
-                  },
-                  width: 200,
-                  height: 40,
-                  fontsize: 12,
-                )
-              else
-                button(
-                  title: "Requested",
-                  onTap: () {},
-                  fontsize: 12,
-                  borderColor: appTheme.primaryTheme,
-                  backgroundColor: Colors.transparent,
-                  textColor: appTheme.primaryTheme,
-                  width: 200,
-                  height: 40,
-                ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text('Level ${user.level}',
+                    style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w300)),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              if (user.uId != box.read(ArgumentConstant.userUid) &&
+                  (!controller.userData!.friendsList!.contains(user.uId))) ...[
+                if (!controller.userData!.requestedFriendsList!
+                    .contains(user.uId.toString()))
+                  button(
+                    title: "Add Friend",
+                    onTap: () async {
+                      controller.userData!.requestedFriendsList!
+                          .add(user.uId.toString());
+                      await getIt<FirebaseService>().addFriend(
+                        context: Get.context!,
+                        friendsModel: controller.userData!,
+                        myFriendList:
+                            controller.userData!.requestedFriendsList!,
+                        friendsUid: user.uId!,
+                      );
+                      // user.fc
+
+                      setter(() {});
+                    },
+                    width: 200,
+                    height: 40,
+                    fontsize: 12,
+                  )
+                else
+                  button(
+                    title: "Requested",
+                    onTap: () {},
+                    fontsize: 12,
+                    borderColor: appTheme.primaryTheme,
+                    backgroundColor: Colors.transparent,
+                    textColor: appTheme.primaryTheme,
+                    width: 200,
+                    height: 40,
+                  ),
+              ],
+              // Padding(
+              //     padding: const EdgeInsets.all(10),
+              //     child: InkWell(
+              //       onTap: () {
+              //         showSendMessageDialog(context, user);
+              //         //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SendMessageScreen(user)));
+              //       },
+              //       child: Container(
+              //         margin: const EdgeInsets.only(left: 10, right: 10),
+              //         height: 50,
+              //         decoration: BoxDecoration(
+              //             color: primaryColor,
+              //             borderRadius: BorderRadius.circular(10)),
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             const Icon(
+              //               Icons.chat_outlined,
+              //               color: Colors.white,
+              //             ),
+              //             const SizedBox(
+              //               width: 10,
+              //             ),
+              //             const Text(
+              //               'Message',
+              //               style: TextStyle(color: Colors.white, fontSize: 18),
+              //             )
+              //           ],
+              //         ),
+              //       ),
+              //     )),
             ],
-            // Padding(
-            //     padding: const EdgeInsets.all(10),
-            //     child: InkWell(
-            //       onTap: () {
-            //         showSendMessageDialog(context, user);
-            //         //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SendMessageScreen(user)));
-            //       },
-            //       child: Container(
-            //         margin: const EdgeInsets.only(left: 10, right: 10),
-            //         height: 50,
-            //         decoration: BoxDecoration(
-            //             color: primaryColor,
-            //             borderRadius: BorderRadius.circular(10)),
-            //         child: Row(
-            //           mainAxisAlignment: MainAxisAlignment.center,
-            //           children: [
-            //             const Icon(
-            //               Icons.chat_outlined,
-            //               color: Colors.white,
-            //             ),
-            //             const SizedBox(
-            //               width: 10,
-            //             ),
-            //             const Text(
-            //               'Message',
-            //               style: TextStyle(color: Colors.white, fontSize: 18),
-            //             )
-            //           ],
-            //         ),
-            //       ),
-            //     )),
-          ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:chat_app/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,7 @@ class AddUserController extends GetxController {
   RxBool hasData = false.obs;
   RxInt lastUpdated = 0.obs;
   Rx<CarouselController> carouselController = CarouselController().obs;
+  HomeController homeController = Get.find<HomeController>();
   @override
   void onInit() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
