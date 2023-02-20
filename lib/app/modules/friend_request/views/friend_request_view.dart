@@ -9,6 +9,7 @@ import '../../../constants/app_constant.dart';
 import '../../../constants/color_constant.dart';
 import '../../../constants/sizeConstant.dart';
 import '../../../model/user_model.dart';
+import '../../../routes/app_pages.dart';
 import '../../../service/firebase_service.dart';
 import '../controllers/friend_request_controller.dart';
 
@@ -22,9 +23,13 @@ class FriendRequestView extends GetWidget<FriendRequestController> {
           title: const Text('Friend Requests'),
           centerTitle: true,
           leading: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: Icon(Icons.arrow_back_outlined),
               onPressed: () {
-                Get.back();
+                if (controller.isFromNotification) {
+                  Get.offAllNamed(Routes.HOME);
+                } else {
+                  Get.back();
+                }
               }),
         ),
         body: (controller.hasData.isFalse)
@@ -197,15 +202,16 @@ class FriendRequestView extends GetWidget<FriendRequestController> {
                                                                       40),
                                                               decoration:
                                                                   BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              100),
-                                                                      border:
-                                                                          Border
-                                                                              .all(
-                                                                        color: appTheme
-                                                                            .primaryTheme,
-                                                                      ),),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            100),
+                                                                border:
+                                                                    Border.all(
+                                                                  color: appTheme
+                                                                      .primaryTheme,
+                                                                ),
+                                                              ),
                                                               child: Icon(
                                                                 Icons.check,
                                                                 size: 20,

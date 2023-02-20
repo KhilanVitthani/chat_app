@@ -210,133 +210,158 @@ class AddUserView extends GetWidget<AddUserController> {
                           //   },
                           // ),
                           (controller.homeController.hasUserData.isTrue)
-                              ? Expanded(
-                                  child: Column(
-                                    children: [
-                                      Consumer<CardProvider>(
-                                        builder: (context, card, _) {
-                                          print('card ${card.pageIndex}');
-                                          if (cardProvider.pageIndex > 0) {
-                                            return Center(
-                                                child: InkWell(
-                                              onTap: () {
-                                                controller
-                                                    .carouselController.value
-                                                    .previousPage(
-                                                        duration:
-                                                            const Duration(
-                                                                seconds: 1),
-                                                        curve:
-                                                            Curves.easeInOut);
-                                              },
-                                              child: Padding(
-                                                padding: EdgeInsets.only(
-                                                  top: 8,
-                                                ),
-                                                child: CircleAvatar(
-                                                  backgroundColor:
-                                                      appTheme.primaryTheme,
-                                                  child: Icon(
-                                                    Icons.arrow_upward,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ));
-                                          } else {
-                                            return const CircleAvatar(
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              child: Icon(
-                                                Icons.arrow_upward,
-                                                color: Colors.transparent,
-                                              ),
-                                            );
-                                          }
-                                        },
-                                      ),
-                                      Expanded(
-                                        child: CarouselSlider.builder(
-                                            itemCount: controller
-                                                .homeController.userList.length,
-                                            carouselController: controller
-                                                .carouselController.value,
-                                            options: CarouselOptions(
-                                              autoPlay: false,
-                                              enlargeCenterPage: true,
-                                              viewportFraction: 0.8,
-                                              scrollDirection: Axis.vertical,
-                                              onPageChanged:
-                                                  (int page, reason) {
-                                                cardProvider.setIndex(page);
-                                              },
-                                              enableInfiniteScroll: false,
-                                              aspectRatio: 2.0,
-                                              initialPage: 0,
-                                            ),
-                                            itemBuilder: (BuildContext context,
-                                                int itemIndex,
-                                                int pageViewIndex) {
-                                              return userCard(
-                                                  controller.homeController
-                                                      .userList[itemIndex],
-                                                  controller);
-                                            }),
-                                      ),
-                                      Consumer<CardProvider>(
-                                        builder: (context, card, _) {
-                                          // print(
-                                          //     'bottom ${card.pageIndex} ${snapshot.data!.docs.length - 1}');
-                                          if (cardProvider.pageIndex <
-                                              controller.homeController.userList
-                                                      .length -
-                                                  1) {
-                                            return Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    bottom: 20),
-                                                child: InkWell(
+                              ? ((controller.homeController.userList.length > 0)
+                                  ? Expanded(
+                                      child: Column(
+                                        children: [
+                                          Consumer<CardProvider>(
+                                            builder: (context, card, _) {
+                                              print('card ${card.pageIndex}');
+                                              if (cardProvider.pageIndex > 0) {
+                                                return Center(
+                                                    child: InkWell(
                                                   onTap: () {
                                                     controller
                                                         .carouselController
                                                         .value
-                                                        .nextPage(
+                                                        .previousPage(
                                                             duration:
                                                                 const Duration(
                                                                     seconds: 1),
                                                             curve: Curves
                                                                 .easeInOut);
                                                   },
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                      top: 8,
+                                                    ),
+                                                    child: CircleAvatar(
+                                                      backgroundColor:
+                                                          appTheme.primaryTheme,
+                                                      child: Icon(
+                                                        Icons.arrow_upward,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ));
+                                              } else {
+                                                return const CircleAvatar(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  child: Icon(
+                                                    Icons.arrow_upward,
+                                                    color: Colors.transparent,
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          ),
+                                          Expanded(
+                                            child: CarouselSlider.builder(
+                                                itemCount: controller
+                                                    .homeController
+                                                    .userList
+                                                    .length,
+                                                carouselController: controller
+                                                    .carouselController.value,
+                                                options: CarouselOptions(
+                                                  autoPlay: false,
+                                                  enlargeCenterPage: true,
+                                                  viewportFraction: 0.8,
+                                                  scrollDirection:
+                                                      Axis.vertical,
+                                                  onPageChanged:
+                                                      (int page, reason) {
+                                                    cardProvider.setIndex(page);
+                                                  },
+                                                  enableInfiniteScroll: false,
+                                                  aspectRatio: 2.0,
+                                                  initialPage: 0,
+                                                ),
+                                                itemBuilder:
+                                                    (BuildContext context,
+                                                        int itemIndex,
+                                                        int pageViewIndex) {
+                                                  return (controller.userData!
+                                                          .friendsList!
+                                                          .contains(controller
+                                                              .homeController
+                                                              .userList[
+                                                                  itemIndex]
+                                                              .uId))
+                                                      ? SizedBox()
+                                                      : userCard(
+                                                          controller
+                                                                  .homeController
+                                                                  .userList[
+                                                              itemIndex],
+                                                          controller);
+                                                }),
+                                          ),
+                                          Consumer<CardProvider>(
+                                            builder: (context, card, _) {
+                                              // print(
+                                              //     'bottom ${card.pageIndex} ${snapshot.data!.docs.length - 1}');
+                                              if (cardProvider.pageIndex <
+                                                  controller.homeController
+                                                          .userList.length -
+                                                      1) {
+                                                return Center(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 20),
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        controller
+                                                            .carouselController
+                                                            .value
+                                                            .nextPage(
+                                                                duration:
+                                                                    const Duration(
+                                                                        seconds:
+                                                                            1),
+                                                                curve: Curves
+                                                                    .easeInOut);
+                                                      },
+                                                      child: CircleAvatar(
+                                                        backgroundColor:
+                                                            appTheme
+                                                                .primaryTheme,
+                                                        child: Icon(
+                                                            Icons
+                                                                .arrow_downward_outlined,
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              } else {
+                                                return const Padding(
+                                                  padding: EdgeInsets.only(
+                                                      bottom: 20),
                                                   child: CircleAvatar(
                                                     backgroundColor:
-                                                        appTheme.primaryTheme,
+                                                        Colors.transparent,
                                                     child: Icon(
-                                                        Icons
-                                                            .arrow_downward_outlined,
-                                                        color: Colors.white),
+                                                      Icons
+                                                          .arrow_downward_outlined,
+                                                      color: Colors.transparent,
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                            );
-                                          } else {
-                                            return const Padding(
-                                              padding:
-                                                  EdgeInsets.only(bottom: 20),
-                                              child: CircleAvatar(
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                                child: Icon(
-                                                  Icons.arrow_downward_outlined,
-                                                  color: Colors.transparent,
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                )
+                                                );
+                                              }
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  : Expanded(
+                                      child: Center(
+                                      child: Text("No user found"),
+                                    )))
                               : Expanded(
                                   child: Center(
                                     child: CircularProgressIndicator(),
@@ -417,6 +442,15 @@ class AddUserView extends GetWidget<AddUserController> {
                         myFriendList:
                             controller.userData!.requestedFriendsList!,
                         friendsUid: user.uId!,
+                      );
+                      await controller.sendPushNotification(
+                        nTitle: controller.userData!.name! +
+                            " " +
+                            controller.userData!.lastName.toString(),
+                        nBody: "has send you friend request.",
+                        nType: "nType",
+                        nSenderId: box.read(ArgumentConstant.userUid),
+                        nUserDeviceToken: user.fcmToken.toString(),
                       );
                       // user.fc
 

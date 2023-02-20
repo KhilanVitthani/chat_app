@@ -343,8 +343,10 @@ class FirebaseService {
     List<UserModel> users = [];
     await firebaseFireStore
         .collection("user")
-        .where("uId",
-            isNotEqualTo: box.read(ArgumentConstant.userUid).toString())
+        .where(
+          "uId",
+          isNotEqualTo: box.read(ArgumentConstant.userUid).toString(),
+        )
         // .orderBy("name")
         .get()
         .then((QuerySnapshot querySnapshot) {

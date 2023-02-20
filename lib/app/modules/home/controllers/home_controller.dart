@@ -88,10 +88,16 @@ class HomeController extends GetxController with WidgetsBindingObserver {
 
   getRandomUserList() async {
     hasUserData.value = false;
-    RxList<UserModel> user =
+    RxList<UserModel> user = RxList([]);
+    RxList<UserModel> user1 =
         (await getIt<FirebaseService>().getAllUsersFutureList()).obs;
+    user1.forEach((element) {
+      if (!userData!.friendsList!.contains(element.uId)) {
+        user.add(element);
+      }
+    });
     user.shuffle();
-    userList = user.sublist(0, 5).obs;
+    userList = (user.length > 5) ? user.sublist(0, 5).obs : user;
     userList.forEach((element) {
       print(element.name.toString());
     });

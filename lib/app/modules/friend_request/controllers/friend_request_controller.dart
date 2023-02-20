@@ -13,9 +13,14 @@ class FriendRequestController extends GetxController {
   final count = 0.obs;
   UserModel? userData;
   RxBool hasData = false.obs;
+  bool isFromNotification = false;
 
   @override
   void onInit() {
+    if (!isNullEmptyOrFalse(Get.arguments)) {
+      isFromNotification = !isNullEmptyOrFalse(
+          Get.arguments[ArgumentConstant.isFromNotification]);
+    }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       if (!isNullEmptyOrFalse(box.read(ArgumentConstant.userUid))) {
         userData = await getIt<FirebaseService>().getUserData(

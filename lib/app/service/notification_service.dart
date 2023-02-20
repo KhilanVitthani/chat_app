@@ -30,9 +30,14 @@ class NotificationService {
               (NotificationResponse response) async {
         print(response);
         if (!isNullEmptyOrFalse(response.payload)) {
-          await getNavigateToChatScreen(
-              userId: jsonDecode(response.payload!)["N_SENDER_ID"],
-              docId: jsonDecode(response.payload!)["docId"]);
+          if (jsonDecode(response.payload!)["click_action"] ==
+              "FRIEND_REQUEST") {
+            getNavigateToFriendRequestScreen();
+          } else {
+            await getNavigateToChatScreen(
+                userId: jsonDecode(response.payload!)["N_SENDER_ID"],
+                docId: jsonDecode(response.payload!)["docId"]);
+          }
         }
       });
       await initServices();
@@ -63,8 +68,12 @@ class NotificationService {
     );
     FirebaseMessaging.instance.getInitialMessage().then((value) async {
       if (!isNullEmptyOrFalse(value)) {
-        await getNavigateToChatScreen(
-            userId: value!.data["N_SENDER_ID"], docId: value.data["docId"]);
+        if (value!.data["click_action"] == "FRIEND_REQUEST") {
+          getNavigateToFriendRequestScreen();
+        } else {
+          await getNavigateToChatScreen(
+              userId: value!.data["N_SENDER_ID"], docId: value.data["docId"]);
+        }
       }
     });
     //when app is open
@@ -76,8 +85,12 @@ class NotificationService {
     FirebaseMessaging.onMessageOpenedApp.listen((value) async {
       if (!isNullEmptyOrFalse(value)) {
         print("OnTap := ${value.data["N_SENDER_ID"]}");
-        await getNavigateToChatScreen(
-            userId: value.data["N_SENDER_ID"], docId: value.data["docId"]);
+        if (value.data["click_action"] == "FRIEND_REQUEST") {
+          getNavigateToFriendRequestScreen();
+        } else {
+          await getNavigateToChatScreen(
+              userId: value.data["N_SENDER_ID"], docId: value.data["docId"]);
+        }
       }
     });
   }
@@ -124,5 +137,11 @@ class NotificationService {
         ArgumentConstant.isFromNotification: true,
       });
     }
+  }
+
+  getNavigateToFriendRequestScreen() async {
+    Get.offAllNamed(Routes.FRIEND_REQUEST, arguments: {
+      ArgumentConstant.isFromNotification: true,
+    });
   }
 }
