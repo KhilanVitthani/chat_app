@@ -3,6 +3,7 @@ const imagePath = "assets/image/";
 class ArgumentConstant {
   static String userUid = "userUid";
   static String userData = "userData";
+  static String userIdList = "userIdList";
   static String signInType = "SignInType";
   static String docId = "docId";
   static String isFromNotification = "isFromNotification";
