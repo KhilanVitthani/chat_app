@@ -360,7 +360,7 @@ class AddUserView extends GetWidget<AddUserController> {
                                     )
                                   : Expanded(
                                       child: Center(
-                                      child: Text("No user found"),
+                                      child: Text("No more users"),
                                     )))
                               : Expanded(
                                   child: Center(
