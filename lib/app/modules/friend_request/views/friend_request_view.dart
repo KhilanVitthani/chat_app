@@ -8,6 +8,7 @@ import '../../../Widgets/button.dart';
 import '../../../constants/app_constant.dart';
 import '../../../constants/color_constant.dart';
 import '../../../constants/sizeConstant.dart';
+import '../../../model/chat_data_model.dart';
 import '../../../model/user_model.dart';
 import '../../../routes/app_pages.dart';
 import '../../../service/firebase_service.dart';
@@ -141,9 +142,75 @@ class FriendRequestView extends GetWidget<FriendRequestController> {
                                                               // Text(userModel.uId.toString()),
                                                               Spacing.height(
                                                                   10),
-                                                              Text(userModel
-                                                                  .email
-                                                                  .toString()),
+                                                              StreamBuilder(
+                                                                stream: getIt<
+                                                                        FirebaseService>()
+                                                                    .getChatData(
+                                                                        chatId: getIt<FirebaseService>().getChatId(
+                                                                            friendUid:
+                                                                                userModel.uId.toString())),
+                                                                builder: (context,
+                                                                    AsyncSnapshot<
+                                                                            QuerySnapshot>
+                                                                        snapshot) {
+                                                                  if (snapshot
+                                                                      .hasData) {
+                                                                    var docList =
+                                                                        snapshot
+                                                                            .data!
+                                                                            .docs;
+                                                                    if (docList
+                                                                        .isNotEmpty) {
+                                                                      ChatDataModel
+                                                                          message =
+                                                                          ChatDataModel.fromJson(docList.first.data() as Map<
+                                                                              String,
+                                                                              dynamic>);
+                                                                      return Text(
+                                                                        (message.isImage ??
+                                                                                false)
+                                                                            ? "Image"
+                                                                            : message.msg.toString(),
+                                                                        style:
+                                                                            TextStyle(
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          fontSize:
+                                                                              MySize.getHeight(12),
+                                                                          fontWeight: (message.rRead == false && message.senderId == userModel.uId)
+                                                                              ? FontWeight.bold
+                                                                              : FontWeight.normal,
+                                                                        ),
+                                                                      );
+                                                                    } else
+                                                                      return Center(
+                                                                        child:
+                                                                            Text(
+                                                                          "No Message",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                MySize.getHeight(12),
+                                                                            fontWeight:
+                                                                                FontWeight.normal,
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                  }
+                                                                  return Text(
+                                                                    "Loading...",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          MySize.getHeight(
+                                                                              12),
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .normal,
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ),
                                                             ],
                                                           ),
                                                         ),

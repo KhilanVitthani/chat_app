@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chat_app/app/Widgets/button.dart';
 import 'package:chat_app/app/constants/color_constant.dart';
+import 'package:chat_app/app/utilities/text_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -41,174 +42,6 @@ class AddUserView extends GetWidget<AddUserController> {
                   : Container(
                       child: Column(
                         children: [
-                          // StreamBuilder<QuerySnapshot>(
-                          //   stream: getIt<FirebaseService>().getAllUsersList(),
-                          //   builder: (BuildContext context, snapshot) {
-                          //     if (snapshot.hasError) {
-                          //       return Expanded(
-                          //         child: Center(
-                          //           child: Text("Something went wrong..."),
-                          //         ),
-                          //       );
-                          //     } else if (snapshot.connectionState ==
-                          //         ConnectionState.waiting) {
-                          //       return Expanded(
-                          //         child: Center(
-                          //           child: CircularProgressIndicator(),
-                          //         ),
-                          //       );
-                          //     } else {
-                          //       if (snapshot.data!.docs.length > 0) {
-                          //         snapshot.data!.docs.shuffle();
-                          //         List<UserModel> list = snapshot.data!.docs
-                          //             .map((e) => UserModel.fromJson(
-                          //                 e.data() as Map<String, dynamic>))
-                          //             .toList();
-                          //         list.shuffle();
-                          //         return Expanded(
-                          //           child: Column(
-                          //             children: [
-                          //               Consumer<CardProvider>(
-                          //                 builder: (context, card, _) {
-                          //                   print('card ${card.pageIndex}');
-                          //                   if (cardProvider.pageIndex > 0) {
-                          //                     return Center(
-                          //                         child: InkWell(
-                          //                       onTap: () {
-                          //                         controller
-                          //                             .carouselController.value
-                          //                             .previousPage(
-                          //                                 duration:
-                          //                                     const Duration(
-                          //                                         seconds: 1),
-                          //                                 curve:
-                          //                                     Curves.easeInOut);
-                          //                       },
-                          //                       child: Padding(
-                          //                         padding: EdgeInsets.only(
-                          //                           top: 8,
-                          //                         ),
-                          //                         child: CircleAvatar(
-                          //                           backgroundColor:
-                          //                               appTheme.primaryTheme,
-                          //                           child: Icon(
-                          //                             Icons.arrow_upward,
-                          //                             color: Colors.white,
-                          //                           ),
-                          //                         ),
-                          //                       ),
-                          //                     ));
-                          //                   } else {
-                          //                     return const CircleAvatar(
-                          //                       backgroundColor:
-                          //                           Colors.transparent,
-                          //                       child: Icon(
-                          //                         Icons.arrow_upward,
-                          //                         color: Colors.transparent,
-                          //                       ),
-                          //                     );
-                          //                   }
-                          //                 },
-                          //               ),
-                          //               Expanded(
-                          //                 child: CarouselSlider.builder(
-                          //                     itemCount: snapshot.data!.docs
-                          //                         .sublist(0, 5)
-                          //                         .length,
-                          //                     carouselController: controller
-                          //                         .carouselController.value,
-                          //                     options: CarouselOptions(
-                          //                       autoPlay: false,
-                          //                       enlargeCenterPage: true,
-                          //                       viewportFraction: 0.8,
-                          //                       scrollDirection: Axis.vertical,
-                          //                       onPageChanged:
-                          //                           (int page, reason) {
-                          //                         cardProvider.setIndex(page);
-                          //                       },
-                          //                       enableInfiniteScroll: false,
-                          //                       aspectRatio: 2.0,
-                          //                       initialPage: 0,
-                          //                     ),
-                          //                     itemBuilder:
-                          //                         (BuildContext context,
-                          //                             int itemIndex,
-                          //                             int pageViewIndex) {
-                          //                       return userCard(list[itemIndex],
-                          //                           controller);
-                          //                     }),
-                          //               ),
-                          //               Consumer<CardProvider>(
-                          //                 builder: (context, card, _) {
-                          //                   print(
-                          //                       'bottom ${card.pageIndex} ${snapshot.data!.docs.length - 1}');
-                          //                   if (cardProvider.pageIndex <
-                          //                       snapshot.data!.docs
-                          //                               .sublist(0, 5)
-                          //                               .length -
-                          //                           1) {
-                          //                     return Center(
-                          //                       child: Padding(
-                          //                         padding:
-                          //                             const EdgeInsets.only(
-                          //                                 bottom: 20),
-                          //                         child: InkWell(
-                          //                           onTap: () {
-                          //                             controller
-                          //                                 .carouselController
-                          //                                 .value
-                          //                                 .nextPage(
-                          //                                     duration:
-                          //                                         const Duration(
-                          //                                             seconds:
-                          //                                                 1),
-                          //                                     curve: Curves
-                          //                                         .easeInOut);
-                          //                           },
-                          //                           child: CircleAvatar(
-                          //                             backgroundColor:
-                          //                                 appTheme.primaryTheme,
-                          //                             child: Icon(
-                          //                                 Icons
-                          //                                     .arrow_downward_outlined,
-                          //                                 color: Colors.white),
-                          //                           ),
-                          //                         ),
-                          //                       ),
-                          //                     );
-                          //                   } else {
-                          //                     return const Padding(
-                          //                       padding:
-                          //                           EdgeInsets.only(bottom: 20),
-                          //                       child: CircleAvatar(
-                          //                         backgroundColor:
-                          //                             Colors.transparent,
-                          //                         child: Icon(
-                          //                           Icons
-                          //                               .arrow_downward_outlined,
-                          //                           color: Colors.transparent,
-                          //                         ),
-                          //                       ),
-                          //                     );
-                          //                   }
-                          //                 },
-                          //               )
-                          //             ],
-                          //           ),
-                          //         );
-                          //       }
-                          //       return Column(
-                          //         children: [
-                          //           Expanded(
-                          //             child: Center(
-                          //               child: Text("No any user found"),
-                          //             ),
-                          //           ),
-                          //         ],
-                          //       );
-                          //     }
-                          //   },
-                          // ),
                           (controller.homeController.hasUserData.isTrue)
                               ? ((controller.homeController.userList.length > 0)
                                   ? Expanded(
@@ -432,28 +265,16 @@ class AddUserView extends GetWidget<AddUserController> {
                 if (!controller.userData!.requestedFriendsList!
                     .contains(user.uId.toString()))
                   button(
-                    title: "Add Friend",
+                    title: "Send message",
                     onTap: () async {
-                      controller.userData!.requestedFriendsList!
-                          .add(user.uId.toString());
-                      await getIt<FirebaseService>().addFriend(
-                        context: Get.context!,
-                        friendsModel: controller.userData!,
-                        myFriendList:
-                            controller.userData!.requestedFriendsList!,
-                        friendsUid: user.uId!,
-                      );
-                      await controller.sendPushNotification(
-                        nTitle: controller.userData!.name! +
+                      await sendMessagePop(
+                        context: context,
+                        TitleName: user.name.toString() +
                             " " +
-                            controller.userData!.lastName.toString(),
-                        nBody: "has send you friend request.",
-                        nType: "nType",
-                        nSenderId: box.read(ArgumentConstant.userUid),
-                        nUserDeviceToken: user.fcmToken.toString(),
+                            user.lastName.toString(),
+                        user: user,
+                        controller: controller,
                       );
-                      // user.fc
-
                       setter(() {});
                     },
                     width: 200,
@@ -508,5 +329,110 @@ class AddUserView extends GetWidget<AddUserController> {
         ),
       );
     });
+  }
+
+  sendMessagePop(
+      {required BuildContext context,
+      required TitleName,
+      required UserModel user,
+      required controller}) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              backgroundColor: Colors.grey.shade200,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Send message to" + " " + TitleName,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold)),
+                  SizedBox(
+                    height: MySize.getHeight(30),
+                  ),
+                  TextFormField(
+                    controller: controller.messageController.value,
+                    decoration: InputDecoration(
+                      hintText: "Enter message here...",
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintStyle: TextStyle(color: Colors.grey),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(12) //<-- SEE HERE
+                          ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(12) //<-- SEE HERE
+                          ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      DateTime now = await getNtpTime();
+                      if (!isNullEmptyOrFalse(
+                          controller.messageController.value.text.trim())) {
+                        controller.userData!.requestedFriendsList!
+                            .add(user.uId.toString());
+                        await getIt<FirebaseService>().addFriend(
+                          context: Get.context!,
+                          friendsModel: controller.userData!,
+                          myFriendList:
+                              controller.userData!.requestedFriendsList!,
+                          friendsUid: user.uId!,
+                        );
+                        await controller.sendPushNotification(
+                          nTitle: controller.userData!.name! +
+                              " " +
+                              controller.userData!.lastName.toString(),
+                          nBody: controller.messageController.value.text,
+                          nType: "nType",
+                          nSenderId: box.read(ArgumentConstant.userUid),
+                          nUserDeviceToken: user.fcmToken.toString(),
+                        );
+                        await getIt<FirebaseService>().addChatDataToFireStore(
+                            chatId: controller.getChatId(user.uId),
+                            chatData: {
+                              "senderId": box.read(ArgumentConstant.userUid),
+                              "receiverId": user.uId,
+                              "msg": controller.messageController.value.text,
+                              "dateTime": now.toUtc().millisecondsSinceEpoch,
+                              "rRead": false,
+                              "sRead": true,
+                            });
+                        Get.back();
+                        controller.messageController.value.clear();
+                      }
+                      // user.fc
+                    },
+                    child: Container(
+                      height: MySize.getHeight(50),
+                      width: MySize.getWidth(130),
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Center(
+                          child: Text(
+                        "Send",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: MySize.getHeight(15)),
+                      )),
+                    ),
+                  ),
+                ],
+              ));
+        });
   }
 }

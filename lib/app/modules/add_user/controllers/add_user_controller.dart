@@ -23,6 +23,7 @@ class AddUserController extends GetxController {
   RxBool hasData = false.obs;
   RxInt lastUpdated = 0.obs;
   Rx<CarouselController> carouselController = CarouselController().obs;
+  Rx<TextEditingController> messageController = TextEditingController().obs;
   HomeController homeController = Get.find<HomeController>();
   @override
   void onInit() {
@@ -49,6 +50,12 @@ class AddUserController extends GetxController {
       cardProvider.reset();
     });
     super.onInit();
+  }
+
+  String getChatId(uid) {
+    List<String> uids = [box.read(ArgumentConstant.userUid), uid.toString()];
+    uids.sort((uid1, uid2) => uid1.compareTo(uid2));
+    return uids.join("_chat_");
   }
 
   @override
