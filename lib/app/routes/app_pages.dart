@@ -13,8 +13,12 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/mobile_login_screen/bindings/mobile_login_screen_binding.dart';
+import '../modules/mobile_login_screen/views/mobile_login_screen_view.dart';
 import '../modules/my_friends/bindings/my_friends_binding.dart';
 import '../modules/my_friends/views/my_friends_view.dart';
+import '../modules/otp_screen/bindings/otp_screen_binding.dart';
+import '../modules/otp_screen/views/otp_screen_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 import '../modules/sign_up/bindings/sign_up_binding.dart';
@@ -28,7 +32,7 @@ class AppPages {
   static String INITIAL =
       (!isNullEmptyOrFalse(box.read(ArgumentConstant.userUid)))
           ? Routes.HOME
-          : Routes.REGISTER;
+          : Routes.MOBILE_LOGIN_SCREEN;
 
   static final routes = [
     GetPage(
@@ -70,6 +74,16 @@ class AppPages {
       name: _Paths.REGISTER,
       page: () => const RegisterView(),
       binding: RegisterBinding(),
+    ),
+    GetPage(
+      name: _Paths.MOBILE_LOGIN_SCREEN,
+      page: () => const MobileLoginScreenView(),
+      binding: MobileLoginScreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.OTP_SCREEN,
+      page: () => const OtpScreenView(),
+      binding: OtpScreenBinding(),
     ),
   ];
 }

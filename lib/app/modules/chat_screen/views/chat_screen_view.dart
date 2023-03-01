@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../main.dart';
 import '../../../constants/app_constant.dart';
@@ -18,6 +19,7 @@ import '../controllers/chat_screen_controller.dart';
 
 class ChatScreenView extends GetView<ChatScreenController> {
   const ChatScreenView({Key? key}) : super(key: key);
+
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
@@ -156,39 +158,66 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                         alignment: (!element.isUsersMsg!.value)
                                             ? Alignment.topLeft
                                             : Alignment.topRight,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(
-                                                  MySize.getHeight(20)),
-                                              topLeft: Radius.circular(
-                                                  MySize.getHeight(20)),
-                                              bottomRight: Radius.circular(
-                                                  MySize.getHeight(20)),
+                                        child: GestureDetector(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(
+                                                    MySize.getHeight(20)),
+                                                topLeft: Radius.circular(
+                                                    MySize.getHeight(20)),
+                                                bottomRight: Radius.circular(
+                                                    MySize.getHeight(20)),
+                                              ),
+                                              color:
+                                                  (!element.isUsersMsg!.value)
+                                                      ? Colors.grey.shade200
+                                                      : Colors.blue[200],
                                             ),
-                                            color: (!element.isUsersMsg!.value)
-                                                ? Colors.grey.shade200
-                                                : Colors.blue[200],
+                                            padding: EdgeInsets.all(16),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  element.msg.toString(),
+                                                  style:
+                                                      TextStyle(fontSize: 15),
+                                                ),
+                                                Spacing.height(8),
+                                                Text(
+                                                  DateFormat("hh:mm a").format(
+                                                      element.dateTime!),
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          MySize.getHeight(8)),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          padding: EdgeInsets.all(16),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                element.msg.toString(),
-                                                style: TextStyle(fontSize: 15),
-                                              ),
-                                              Spacing.height(8),
-                                              Text(
-                                                DateFormat("hh:mm a")
-                                                    .format(element.dateTime!),
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        MySize.getHeight(8)),
-                                              ),
-                                            ],
-                                          ),
+                                          onTap: () async {
+                                            if (element.msg
+                                                .toString()
+                                                .isPhoneNumber) {
+                                              Uri phoneNo = Uri.parse(
+                                                  'tel:${element.msg}');
+                                              if (await launchUrl(phoneNo)) {
+                                                //dialer opened
+                                              } else {
+                                                //dailer is not opened
+                                              }
+                                            } else if (element.msg
+                                                .toString()
+                                                .isEmail) {
+                                              Uri Email = Uri.parse(
+                                                  'mailto:${element.msg}');
+                                              if (await launchUrl(Email)) {
+                                                //Mail opened
+                                              } else {
+                                                //Mail is not opened
+                                              }
+                                            }
+                                          },
                                         ),
                                       ),
                                     )
@@ -204,40 +233,67 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                         alignment: (!element.isUsersMsg!.value)
                                             ? Alignment.topLeft
                                             : Alignment.topRight,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(
-                                                  MySize.getHeight(20)),
-                                              topLeft: Radius.circular(
-                                                  MySize.getHeight(20)),
-                                              bottomLeft: Radius.circular(
-                                                  MySize.getHeight(20)),
+                                        child: GestureDetector(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(
+                                                    MySize.getHeight(20)),
+                                                topLeft: Radius.circular(
+                                                    MySize.getHeight(20)),
+                                                bottomLeft: Radius.circular(
+                                                    MySize.getHeight(20)),
+                                              ),
+                                              color:
+                                                  (!element.isUsersMsg!.value)
+                                                      ? Colors.grey.shade200
+                                                      : Colors.blue[200],
                                             ),
-                                            color: (!element.isUsersMsg!.value)
-                                                ? Colors.grey.shade200
-                                                : Colors.blue[200],
+                                            padding: EdgeInsets.all(16),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Text(
+                                                  element.msg.toString(),
+                                                  style:
+                                                      TextStyle(fontSize: 15),
+                                                ),
+                                                Spacing.height(8),
+                                                Text(
+                                                  DateFormat("hh:mm a").format(
+                                                      element.dateTime!
+                                                          .toLocal()),
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          MySize.getHeight(8)),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          padding: EdgeInsets.all(16),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                element.msg.toString(),
-                                                style: TextStyle(fontSize: 15),
-                                              ),
-                                              Spacing.height(8),
-                                              Text(
-                                                DateFormat("hh:mm a").format(
-                                                    element.dateTime!
-                                                        .toLocal()),
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        MySize.getHeight(8)),
-                                              ),
-                                            ],
-                                          ),
+                                          onTap: () async {
+                                            if (element.msg
+                                                .toString()
+                                                .isPhoneNumber) {
+                                              Uri phoneNo = Uri.parse(
+                                                  'tel:${element.msg}');
+                                              if (await launchUrl(phoneNo)) {
+                                                //dialer opened
+                                              } else {
+                                                //dailer is not opened
+                                              }
+                                            } else if (element.msg
+                                                .toString()
+                                                .isEmail) {
+                                              Uri Email = Uri.parse(
+                                                  'mailto:${element.msg}');
+                                              if (await launchUrl(Email)) {
+                                                //Mail opened
+                                              } else {
+                                                //Mail is not opened
+                                              }
+                                            }
+                                          },
                                         ),
                                       ),
                                     ),
@@ -422,3 +478,14 @@ class ChatScreenView extends GetView<ChatScreenController> {
         });
   }
 }
+//   bool validateMobile(String value) {
+//     String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+//     RegExp regExp = new RegExp(pattern);
+//     if (value.length == 0) {
+//       return false;
+//     } else if (!regExp.hasMatch(value)) {
+//       return false;
+//     }
+//     return true;
+//   }
+// }

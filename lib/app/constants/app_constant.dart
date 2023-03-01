@@ -6,6 +6,12 @@ class ArgumentConstant {
   static String userIdList = "userIdList";
   static String signInType = "SignInType";
   static String docId = "docId";
+  static const mobileNo = "mobileNo";
+  static const countryCode = "countryCode";
+  static const verificationId = "verificationId";
+  static const resendToken = "resendToken";
+  static const uuId = "uuId";
+
   static String isFromNotification = "isFromNotification";
 }
 

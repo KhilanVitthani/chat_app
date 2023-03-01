@@ -13,6 +13,8 @@ abstract class Routes {
   static const TEMP_CHAT1 = _Paths.TEMP_CHAT1;
   static const MY_FRIENDS = _Paths.MY_FRIENDS;
   static const REGISTER = _Paths.REGISTER;
+  static const MOBILE_LOGIN_SCREEN = _Paths.MOBILE_LOGIN_SCREEN;
+  static const OTP_SCREEN = _Paths.OTP_SCREEN;
 }
 
 abstract class _Paths {
@@ -27,4 +29,6 @@ abstract class _Paths {
   static const TEMP_CHAT1 = '/temp-chat1';
   static const MY_FRIENDS = '/my-friends';
   static const REGISTER = '/register';
+  static const MOBILE_LOGIN_SCREEN = '/mobile-login-screen';
+  static const OTP_SCREEN = '/otp-screen';
 }
