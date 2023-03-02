@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
@@ -96,21 +97,32 @@ class SignUpController extends GetxController {
       MaterialPageRoute(
         builder: (context) => PlacePicker(
           apiKey: googleApiKey,
-          onPlacePicked: (result) {
+          onPlacePicked: (result) async {
             // setState(() {
-            city = result
-                .addressComponents![result.addressComponents!.length - 4]
-                .longName;
-            state = result
-                .addressComponents![result.addressComponents!.length - 5]
-                .longName;
+            // city = result
+            //     .addressComponents![result.addressComponents!.length - 4]
+            //     .longName;
+            // state = result
+            //     .addressComponents![result.addressComponents!.length - 5]
+            //     .longName;
             addressController.value.text =
-                '${result.addressComponents![result.addressComponents!.length - 4].longName}, ${result.addressComponents![result.addressComponents!.length - 3].shortName}';
-            result.addressComponents!.forEach((element) {
-              print('address ${element.longName}');
-            });
-            latLng = GeoPoint(
+                await result.formattedAddress.toString();
+            List<Placemark> placemarks = await placemarkFromCoordinates(
                 result.geometry!.location.lat, result.geometry!.location.lng);
+            if (!isNullEmptyOrFalse(placemarks)) {
+              Placemark a = placemarks.first;
+              if (!isNullEmptyOrFalse(a.locality)) {
+                city = a.locality.toString() + ", ";
+              }
+              if (!isNullEmptyOrFalse(a.administrativeArea)) {
+                state = a.locality.toString() + ", ";
+              }
+            }
+            // result.addressComponents!.forEach((element) {
+            //   print('address ${element.longName}');
+            // });
+            // latLng = GeoPoint(
+            //     result.geometry!.location.lat, result.geometry!.location.lng);
             // });
 
             Navigator.of(context).pop();
