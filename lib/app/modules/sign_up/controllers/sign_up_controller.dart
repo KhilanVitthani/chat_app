@@ -77,8 +77,8 @@ class SignUpController extends GetxController {
   final _formKey = GlobalKey<FormState>();
   GeoPoint latLng = GeoPoint(0, 0);
   String level = '1';
-  String city = '';
-  String state = '';
+  RxString city = ''.obs;
+  RxString state = ''.obs;
   @override
   void onReady() {
     super.onReady();
@@ -98,26 +98,22 @@ class SignUpController extends GetxController {
         builder: (context) => PlacePicker(
           apiKey: googleApiKey,
           onPlacePicked: (result) async {
-            // setState(() {
-            // city = result
-            //     .addressComponents![result.addressComponents!.length - 4]
-            //     .longName;
-            // state = result
-            //     .addressComponents![result.addressComponents!.length - 5]
-            //     .longName;
-            addressController.value.text =
-                await result.formattedAddress.toString();
+            /*Show full address*/
+            // addressController.value.text =
+            //     await result.formattedAddress.toString();
             List<Placemark> placemarks = await placemarkFromCoordinates(
                 result.geometry!.location.lat, result.geometry!.location.lng);
             if (!isNullEmptyOrFalse(placemarks)) {
               Placemark a = placemarks.first;
               if (!isNullEmptyOrFalse(a.locality)) {
-                city = a.locality.toString() + ", ";
+                city.value = a.locality.toString() + ", ";
               }
               if (!isNullEmptyOrFalse(a.administrativeArea)) {
-                state = a.locality.toString() + ", ";
+                state.value = a.administrativeArea.toString() + ", ";
               }
             }
+            /*Show only  city & state*/
+            addressController.value.text = city.value + state.value + ".";
             // result.addressComponents!.forEach((element) {
             //   print('address ${element.longName}');
             // });
