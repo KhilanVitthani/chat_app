@@ -114,13 +114,6 @@ class SignUpController extends GetxController {
             }
             /*Show only  city & state*/
             addressController.value.text = city.value + state.value + ".";
-            // result.addressComponents!.forEach((element) {
-            //   print('address ${element.longName}');
-            // });
-            // latLng = GeoPoint(
-            //     result.geometry!.location.lat, result.geometry!.location.lng);
-            // });
-
             Navigator.of(context).pop();
           },
           initialPosition: LatLng(coordinates[0], coordinates[1]),
