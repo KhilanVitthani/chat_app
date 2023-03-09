@@ -7,6 +7,7 @@ environment:
 
 dependencies: 
   cupertino_icons: ^1.0.2
+  flutter_linkify: ^5.0.2
   firebase_core: ^2.4.1
   firebase_auth: ^4.2.5
   get_storage: ^2.0.3

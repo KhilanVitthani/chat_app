@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 
 import 'package:get/get.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -179,6 +180,16 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
+                                                // Linkify(
+                                                //   onOpen: (link) async {
+                                                //     await launch("${link.url}");
+                                                //   },
+                                                //   text: element.msg.toString(),
+                                                //   style: TextStyle(
+                                                //       color: Colors.black),
+                                                //   linkStyle: TextStyle(
+                                                //       color: Colors.blue),
+                                                // ),
                                                 Text(
                                                   element.msg.toString(),
                                                   style: TextStyle(
