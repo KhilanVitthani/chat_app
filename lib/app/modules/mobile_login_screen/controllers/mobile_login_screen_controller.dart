@@ -54,8 +54,7 @@ class MobileLoginScreenController extends GetxController {
         });
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        getIt<CustomDialogs>().hideCircularDialog(context);
-
+        // getIt<CustomDialogs>().hideCircularDialog(context);
         print("CART ::: $verificationId");
       },
     )

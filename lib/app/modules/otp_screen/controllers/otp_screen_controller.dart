@@ -170,8 +170,7 @@ class OtpScreenController extends GetxController {
         resendToken = resendTokenNew;
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        getIt<CustomDialogs>().hideCircularDialog(context);
-
+        // getIt<CustomDialogs>().hideCircularDialog(context);
         print("CART ::: $verificationId");
       },
     )
