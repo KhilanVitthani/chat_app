@@ -10,7 +10,7 @@ import '../../../utilities/progress_dialog_utils.dart';
 class MobileLoginScreenController extends GetxController {
   TextEditingController numberController = TextEditingController();
   Rx<TextEditingController> countryCodeController =
-      TextEditingController(text: "+91").obs;
+      TextEditingController(text: "(+91) India").obs;
   @override
   void onInit() {
     super.onInit();
@@ -23,11 +23,11 @@ class MobileLoginScreenController extends GetxController {
 
   sendOtp(BuildContext context) async {
     getIt<CustomDialogs>().showCircularDialog(context);
-
+    String countryCode =
+        countryCodeController.value.text.split(")")[0].split("(")[1].toString();
     await FirebaseAuth.instance
         .verifyPhoneNumber(
-      phoneNumber:
-          "${countryCodeController.value.text}${numberController.text}",
+      phoneNumber: "${countryCode}${numberController.text}",
       verificationCompleted: (PhoneAuthCredential credential) {},
       verificationFailed: (FirebaseAuthException e) {
         getIt<CustomDialogs>().hideCircularDialog(context);
@@ -48,16 +48,11 @@ class MobileLoginScreenController extends GetxController {
         Get.toNamed(Routes.OTP_SCREEN, arguments: {
           ArgumentConstant.verificationId: verificationId,
           ArgumentConstant.resendToken: resendToken,
-          ArgumentConstant.countryCode: countryCodeController.value.text,
-          ArgumentConstant.mobileNo:
-              countryCodeController.value.text + numberController.text,
+          ArgumentConstant.countryCode: countryCode,
+          ArgumentConstant.mobileNo: countryCode + numberController.text,
         });
       },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        getIt<CustomDialogs>().hideCircularDialog(context);
-
-        print("CART ::: $verificationId");
-      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
     )
         .catchError((e) {
       getIt<CustomDialogs>().hideCircularDialog(context);

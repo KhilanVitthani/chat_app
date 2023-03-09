@@ -119,7 +119,6 @@ class OtpScreenController extends GetxController {
         UserModel? userData = await getIt<FirebaseService>().getUserData(
             context: Get.context!, uid: value.user!.uid, isLoad: false);
         getIt<CustomDialogs>().hideCircularDialog(context);
-
         if (!isNullEmptyOrFalse(userData)) {
           if (userData != null && userData.isVerified == true) {
             Get.offAllNamed(Routes.HOME);
@@ -170,8 +169,6 @@ class OtpScreenController extends GetxController {
         resendToken = resendTokenNew;
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        getIt<CustomDialogs>().hideCircularDialog(context);
-
         print("CART ::: $verificationId");
       },
     )

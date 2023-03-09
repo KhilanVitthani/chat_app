@@ -18,6 +18,7 @@ class MobileLoginScreenView extends GetView<MobileLoginScreenController> {
     MySize().init(context);
 
     return Scaffold(
+      backgroundColor: appTheme.backgroungGray,
       body: Obx(() {
         return SingleChildScrollView(
           child: Row(
@@ -26,11 +27,10 @@ class MobileLoginScreenView extends GetView<MobileLoginScreenController> {
               Container(
                 height: MySize.screenHeight,
                 width: MySize.screenWidth,
-                padding: EdgeInsets.symmetric(horizontal: MySize.getWidth(20)),
+                padding: EdgeInsets.symmetric(horizontal: MySize.getWidth(30)),
                 child: Column(
                   children: [
                     Spacing.height(kToolbarHeight),
-                    Spacing.height(20),
                     Center(
                       child: Text(
                         "Chat App",
@@ -40,68 +40,69 @@ class MobileLoginScreenView extends GetView<MobileLoginScreenController> {
                         ),
                       ),
                     ),
-                    Spacing.height(100),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "My number is",
-                        style: TextStyle(
-                            fontSize: MySize.getHeight(20),
-                            fontWeight: FontWeight.w500),
+                    Spacing.height(70),
+                    Card(
+                      color: Colors.white,
+                      elevation: 5,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: MySize.getWidth(25),
+                            vertical: MySize.getHeight(7)),
+                        height: MySize.getHeight(350),
+                        child: Column(
+                          children: [
+                            Spacing.height(50),
+                            Container(
+                              width: MySize.safeWidth,
+                              child: getUnderLineTextBox(
+                                  textController:
+                                      controller.countryCodeController.value,
+                                  height: 50,
+                                  width: 100,
+                                  fontWeight: FontWeight.bold,
+                                  topPadding: MySize.getHeight(10),
+                                  size: MySize.getHeight(0),
+                                  readOnly: true,
+                                  suffix: Icon(
+                                    Icons.arrow_drop_down,
+                                    color: appTheme.primaryTheme,
+                                    size: MySize.getHeight(20),
+                                  ),
+                                  onTap: () {
+                                    showCountryPicker(
+                                        context: context,
+                                        onSelect: (val) {
+                                          FocusManager.instance.primaryFocus!
+                                              .unfocus();
+                                          controller.countryCodeController.value
+                                                  .text =
+                                              "(+${val.phoneCode}) ${val.name}";
+                                          controller.countryCodeController
+                                              .refresh();
+                                        });
+                                  }),
+                            ),
+                            Spacing.height(15),
+                            Container(
+                              width: MySize.safeWidth,
+                              child: getUnderLineTextBox(
+                                  textController: controller.numberController,
+                                  hintText: "Enter your mobile number",
+                                  textInputType: TextInputType.number,
+                                  height: 50,
+                                  width: 200,
+                                  size: MySize.getHeight(40),
+                                  topPadding: 10),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    Spacing.height(20),
-                    Row(
-                      children: [
-                        Container(
-                          child: getUnderLineTextBox(
-                              textController:
-                                  controller.countryCodeController.value,
-                              height: 40,
-                              width: 100,
-                              leftPadding: MySize.getWidth(15),
-                              size: MySize.getHeight(0),
-                              readOnly: true,
-                              suffix: Icon(
-                                Icons.arrow_drop_down,
-                                color: appTheme.primaryTheme,
-                                size: MySize.getHeight(20),
-                              ),
-                              onTap: () {
-                                showCountryPicker(
-                                    context: context,
-                                    onSelect: (val) {
-                                      FocusManager.instance.primaryFocus!
-                                          .unfocus();
-                                      controller.countryCodeController.value
-                                          .text = "+${val.phoneCode}";
-                                      controller.countryCodeController
-                                          .refresh();
-                                    });
-                              }),
-                        ),
-                        Spacing.width(10),
-                        Container(
-                          child: getUnderLineTextBox(
-                              textController: controller.numberController,
-                              hintText: "Number",
-                              textInputType: TextInputType.number,
-                              height: 40,
-                              width: 200,
-                              size: MySize.getHeight(40),
-                              topPadding: 10),
-                        ),
-                      ],
-                    ),
-                    Spacing.height(70),
-                    Text(
-                      "We will send a text with verification code. Message and data rates may apply.",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                    Spacing.height(70),
+                    Spacing.height(50),
                     Center(
                       child: button(
-                        title: "NEXT",
+                        title: "Continue",
+                        fontsize: MySize.getHeight(20),
                         onTap: () {
                           if (!isNullEmptyOrFalse(
                                   controller.numberController.text) &&
@@ -113,7 +114,7 @@ class MobileLoginScreenView extends GetView<MobileLoginScreenController> {
                                 title: "Error", desc: "Invalid phone number");
                           }
                         },
-                        height: MySize.getHeight(50),
+                        height: MySize.getHeight(65),
                         width: MySize.getWidth(300),
                       ),
                     ),

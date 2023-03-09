@@ -32,6 +32,7 @@ TextFormField getTextField({
   double? topPadding,
   double? leftPadding,
   FocusNode? focusNode,
+  FontWeight? fontWeight,
   void Function(String)? onChanged,
   TextCapitalization textCapitalization = TextCapitalization.none,
 }) {
@@ -48,9 +49,8 @@ TextFormField getTextField({
     onTap: onTap,
     maxLines: maxLine,
     onChanged: onChange,
-    style: TextStyle(
-      fontSize: MySize.getHeight(fontSize),
-    ),
+    style:
+        TextStyle(fontSize: MySize.getHeight(fontSize), fontWeight: fontWeight),
     maxLength: maxLength ?? null,
     decoration: InputDecoration(
       fillColor: fillColor ?? appTheme.textGrayColor,
@@ -135,6 +135,8 @@ Widget getUnderLineTextBox({
   FocusNode? focusNode,
   Widget? suffixIcon,
   double? size,
+  FontWeight? fontWeight,
+  double fontSize = 15.0,
   required double height,
   required double width,
   void Function(String)? onChanged,
@@ -151,6 +153,8 @@ Widget getUnderLineTextBox({
       focusNode: focusNode,
       fillColor: Colors.transparent,
       size: size,
+      fontWeight: fontWeight,
+      fontSize: fontSize,
       textInputType: textInputType,
       hintText: hintText,
       borderColor: borderColor,

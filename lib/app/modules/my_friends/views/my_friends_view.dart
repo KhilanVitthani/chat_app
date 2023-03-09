@@ -35,6 +35,7 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
                       child: CircularProgressIndicator(),
                     )
                   : Container(
+                      height: MySize.screenHeight,
                       child: Column(
                         children: [
                           Expanded(
@@ -66,151 +67,249 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
                                   );
                                 } else {
                                   return (snapshot.data!.docs.length > 0)
-                                      ? Column(
-                                          children: [
-                                            Consumer<CardProvider>(
-                                              builder: (context, card, _) {
-                                                print('card ${card.pageIndex}');
-                                                if (cardProvider.pageIndex >
-                                                    0) {
-                                                  return Center(
-                                                      child: InkWell(
-                                                    onTap: () {
-                                                      controller
-                                                          .carouselController
-                                                          .value
-                                                          .previousPage(
-                                                              duration:
-                                                                  const Duration(
-                                                                      seconds:
-                                                                          1),
-                                                              curve: Curves
-                                                                  .easeInOut);
-                                                    },
-                                                    child: Padding(
-                                                      padding: EdgeInsets.only(
-                                                        top: 8,
-                                                      ),
-                                                      child: CircleAvatar(
-                                                        backgroundColor:
-                                                            appTheme
-                                                                .primaryTheme,
-                                                        child: Icon(
-                                                          Icons.arrow_upward,
-                                                          color: Colors.white,
+                                      ? ListView.builder(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: MySize.getHeight(20),
+                                              horizontal: MySize.getWidth(10)),
+                                          itemCount: snapshot.data!.docs.length,
+                                          itemBuilder: (context, index) {
+                                            print(
+                                                snapshot.data!.docs[index].id);
+                                            UserModel userModel =
+                                                UserModel.fromJson(snapshot
+                                                        .data!.docs[index]
+                                                        .data()
+                                                    as Map<String, dynamic>);
+                                            return (userModel.uId !=
+                                                    box.read(ArgumentConstant
+                                                        .userUid))
+                                                ? Card(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(MySize
+                                                                    .getHeight(
+                                                                        10))),
+                                                    child: InkWell(
+                                                      onTap: () async {
+                                                        Get.toNamed(
+                                                            Routes.CHAT_SCREEN,
+                                                            arguments: {
+                                                              ArgumentConstant
+                                                                      .userData:
+                                                                  userModel,
+                                                              ArgumentConstant
+                                                                      .docId:
+                                                                  snapshot
+                                                                      .data!
+                                                                      .docs[
+                                                                          index]
+                                                                      .id,
+                                                            });
+                                                        // userModel.friendsList!.add(
+                                                        //     controller.userData!.uId.toString());
+                                                        // controller.userData!.requestedFriendsList!
+                                                        //     .add(userModel.uId.toString());
+                                                        // await getIt<FirebaseService>().addFriend(
+                                                        //   context: context,
+                                                        //   friendsModel: userModel,
+                                                        //   myFriendList: controller
+                                                        //       .userData!.requestedFriendsList!,
+                                                        //   friendsUid: userModel.uId!,
+                                                        // );
+                                                        // Get.back();
+                                                      },
+                                                      child: Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: MySize
+                                                                    .getWidth(
+                                                                        15),
+                                                                vertical: MySize
+                                                                    .getHeight(
+                                                                        15)),
+                                                        child: Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          200),
+                                                              child: getImageByLink(
+                                                                  url: userModel
+                                                                          .imgUrl ??
+                                                                      "",
+                                                                  height: 50,
+                                                                  width: 50),
+                                                            ),
+                                                            Space.width(20),
+                                                            Expanded(
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          userModel.name.toString() +
+                                                                              " " +
+                                                                              userModel.lastName.toString(),
+                                                                        ),
+                                                                      ),
+                                                                      Space.width(
+                                                                          20),
+                                                                      FutureBuilder<
+                                                                              dynamic>(
+                                                                          future:
+                                                                              getTitleWithDay(
+                                                                            DateTime.fromMillisecondsSinceEpoch(
+                                                                              userModel.timeStamp!,
+                                                                            ),
+                                                                          ),
+                                                                          builder:
+                                                                              (context, snapshot) {
+                                                                            if (snapshot.hasData) {
+                                                                              return Text(
+                                                                                snapshot.data.toString(),
+                                                                                style: TextStyle(
+                                                                                  fontSize: MySize.getHeight(12),
+                                                                                ),
+                                                                              );
+                                                                            }
+                                                                            return SizedBox();
+                                                                          }),
+
+                                                                      // Space.width(
+                                                                      //     20),
+                                                                      // Icon(
+                                                                      //   Icons
+                                                                      //       .chat,
+                                                                      //   color:
+                                                                      //       appTheme.primaryTheme,
+                                                                      //   size:
+                                                                      //       MySize.getHeight(20),
+                                                                      // ),
+                                                                    ],
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .center,
+                                                                  ),
+                                                                  Spacing
+                                                                      .height(
+                                                                          10),
+                                                                  // Text(userModel.uId.toString()),
+                                                                  Row(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child:
+                                                                            StreamBuilder(
+                                                                          stream:
+                                                                              getIt<FirebaseService>().getChatData(chatId: getIt<FirebaseService>().getChatId(friendUid: userModel.uId.toString())),
+                                                                          builder:
+                                                                              (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                                                            if (snapshot.hasData) {
+                                                                              var docList = snapshot.data!.docs;
+                                                                              if (docList.isNotEmpty) {
+                                                                                ChatDataModel message = ChatDataModel.fromJson(docList.first.data() as Map<String, dynamic>);
+                                                                                return Text(
+                                                                                  (message.isImage ?? false) ? "Image" : message.msg.toString(),
+                                                                                  style: TextStyle(
+                                                                                    overflow: TextOverflow.ellipsis,
+                                                                                    fontSize: MySize.getHeight(12),
+                                                                                    fontWeight: (message.rRead == false && message.senderId == userModel.uId) ? FontWeight.bold : FontWeight.normal,
+                                                                                  ),
+                                                                                );
+                                                                              } else
+                                                                                return Text(
+                                                                                  "No Message",
+                                                                                  style: TextStyle(
+                                                                                    fontSize: MySize.getHeight(12),
+                                                                                    fontWeight: FontWeight.normal,
+                                                                                  ),
+                                                                                );
+                                                                            }
+                                                                            return Text(
+                                                                              "Loading...",
+                                                                              style: TextStyle(
+                                                                                fontSize: MySize.getHeight(12),
+                                                                                fontWeight: FontWeight.normal,
+                                                                              ),
+                                                                            );
+                                                                          },
+                                                                        ),
+                                                                      ),
+                                                                      Space.width(
+                                                                          20),
+                                                                      StreamBuilder<
+                                                                          QuerySnapshot>(
+                                                                        stream: getIt<FirebaseService>().getChatData(
+                                                                            chatId:
+                                                                                getIt<FirebaseService>().getChatId(friendUid: userModel.uId.toString())),
+                                                                        builder:
+                                                                            (context,
+                                                                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                                                                          if (snapshot
+                                                                              .hasData) {
+                                                                            var docList =
+                                                                                snapshot.data!.docs;
+                                                                            int count =
+                                                                                0;
+                                                                            if (docList.isNotEmpty) {
+                                                                              var data = snapshot.data!.docs;
+                                                                              List<ChatDataModel> chatList = [];
+                                                                              if (!isNullEmptyOrFalse(data)) {
+                                                                                chatList = snapshot.data!.docs.map((element) => ((ChatDataModel.fromJson(element.data() as Map<String, dynamic>)))).toList().where((element1) => element1.senderId == userModel.uId).toList();
+
+                                                                                chatList.forEach((element) {
+                                                                                  if (element.rRead == false) {
+                                                                                    count++;
+                                                                                  }
+                                                                                });
+                                                                              }
+                                                                              return (count > 0)
+                                                                                  ? CircleAvatar(
+                                                                                      backgroundColor: appTheme.primaryTheme,
+                                                                                      radius: MySize.getHeight(11),
+                                                                                      child: Text(
+                                                                                        count.toString(),
+                                                                                        style: TextStyle(
+                                                                                          color: Colors.white,
+                                                                                          fontWeight: FontWeight.w500,
+                                                                                          fontSize: MySize.getHeight(13),
+                                                                                        ),
+                                                                                      ),
+                                                                                    )
+                                                                                  : SizedBox();
+                                                                            } else
+                                                                              return SizedBox();
+                                                                          }
+                                                                          return SizedBox();
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ),
                                                     ),
-                                                  ));
-                                                } else {
-                                                  return const CircleAvatar(
-                                                    backgroundColor:
-                                                        Colors.transparent,
-                                                    child: Icon(
-                                                      Icons.arrow_upward,
-                                                      color: Colors.transparent,
-                                                    ),
-                                                  );
-                                                }
-                                              },
-                                            ),
-                                            Expanded(
-                                              child: CarouselSlider.builder(
-                                                  itemCount: snapshot
-                                                      .data!.docs.length,
-                                                  carouselController: controller
-                                                      .carouselController.value,
-                                                  options: CarouselOptions(
-                                                    autoPlay: false,
-                                                    enlargeCenterPage: true,
-                                                    viewportFraction: 0.8,
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    onPageChanged:
-                                                        (int page, reason) {
-                                                      cardProvider
-                                                          .setIndex(page);
-                                                    },
-                                                    enableInfiniteScroll: false,
-                                                    aspectRatio: 2.0,
-                                                    initialPage: 0,
-                                                  ),
-                                                  itemBuilder:
-                                                      (BuildContext context,
-                                                          int itemIndex,
-                                                          int pageViewIndex) {
-                                                    return userCard(
-                                                        UserModel.fromJson(snapshot
-                                                                .data!
-                                                                .docs[itemIndex]
-                                                                .data()
-                                                            as Map<String,
-                                                                dynamic>),
-                                                        controller,
-                                                        snapshot
-                                                            .data!
-                                                            .docs[itemIndex]
-                                                            .id);
-                                                  }),
-                                            ),
-                                            Consumer<CardProvider>(
-                                              builder: (context, card, _) {
-                                                print(
-                                                    'bottom ${card.pageIndex} ${snapshot.data!.docs.length - 1}');
-                                                if (cardProvider.pageIndex <
-                                                    snapshot.data!.docs.length -
-                                                        1) {
-                                                  return Center(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 20),
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          controller
-                                                              .carouselController
-                                                              .value
-                                                              .nextPage(
-                                                                  duration:
-                                                                      const Duration(
-                                                                          seconds:
-                                                                              1),
-                                                                  curve: Curves
-                                                                      .easeInOut);
-                                                        },
-                                                        child: CircleAvatar(
-                                                          backgroundColor:
-                                                              appTheme
-                                                                  .primaryTheme,
-                                                          child: Icon(
-                                                              Icons
-                                                                  .arrow_downward_outlined,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                } else {
-                                                  return const Padding(
-                                                    padding: EdgeInsets.only(
-                                                        bottom: 20),
-                                                    child: CircleAvatar(
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      child: Icon(
-                                                        Icons
-                                                            .arrow_downward_outlined,
-                                                        color:
-                                                            Colors.transparent,
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        )
+                                                  )
+                                                : SizedBox();
+                                          })
                                       : Column(
                                           children: [
                                             Expanded(
@@ -450,5 +549,17 @@ class MyFriendsView extends GetWidget<MyFriendsController> {
         ),
       ),
     );
+  }
+
+  getTitleWithDay(DateTime date) async {
+    DateTime now = date.toUtc();
+    int i = await calculateDifference(now);
+    if (i == 0) {
+      return DateFormat("hh:mm a").format(date.toLocal());
+    } else if (i == -1) {
+      return "Yesterday";
+    } else {
+      return DateFormat("dd/MM/yy").format(date.toLocal());
+    }
   }
 }

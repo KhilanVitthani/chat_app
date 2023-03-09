@@ -181,8 +181,32 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                               children: [
                                                 Text(
                                                   element.msg.toString(),
-                                                  style:
-                                                      TextStyle(fontSize: 15),
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: (extractEmailsFromString(element
+                                                                          .msg
+                                                                          .toString())
+                                                                      .length >
+                                                                  0 ||
+                                                              extractMobilesFromString(element
+                                                                          .msg!)
+                                                                      .length >
+                                                                  0)
+                                                          ? Colors.blue
+                                                          : Colors.black,
+                                                      decoration: (extractEmailsFromString(element
+                                                                          .msg
+                                                                          .toString())
+                                                                      .length >
+                                                                  0 ||
+                                                              extractMobilesFromString(
+                                                                          element
+                                                                              .msg!)
+                                                                      .length >
+                                                                  0)
+                                                          ? TextDecoration
+                                                              .underline
+                                                          : null),
                                                 ),
                                                 Spacing.height(8),
                                                 Text(
@@ -196,21 +220,23 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                             ),
                                           ),
                                           onTap: () async {
-                                            if (element.msg
-                                                .toString()
-                                                .isPhoneNumber) {
+                                            if (extractMobilesFromString(
+                                                        element.msg.toString())
+                                                    .length >
+                                                0) {
                                               Uri phoneNo = Uri.parse(
-                                                  'tel:${element.msg}');
+                                                  'tel:${extractMobilesFromString(element.msg.toString())[0]}');
                                               if (await launchUrl(phoneNo)) {
                                                 //dialer opened
                                               } else {
                                                 //dailer is not opened
                                               }
-                                            } else if (element.msg
-                                                .toString()
-                                                .isEmail) {
+                                            } else if (extractEmailsFromString(
+                                                        element.msg.toString())
+                                                    .length >
+                                                0) {
                                               Uri Email = Uri.parse(
-                                                  'mailto:${element.msg}');
+                                                  'mailto:${extractEmailsFromString(element.msg!)[0]}');
                                               if (await launchUrl(Email)) {
                                                 //Mail opened
                                               } else {
@@ -256,8 +282,32 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                               children: [
                                                 Text(
                                                   element.msg.toString(),
-                                                  style:
-                                                      TextStyle(fontSize: 15),
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: (extractEmailsFromString(element
+                                                                          .msg
+                                                                          .toString())
+                                                                      .length >
+                                                                  0 ||
+                                                              extractMobilesFromString(element
+                                                                          .msg!)
+                                                                      .length >
+                                                                  0)
+                                                          ? Colors.blue
+                                                          : Colors.black,
+                                                      decoration: (extractEmailsFromString(element
+                                                                          .msg
+                                                                          .toString())
+                                                                      .length >
+                                                                  0 ||
+                                                              extractMobilesFromString(
+                                                                          element
+                                                                              .msg!)
+                                                                      .length >
+                                                                  0)
+                                                          ? TextDecoration
+                                                              .underline
+                                                          : null),
                                                 ),
                                                 Spacing.height(8),
                                                 Text(
@@ -272,21 +322,23 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                             ),
                                           ),
                                           onTap: () async {
-                                            if (element.msg
-                                                .toString()
-                                                .isPhoneNumber) {
+                                            if (extractMobilesFromString(
+                                                        element.msg.toString())
+                                                    .length >
+                                                0) {
                                               Uri phoneNo = Uri.parse(
-                                                  'tel:${element.msg}');
+                                                  'tel:${extractMobilesFromString(element.msg.toString())[0]}');
                                               if (await launchUrl(phoneNo)) {
                                                 //dialer opened
                                               } else {
                                                 //dailer is not opened
                                               }
-                                            } else if (element.msg
-                                                .toString()
-                                                .isEmail) {
+                                            } else if (extractEmailsFromString(
+                                                        element.msg.toString())
+                                                    .length >
+                                                0) {
                                               Uri Email = Uri.parse(
-                                                  'mailto:${element.msg}');
+                                                  'mailto:${extractEmailsFromString(element.msg!)[0]}');
                                               if (await launchUrl(Email)) {
                                                 //Mail opened
                                               } else {
@@ -419,6 +471,36 @@ class ChatScreenView extends GetView<ChatScreenController> {
   //   }
   // }
 
+  List<String> extractEmailsFromString(String string) {
+    final emailPattern = RegExp(r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b',
+        caseSensitive: false, multiLine: true);
+    final matches = emailPattern.allMatches(string);
+    final List<String> emails = [];
+    if (matches != null) {
+      for (final Match match in matches) {
+        emails.add(string.substring(match.start, match.end));
+      }
+    }
+
+    return emails;
+  }
+
+  List<String> extractMobilesFromString(String string) {
+    final emailPattern = RegExp(
+        r'\b[+]*[(]{0,1}[6-9]{1,4}[)]{0,1}[-\s\.0-9]*\b',
+        caseSensitive: false,
+        multiLine: true);
+    final matches = emailPattern.allMatches(string);
+    final List<String> emails = [];
+    if (matches != null) {
+      for (final Match match in matches) {
+        emails.add(string.substring(match.start, match.end));
+      }
+    }
+
+    return emails;
+  }
+
   getTitle() {
     return StreamBuilder(
         stream: getIt<FirebaseService>()
@@ -478,14 +560,14 @@ class ChatScreenView extends GetView<ChatScreenController> {
         });
   }
 }
-//   bool validateMobile(String value) {
-//     String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
-//     RegExp regExp = new RegExp(pattern);
-//     if (value.length == 0) {
-//       return false;
-//     } else if (!regExp.hasMatch(value)) {
-//       return false;
-//     }
-//     return true;
+// bool validateMobile(String value) {
+//   String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+//   RegExp regExp = new RegExp(pattern);
+//   if (value.length == 0) {
+//     return false;
+//   } else if (!regExp.hasMatch(value)) {
+//     return false;
 //   }
+//   return true;
+// }
 // }
