@@ -5,7 +5,9 @@ import 'package:chat_app/app/modules/home/controllers/home_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+
 import 'package:http/http.dart' as http;
+
 import '../../../../main.dart';
 import '../../../constants/app_constant.dart';
 import '../../../constants/sizeConstant.dart';

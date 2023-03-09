@@ -113,7 +113,7 @@ class SignUpController extends GetxController {
               }
             }
             /*Show only  city & state*/
-            addressController.value.text = city.value + state.value + ".";
+            addressController.value.text = city.value + state.value;
             Navigator.of(context).pop();
           },
           initialPosition: LatLng(coordinates[0], coordinates[1]),
