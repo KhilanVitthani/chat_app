@@ -180,45 +180,43 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                // Linkify(
-                                                //   onOpen: (link) async {
-                                                //     await launch("${link.url}");
-                                                //   },
-                                                //   text: element.msg.toString(),
-                                                //   style: TextStyle(
-                                                //       color: Colors.black),
-                                                //   linkStyle: TextStyle(
-                                                //       color: Colors.blue),
-                                                // ),
-                                                Text(
-                                                  element.msg.toString(),
+                                                Linkify(
+                                                  onOpen: (link) async {
+                                                    await launch(link.url);
+                                                  },
+                                                  text: element.msg.toString(),
                                                   style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: (extractEmailsFromString(element
-                                                                          .msg
-                                                                          .toString())
-                                                                      .length >
-                                                                  0 ||
-                                                              extractMobilesFromString(element
-                                                                          .msg!)
-                                                                      .length >
-                                                                  0)
-                                                          ? Colors.blue
-                                                          : Colors.black,
-                                                      decoration: (extractEmailsFromString(element
-                                                                          .msg
-                                                                          .toString())
-                                                                      .length >
-                                                                  0 ||
-                                                              extractMobilesFromString(
-                                                                          element
-                                                                              .msg!)
-                                                                      .length >
-                                                                  0)
-                                                          ? TextDecoration
-                                                              .underline
-                                                          : null),
+                                                      color: Colors.black),
+                                                  linkStyle: TextStyle(
+                                                      color: Colors.blue),
+                                                  linkifiers: [
+                                                    EmailLinkifier(),
+                                                    UrlLinkifier(),
+                                                    phoneNumberLinkifier,
+                                                  ],
                                                 ),
+                                                // Text(
+                                                //    element.msg.toString(),
+                                                //    style: TextStyle(
+                                                //        fontSize: 15,
+                                                //        color: (extractEmailsFromString(element.msg.toString())
+                                                //                        .length >
+                                                //                    0 ||
+                                                //                extractMobilesFromString(element.msg!)
+                                                //                        .length >
+                                                //                    0)
+                                                //            ? Colors.blue
+                                                //            : Colors.black,
+                                                //        decoration: (extractEmailsFromString(element.msg.toString())
+                                                //                        .length >
+                                                //                    0 ||
+                                                //                extractMobilesFromString(element.msg!)
+                                                //                        .length >
+                                                //                    0)
+                                                //            ? TextDecoration
+                                                //                .underline
+                                                //            : null),
+                                                //  ),
                                                 Spacing.height(8),
                                                 Text(
                                                   DateFormat("hh:mm a").format(
@@ -291,35 +289,43 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.end,
                                               children: [
-                                                Text(
-                                                  element.msg.toString(),
+                                                Linkify(
+                                                  onOpen: (link) async {
+                                                    await launch(link.url);
+                                                  },
+                                                  text: element.msg.toString(),
                                                   style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: (extractEmailsFromString(element
-                                                                          .msg
-                                                                          .toString())
-                                                                      .length >
-                                                                  0 ||
-                                                              extractMobilesFromString(element
-                                                                          .msg!)
-                                                                      .length >
-                                                                  0)
-                                                          ? Colors.blue
-                                                          : Colors.black,
-                                                      decoration: (extractEmailsFromString(element
-                                                                          .msg
-                                                                          .toString())
-                                                                      .length >
-                                                                  0 ||
-                                                              extractMobilesFromString(
-                                                                          element
-                                                                              .msg!)
-                                                                      .length >
-                                                                  0)
-                                                          ? TextDecoration
-                                                              .underline
-                                                          : null),
+                                                      color: Colors.black),
+                                                  linkStyle: TextStyle(
+                                                      color: Colors.blue),
+                                                  linkifiers: [
+                                                    EmailLinkifier(),
+                                                    UrlLinkifier(),
+                                                    phoneNumberLinkifier,
+                                                  ],
                                                 ),
+                                                // Text(
+                                                //     element.msg.toString(),
+                                                //     style: TextStyle(
+                                                //         fontSize: 15,
+                                                //         color: (extractEmailsFromString(element.msg.toString())
+                                                //                         .length >
+                                                //                     0 ||
+                                                //                 extractMobilesFromString(element.msg!)
+                                                //                         .length >
+                                                //                     0)
+                                                //             ? Colors.blue
+                                                //             : Colors.black,
+                                                //         decoration: (extractEmailsFromString(element.msg.toString())
+                                                //                         .length >
+                                                //                     0 ||
+                                                //                 extractMobilesFromString(element.msg!)
+                                                //                         .length >
+                                                //                     0)
+                                                //             ? TextDecoration
+                                                //                 .underline
+                                                //             : null),
+                                                //   ),
                                                 Spacing.height(8),
                                                 Text(
                                                   DateFormat("hh:mm a").format(
@@ -582,3 +588,79 @@ class ChatScreenView extends GetView<ChatScreenController> {
 //   return true;
 // }
 // }
+
+final phoneNumberLinkifier = PhoneNumberLinkifier();
+
+final _japanesePhoneRegex = RegExp(
+  // 10 digits in Japan
+  // 03-XXXX-XXXX
+  // 0466-XX-XXXX
+  // Japan cell phone: 3-4-4
+  // US 3-3-4
+  r'^(.*?)(\d{10}|\d{4}-\d{2}-\d{4}|\d{2}-\d{4}-\d{4}|\d{3}-\d{3}-\d{4}|\d{3}-\d{4}-\d{4}|\+\d{1,2}-\d{1,3}-\d{1,4}-\d{1,4})',
+  caseSensitive: false,
+  dotAll: true,
+);
+
+class PhoneNumberLinkifier extends Linkifier {
+  const PhoneNumberLinkifier();
+
+  @override
+  List<LinkifyElement> parse(elements, options) {
+    final list = <LinkifyElement>[];
+    elements.forEach((element) {
+      if (element is TextElement) {
+        var match = _japanesePhoneRegex.firstMatch(element.text);
+
+        if (match == null) {
+          list.add(element);
+        } else {
+          final text = element.text.replaceFirst(match.group(0)!, '');
+
+          if (match.group(1)!.isNotEmpty) {
+            list.add(TextElement(match.group(1)!));
+          }
+
+          if (match.group(2)!.isNotEmpty) {
+            var originalPhoneText = match.group(2);
+            String? end;
+
+            list.add(PhoneNumberElement(originalPhoneText!));
+
+            if (end != null) {
+              list.add(TextElement(end));
+            }
+          }
+
+          if (text.isNotEmpty) {
+            list.addAll(parse([TextElement(text)], options));
+          }
+        }
+      } else {
+        list.add(element);
+      }
+    });
+
+    return list;
+  }
+}
+
+class PhoneNumberElement extends LinkableElement {
+  final String phoneNumber;
+
+  PhoneNumberElement(this.phoneNumber) : super(phoneNumber, 'tel:$phoneNumber');
+
+  @override
+  String toString() {
+    return "PhoneNumberElement: '$phoneNumber' ($text)";
+  }
+
+  @override
+  bool operator ==(other) => equals(other);
+
+  @override
+  bool equals(other) =>
+      other is PhoneNumberElement &&
+      super.equals(other) &&
+      other.phoneNumber == phoneNumber;
+}
