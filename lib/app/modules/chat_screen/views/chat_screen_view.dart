@@ -229,29 +229,29 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                             ),
                                           ),
                                           onTap: () async {
-                                            if (extractMobilesFromString(
-                                                        element.msg.toString())
-                                                    .length >
-                                                0) {
-                                              Uri phoneNo = Uri.parse(
-                                                  'tel:${extractMobilesFromString(element.msg.toString())[0]}');
-                                              if (await launchUrl(phoneNo)) {
-                                                //dialer opened
-                                              } else {
-                                                //dailer is not opened
-                                              }
-                                            } else if (extractEmailsFromString(
-                                                        element.msg.toString())
-                                                    .length >
-                                                0) {
-                                              Uri Email = Uri.parse(
-                                                  'mailto:${extractEmailsFromString(element.msg!)[0]}');
-                                              if (await launchUrl(Email)) {
-                                                //Mail opened
-                                              } else {
-                                                //Mail is not opened
-                                              }
-                                            }
+                                            // if (extractMobilesFromString(
+                                            //             element.msg.toString())
+                                            //         .length >
+                                            //     0) {
+                                            //   Uri phoneNo = Uri.parse(
+                                            //       'tel:${extractMobilesFromString(element.msg.toString())[0]}');
+                                            //   if (await launchUrl(phoneNo)) {
+                                            //     //dialer opened
+                                            //   } else {
+                                            //     //dailer is not opened
+                                            //   }
+                                            // } else if (extractEmailsFromString(
+                                            //             element.msg.toString())
+                                            //         .length >
+                                            //     0) {
+                                            //   Uri Email = Uri.parse(
+                                            //       'mailto:${extractEmailsFromString(element.msg!)[0]}');
+                                            //   if (await launchUrl(Email)) {
+                                            //     //Mail opened
+                                            //   } else {
+                                            //     //Mail is not opened
+                                            //   }
+                                            // }
                                           },
                                         ),
                                       ),
@@ -339,29 +339,29 @@ class ChatScreenView extends GetView<ChatScreenController> {
                                             ),
                                           ),
                                           onTap: () async {
-                                            if (extractMobilesFromString(
-                                                        element.msg.toString())
-                                                    .length >
-                                                0) {
-                                              Uri phoneNo = Uri.parse(
-                                                  'tel:${extractMobilesFromString(element.msg.toString())[0]}');
-                                              if (await launchUrl(phoneNo)) {
-                                                //dialer opened
-                                              } else {
-                                                //dailer is not opened
-                                              }
-                                            } else if (extractEmailsFromString(
-                                                        element.msg.toString())
-                                                    .length >
-                                                0) {
-                                              Uri Email = Uri.parse(
-                                                  'mailto:${extractEmailsFromString(element.msg!)[0]}');
-                                              if (await launchUrl(Email)) {
-                                                //Mail opened
-                                              } else {
-                                                //Mail is not opened
-                                              }
-                                            }
+                                            // if (extractMobilesFromString(
+                                            //             element.msg.toString())
+                                            //         .length >
+                                            //     0) {
+                                            //   Uri phoneNo = Uri.parse(
+                                            //       'tel:${extractMobilesFromString(element.msg.toString())[0]}');
+                                            //   if (await launchUrl(phoneNo)) {
+                                            //     //dialer opened
+                                            //   } else {
+                                            //     //dailer is not opened
+                                            //   }
+                                            // } else if (extractEmailsFromString(
+                                            //             element.msg.toString())
+                                            //         .length >
+                                            //     0) {
+                                            //   Uri Email = Uri.parse(
+                                            //       'mailto:${extractEmailsFromString(element.msg!)[0]}');
+                                            //   if (await launchUrl(Email)) {
+                                            //     //Mail opened
+                                            //   } else {
+                                            //     //Mail is not opened
+                                            //   }
+                                            // }
                                           },
                                         ),
                                       ),
