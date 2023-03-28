@@ -21,30 +21,31 @@ class MobileLoginScreenView extends GetView<MobileLoginScreenController> {
     return Scaffold(
       backgroundColor: appTheme.backgroungGray,
       body: Obx(() {
-        return SingleChildScrollView(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                height: MySize.screenHeight,
-                width: MySize.screenWidth,
-                padding: EdgeInsets.symmetric(horizontal: MySize.getWidth(30)),
-                child: Column(
-                  children: [
-                    Spacing.height(kToolbarHeight),
-                    Center(
-                      child: Text(
-                        "Chat App",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: MySize.getHeight(32),
+        return KeyboardActions(
+          config: controller.buildConfig(context),
+          child: SingleChildScrollView(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: MySize.screenHeight,
+                  width: MySize.screenWidth,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: MySize.getWidth(30)),
+                  child: Column(
+                    children: [
+                      Spacing.height(kToolbarHeight),
+                      Center(
+                        child: Text(
+                          "Chat App",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: MySize.getHeight(32),
+                          ),
                         ),
                       ),
-                    ),
-                    Spacing.height(70),
-                    KeyboardActions(
-                      config: controller.buildConfig(context),
-                      child: Card(
+                      Spacing.height(70),
+                      Card(
                         color: Colors.white,
                         elevation: 5,
                         child: Container(
@@ -77,8 +78,8 @@ class MobileLoginScreenView extends GetView<MobileLoginScreenController> {
                                           onSelect: (val) {
                                             FocusManager.instance.primaryFocus!
                                                 .unfocus();
-                                            controller.countryCodeController.value
-                                                    .text =
+                                            controller.countryCodeController
+                                                    .value.text =
                                                 "(+${val.phoneCode}) ${val.name}";
                                             controller.countryCodeController
                                                 .refresh();
@@ -89,7 +90,7 @@ class MobileLoginScreenView extends GetView<MobileLoginScreenController> {
                               Container(
                                 width: MySize.safeWidth,
                                 child: getUnderLineTextBox(
-                                  focusNode: controller.nodeText1,
+                                    focusNode: controller.nodeText1,
                                     textController: controller.numberController,
                                     hintText: "Enter your mobile number",
                                     textInputType: TextInputType.number,
@@ -102,31 +103,33 @@ class MobileLoginScreenView extends GetView<MobileLoginScreenController> {
                           ),
                         ),
                       ),
-                    ),
-                    Spacing.height(50),
-                    Center(
-                      child: button(
-                        title: "Continue",
-                        fontsize: MySize.getHeight(20),
-                        onTap: () {
-                          if (!isNullEmptyOrFalse(
-                                  controller.numberController.text) &&
-                              controller.numberController.text.trim().length !=
-                                  0) {
-                            controller.sendOtp(context);
-                          } else {
-                            getIt<CustomDialogs>().getDialog(
-                                title: "Error", desc: "Invalid phone number");
-                          }
-                        },
-                        height: MySize.getHeight(65),
-                        width: MySize.getWidth(300),
+                      Spacing.height(50),
+                      Center(
+                        child: button(
+                          title: "Continue",
+                          fontsize: MySize.getHeight(20),
+                          onTap: () {
+                            if (!isNullEmptyOrFalse(
+                                    controller.numberController.text) &&
+                                controller.numberController.text
+                                        .trim()
+                                        .length !=
+                                    0) {
+                              controller.sendOtp(context);
+                            } else {
+                              getIt<CustomDialogs>().getDialog(
+                                  title: "Error", desc: "Invalid phone number");
+                            }
+                          },
+                          height: MySize.getHeight(65),
+                          width: MySize.getWidth(300),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       }),
