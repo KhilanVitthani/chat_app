@@ -4,6 +4,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 import '../../../../main.dart';
 import '../../../constants/color_constant.dart';
@@ -41,60 +42,64 @@ class MobileLoginScreenView extends GetView<MobileLoginScreenController> {
                       ),
                     ),
                     Spacing.height(70),
-                    Card(
-                      color: Colors.white,
-                      elevation: 5,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: MySize.getWidth(25),
-                            vertical: MySize.getHeight(7)),
-                        height: MySize.getHeight(350),
-                        child: Column(
-                          children: [
-                            Spacing.height(50),
-                            Container(
-                              width: MySize.safeWidth,
-                              child: getUnderLineTextBox(
-                                  textController:
-                                      controller.countryCodeController.value,
-                                  height: 50,
-                                  width: 100,
-                                  fontWeight: FontWeight.bold,
-                                  topPadding: MySize.getHeight(10),
-                                  size: MySize.getHeight(0),
-                                  readOnly: true,
-                                  suffix: Icon(
-                                    Icons.arrow_drop_down,
-                                    color: appTheme.primaryTheme,
-                                    size: MySize.getHeight(20),
-                                  ),
-                                  onTap: () {
-                                    showCountryPicker(
-                                        context: context,
-                                        onSelect: (val) {
-                                          FocusManager.instance.primaryFocus!
-                                              .unfocus();
-                                          controller.countryCodeController.value
-                                                  .text =
-                                              "(+${val.phoneCode}) ${val.name}";
-                                          controller.countryCodeController
-                                              .refresh();
-                                        });
-                                  }),
-                            ),
-                            Spacing.height(15),
-                            Container(
-                              width: MySize.safeWidth,
-                              child: getUnderLineTextBox(
-                                  textController: controller.numberController,
-                                  hintText: "Enter your mobile number",
-                                  textInputType: TextInputType.number,
-                                  height: 50,
-                                  width: 200,
-                                  size: MySize.getHeight(40),
-                                  topPadding: 10),
-                            ),
-                          ],
+                    KeyboardActions(
+                      config: controller.buildConfig(context),
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 5,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: MySize.getWidth(25),
+                              vertical: MySize.getHeight(7)),
+                          height: MySize.getHeight(350),
+                          child: Column(
+                            children: [
+                              Spacing.height(50),
+                              Container(
+                                width: MySize.safeWidth,
+                                child: getUnderLineTextBox(
+                                    textController:
+                                        controller.countryCodeController.value,
+                                    height: 50,
+                                    width: 100,
+                                    fontWeight: FontWeight.bold,
+                                    topPadding: MySize.getHeight(10),
+                                    size: MySize.getHeight(0),
+                                    readOnly: true,
+                                    suffix: Icon(
+                                      Icons.arrow_drop_down,
+                                      color: appTheme.primaryTheme,
+                                      size: MySize.getHeight(20),
+                                    ),
+                                    onTap: () {
+                                      showCountryPicker(
+                                          context: context,
+                                          onSelect: (val) {
+                                            FocusManager.instance.primaryFocus!
+                                                .unfocus();
+                                            controller.countryCodeController.value
+                                                    .text =
+                                                "(+${val.phoneCode}) ${val.name}";
+                                            controller.countryCodeController
+                                                .refresh();
+                                          });
+                                    }),
+                              ),
+                              Spacing.height(15),
+                              Container(
+                                width: MySize.safeWidth,
+                                child: getUnderLineTextBox(
+                                  focusNode: controller.nodeText1,
+                                    textController: controller.numberController,
+                                    hintText: "Enter your mobile number",
+                                    textInputType: TextInputType.number,
+                                    height: 50,
+                                    width: 200,
+                                    size: MySize.getHeight(40),
+                                    topPadding: 10),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

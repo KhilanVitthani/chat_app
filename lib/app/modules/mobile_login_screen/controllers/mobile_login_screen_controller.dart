@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:keyboard_actions/keyboard_actions_config.dart';
 
 import '../../../../main.dart';
 import '../../../constants/app_constant.dart';
@@ -11,6 +13,7 @@ class MobileLoginScreenController extends GetxController {
   TextEditingController numberController = TextEditingController();
   Rx<TextEditingController> countryCodeController =
       TextEditingController(text: "(+91) India").obs;
+  final FocusNode nodeText1 = FocusNode();
   @override
   void onInit() {
     super.onInit();
@@ -19,6 +22,21 @@ class MobileLoginScreenController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+  }
+
+
+  KeyboardActionsConfig buildConfig(BuildContext context) {
+    return KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor: Colors.grey[200],
+      nextFocus: true,
+      actions: [
+        KeyboardActionsItem(
+          focusNode: nodeText1,
+          displayDoneButton: true,
+        ),
+      ],
+    );
   }
 
   sendOtp(BuildContext context) async {
