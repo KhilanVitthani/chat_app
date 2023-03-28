@@ -12,6 +12,7 @@ dependencies:
   firebase_auth: ^4.2.5
   get_storage: ^2.0.3
   cached_network_image:
+  keyboard_actions: ^4.1.0
   image_cropper: ^3.0.1
   image_picker: ^0.8.5+3
   cloud_firestore: ^4.3.1
