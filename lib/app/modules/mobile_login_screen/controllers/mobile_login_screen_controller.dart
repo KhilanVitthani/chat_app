@@ -1,3 +1,4 @@
+import 'package:country_codes/country_codes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,11 +12,14 @@ import '../../../utilities/progress_dialog_utils.dart';
 
 class MobileLoginScreenController extends GetxController {
   TextEditingController numberController = TextEditingController();
-  Rx<TextEditingController> countryCodeController =
-      TextEditingController(text: "(+91) India").obs;
+  Rx<TextEditingController> countryCodeController = TextEditingController().obs;
   final FocusNode nodeText1 = FocusNode();
   @override
-  void onInit() {
+  void onInit() async {
+    await CountryCodes.init();
+    final CountryDetails details = CountryCodes.detailsForLocale();
+    countryCodeController.value.text =
+        "(${details.dialCode}) ${details.localizedName}";
     super.onInit();
   }
 
@@ -23,7 +27,6 @@ class MobileLoginScreenController extends GetxController {
   void onReady() {
     super.onReady();
   }
-
 
   KeyboardActionsConfig buildConfig(BuildContext context) {
     return KeyboardActionsConfig(
